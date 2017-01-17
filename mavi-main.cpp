@@ -9,6 +9,9 @@ int main(int argc, char ** argv)
 {
 	// Initialization
 
+	wiringPiSetup();
+	ao_initialize();
+
 	// Main Loop
 	while (1)
 	{
