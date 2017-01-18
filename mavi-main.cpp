@@ -7,6 +7,10 @@
 
 #include <ao/ao.h>
 #include <wiringPi.h>
+#include <pthread.h>
+
+#include "mavi-processing.hpp"
+#include "mavi-feedback.hpp"
 
 int main(int argc, char ** argv)
 {
@@ -15,13 +19,13 @@ int main(int argc, char ** argv)
 	wiringPiSetupGpio();
 	ao_initialize();
 
+	pthread_t processThread, feedbackThread;
+	pthread_create(&processThread, NULL, maviSenseAndProcess, NULL);
+	pthread_create(&feedbackThread, NULL, maviProvideFeedback, NULL);
+
 	// Main Loop
 	while (1)
 	{
-		// Poll sensors
-
-		// Process
-
-		// Send feedback
+		// ...
 	}
 }
