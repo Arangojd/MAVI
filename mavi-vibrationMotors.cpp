@@ -18,5 +18,3 @@ void maviVibrationMotorR(int outputLength)
 }
 
 void maviVibrationMotorC(int outputLength)
-{
-}
