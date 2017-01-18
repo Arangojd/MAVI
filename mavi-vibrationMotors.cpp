@@ -9,14 +9,14 @@
 #include "mavi-vibrationMotors.hpp"
 #include "mavi-pins.hpp"
 
-void maviVibrationMotorL(int vibrationOutputLength)
+void maviVibrationMotorL(int outputLength)
 {
 }
 
-void maviVibrationMotorR(int vibrationOutputLength)
+void maviVibrationMotorR(int outputLength)
 {
 }
 
-void maviVibrationMotorC(int vibrationOutputLength)
+void maviVibrationMotorC(int outputLength)
 {
 }
