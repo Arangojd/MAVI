@@ -11,6 +11,7 @@
 
 #include "mavi-processing.hpp"
 #include "mavi-feedback.hpp"
+#include "mavi-states.hpp"
 
 int main(int argc, char ** argv)
 {
@@ -20,7 +21,7 @@ int main(int argc, char ** argv)
 	ao_initialize();
 
 	pthread_t processThread, feedbackThread;
-	pthread_create(&processThread, NULL, maviSenseAndProcess, NULL);
+	pthread_create( &processThread, NULL, maviSenseAndProcess, NULL);
 	pthread_create(&feedbackThread, NULL, maviProvideFeedback, NULL);
 
 	// Main Loop
