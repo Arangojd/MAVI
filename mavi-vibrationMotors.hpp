@@ -9,4 +9,3 @@
 void maviVibrationMotorL(int outputLength);
 void maviVibrationMotorL(int outputLength);
 void maviVibrationMotorL(int outputLength);
- 
