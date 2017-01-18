@@ -1,5 +1,8 @@
 /*
+ * mavi-main.cpp
+ * -------------
  *
+ * This is the entry point for the MAVI program.
  */
 
 #include <ao/ao.h>
@@ -9,7 +12,7 @@ int main(int argc, char ** argv)
 {
 	// Initialization
 
-	wiringPiSetup();
+	wiringPiSetupGpio();
 	ao_initialize();
 
 	// Main Loop
