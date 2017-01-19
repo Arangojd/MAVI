@@ -27,6 +27,6 @@ int main(int argc, char ** argv)
 	// Main Loop
 	while (1)
 	{
-		// ...
+		// TODO
 	}
 }
