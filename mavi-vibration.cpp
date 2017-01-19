@@ -1,12 +1,12 @@
 /*
- * mavi-vibrationMotors.cpp
- * ----------------
+ * mavi-vibration.cpp
+ * ------------------
  *
  * ...
  */
 
 #include <wiringPi.h>
-#include "mavi-vibrationMotors.hpp"
+#include "mavi-vibration.hpp"
 #include "mavi-pins.hpp"
 
 void maviVibrationMotorL(int outputLength)

@@ -5,6 +5,14 @@
  * ...
  */
 
-#define MAVI_STATE_RUNNING 0
-#define MAVI_STATE_PAUSED  1
-#define MAVI_STATE_CALIB   2
+#ifndef MAVI_STATES_HPP
+#define MAVI_STATES_HPP
+
+enum maviState
+{
+	MAVI_STATE_RUNNING,
+	MAVI_STATE_PAUSED,
+	MAVI_STATE_CALIB
+};
+
+#endif
