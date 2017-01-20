@@ -17,7 +17,7 @@ enum maviState
 	MAVI_STATE_SHUTDOWN
 };
 
-void maviInit    (maviState *state);
+void maviInit    (maviState *state, pthread_t *spThread, pthread_t *fbThread);
 void maviPause   (maviState *state);
 void maviCalib   (maviState *state);
 void maviShutdown(maviState *state);

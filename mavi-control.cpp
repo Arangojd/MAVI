@@ -11,8 +11,8 @@ void maviInit(maviState *state, pthread_t *spThread, pthread_t *fbThread)
 {
 	wiringPiSetupGpio();
 	ao_initialize();
-	pthread_create(spThread, NULL, maviSenseAndProcess, NULL);
-	pthread_create(fbThread, NULL, maviProvideFeedback, NULL);
+	pthread_create(spThread, NULL, maviSenseAndAnalyze, (void*)state);
+	pthread_create(fbThread, NULL, maviProvideFeedback, (void*)state);
 
 	*state = MAVI_STATE_RUNNING;
 }
