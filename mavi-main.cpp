@@ -9,20 +9,18 @@
 #include <wiringPi.h>
 #include <pthread.h>
 
+#include "mavi-control.hpp"
 #include "mavi-processing.hpp"
 #include "mavi-feedback.hpp"
-#include "mavi-states.hpp"
 
 int main(int argc, char ** argv)
 {
 	// Initialization
 
-	wiringPiSetupGpio();
-	ao_initialize();
+	maviState state = MAVI_STATE_PREINIT;
+	pthread_t spThread, fbThread;
 
-	pthread_t processThread, feedbackThread;
-	pthread_create( &processThread, NULL, maviSenseAndProcess, NULL);
-	pthread_create(&feedbackThread, NULL, maviProvideFeedback, NULL);
+	maviInit(&state, &spThread, &fbThread);
 
 	// Main Loop
 	while (1)
