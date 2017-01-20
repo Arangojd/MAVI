@@ -5,7 +5,13 @@
  * ...
  */
 
+#include <wiringPi.h>
+#include <ao/ao.h>
+#include <pthread.h>
+
 #include "mavi-control.hpp"
+#include "mavi-analysis.hpp"
+#include "mavi-feedback.hpp"
 
 void maviInit(maviState *state, pthread_t *spThread, pthread_t *fbThread)
 {

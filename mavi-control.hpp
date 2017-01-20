@@ -8,6 +8,8 @@
 #ifndef MAVI_CONTROL_HPP
 #define MAVI_CONTROL_HPP
 
+#include <pthread.h>
+
 enum maviState
 {
 	MAVI_STATE_PREINIT,

@@ -10,8 +10,6 @@
 #include <pthread.h>
 
 #include "mavi-control.hpp"
-#include "mavi-processing.hpp"
-#include "mavi-feedback.hpp"
 
 int main(int argc, char ** argv)
 {
