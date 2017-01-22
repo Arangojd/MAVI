@@ -13,8 +13,9 @@
 #include "mavi-analysis.hpp"
 #include "mavi-feedback.hpp"
 #include "mavi-pins.hpp"
+#include "mavi-state.hpp"
 
-void maviInit(maviState *state, pthread_t *spThread, pthread_t *fbThread)
+void maviInit(pthread_t *spThread, pthread_t *fbThread)
 {
 	#ifdef MAVI_PINTYPE_BCM
 		wiringPiSetupGpio();
@@ -24,25 +25,25 @@ void maviInit(maviState *state, pthread_t *spThread, pthread_t *fbThread)
 
 	ao_initialize();
 
-	pthread_create(spThread, NULL, maviSenseAndAnalyze, (void*)state);
-	pthread_create(fbThread, NULL, maviProvideFeedback, (void*)state);
+	pthread_create(spThread, NULL, maviSenseAndAnalyze, NULL);
+	pthread_create(fbThread, NULL, maviProvideFeedback, NULL);
 
-	*state = MAVI_STATE_RUNNING;
+	maviState = MAVI_STATE_RUNNING;
 }
 
-void maviPause(maviState *state)
+void maviPause(void)
 {
-	*state = MAVI_STATE_PAUSED;
+	maviState = MAVI_STATE_PAUSED;
 }
 
-void maviCalib(maviState *state)
+void maviCalib(void)
 {
-	*state = MAVI_STATE_CALIB;
+	maviState = MAVI_STATE_CALIB;
 }
 
-void maviShutdown(maviState *state)
+void maviShutdown(void)
 {
-	*state = MAVI_STATE_SHUTDOWN;
+	maviState = MAVI_STATE_SHUTDOWN;
 
 	// TODO
 }

@@ -10,18 +10,21 @@
 #include <pthread.h>
 
 #include "mavi-control.hpp"
+#include "mavi-state.hpp"
+
+#define ever (;;)
+
+volatile maviState_t maviState = MAVI_STATE_PREINIT;
 
 int main(int argc, char ** argv)
 {
 	// Initialization
 
-	maviState state = MAVI_STATE_PREINIT;
 	pthread_t spThread, fbThread;
-
-	maviInit(&state, &spThread, &fbThread);
+	maviInit(&spThread, &fbThread);
 
 	// Main Loop
-	while (1)
+	for ever
 	{
 		// TODO
 	}

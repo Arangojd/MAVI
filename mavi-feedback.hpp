@@ -8,6 +8,6 @@
 #ifndef MAVI_FEEDBACK_HPP
 #define MAVI_FEEDBACK_HPP
 
-void *maviProvideFeedback(void *state);
+void *maviProvideFeedback(void*);
 
 #endif

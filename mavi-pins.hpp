@@ -11,7 +11,7 @@
 
 #define MAVI_PINTYPE_BCM
 
-enum maviPin
+enum maviPin : int
 {
 	MAVI_PIN_IRS = 2,
 	MAVI_PIN_IRM = 3,
