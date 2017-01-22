@@ -12,11 +12,18 @@
 #include "mavi-control.hpp"
 #include "mavi-analysis.hpp"
 #include "mavi-feedback.hpp"
+#include "mavi-pins.hpp"
 
 void maviInit(maviState *state, pthread_t *spThread, pthread_t *fbThread)
 {
-	wiringPiSetupGpio();
+	#ifdef MAVI_PINTYPE_BCM
+		wiringPiSetupGpio();
+	#else
+		wiringPiSetup();
+	#endif
+
 	ao_initialize();
+
 	pthread_create(spThread, NULL, maviSenseAndAnalyze, (void*)state);
 	pthread_create(fbThread, NULL, maviProvideFeedback, (void*)state);
 

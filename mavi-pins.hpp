@@ -9,6 +9,8 @@
 #ifndef MAVI_PINS_HPP
 #define MAVI_PINS_HPP
 
+#define MAVI_PINTYPE_BCM
+
 enum maviPin
 {
 	MAVI_PIN_IRS = 2,
@@ -22,8 +24,9 @@ enum maviPin
 	MAVI_PIN_VC = 15,
 	MAVI_PIN_VR = 18,
 
-	MAVI_PIN_PAUSE = 23,
-	MAVI_PIN_POWER = 24
+	MAVI_PIN_POWER = 23,
+	MAVI_PIN_PAUSE = 24,
+	MAVI_PIN_CALIB = 25
 };
 
 #endif
