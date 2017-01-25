@@ -9,17 +9,36 @@
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
 
-#define MAVI_INVALID_SENSOR_ID 0.0
+#define MAVI_INVALID_SENSOR_ID -1.0
 
-maviPin maviSensorPinMapping(maviSensorID sensor)
+maviPin maviIRSensorPinMapping(maviSensorID sensor)
 {
 	switch (sensor)
 	{
 	case MAVI_SENSOR_IRL: return MAVI_PIN_IRL;
 	case MAVI_SENSOR_IRM: return MAVI_PIN_IRM;
 	case MAVI_SENSOR_IRS: return MAVI_PIN_IRS;
-	case MAVI_SENSOR_USL: return MAVI_PIN_USL;
-	case MAVI_SENSOR_USR: return MAVI_PIN_USR;
+	default: return 0;
+	};
+}
+
+maviPin maviUSTrigPinMapping(maviSensorID sensor)
+{
+	switch (sensor)
+	{
+	case MAVI_SENSOR_USL: return MAVI_PIN_USL_TRIG;
+	case MAVI_SENSOR_USR: return MAVI_PIN_USR_TRIG;
+	default: return 0;
+	};
+}
+
+maviPin maviUSEchoPinMapping(maviSensorID sensor)
+{
+	switch (sensor)
+	{
+	case MAVI_SENSOR_USL: return MAVI_PIN_USL_ECHO;
+	case MAVI_SENSOR_USR: return MAVI_PIN_USR_ECHO;
+	default: return 0;
 	};
 }
 
@@ -53,7 +72,29 @@ double maviPollSensorUS(maviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	// TODO
+	int
+		trigPin = maviUSTrigPinMapping(sensor),
+		echoPin = maviUSEchoPinMapping(sensor);
+
+	unsigned int startT, endT;
+
+	// Send trigger pulse
+	digitalWrite(trigPin, 1);
+	delay(1); // ms
+	digitalWrite(trigPin, 0);
+
+	// Measure time to echo
+	startT = micros();
+	while (!digitalRead(echoPin)); // Busy-wait for echo signal
+	endT = micros();
+
+	// TODO: Detect time wrapping
+	// micros() wraps every 71 minutes, so it's conceivable
+	// (although unlikely) that we'll end up with startT > endT.
+
+	// Speed of sound varies based on temperature, air pressure, and
+	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
+	return ((endT - startT) >> 1) * 0.0343;
 }
 
 double maviPollSensor(maviSensorID sensor)
