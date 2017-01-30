@@ -12,8 +12,6 @@
 #include "mavi-control.hpp"
 #include "mavi-state.hpp"
 
-#define ever (;;)
-
 volatile maviState_t maviState = MAVI_STATE_PREINIT;
 
 int main(int argc, char ** argv)
@@ -24,7 +22,7 @@ int main(int argc, char ** argv)
 	maviInit(&spThread, &fbThread);
 
 	// Main Loop
-	for ever
+	while (true)
 	{
 		// TODO
 	}
