@@ -76,25 +76,28 @@ double maviPollSensorUS(maviSensorID sensor)
 		trigPin = maviUSTrigPinMapping(sensor),
 		echoPin = maviUSEchoPinMapping(sensor);
 
-	unsigned int startT, endT;
+	unsigned int st, et;
 
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
 	delay(1); // ms
 	digitalWrite(trigPin, 0);
 
-	// Measure time to echo
-	startT = micros();
-	while (!digitalRead(echoPin)); // Busy-wait for echo signal
-	endT = micros();
+	// Wait for sensor to process trigger
+	while (!digitalRead(echoPin));
+	st = micros();
+
+	// Wait for sensor to receive echo
+	while (digitalRead(echoPin));
+	et = micros();
 
 	// TODO: Detect time wrapping
 	// micros() wraps every 71 minutes, so it's conceivable
-	// (although unlikely) that we'll end up with startT > endT.
+	// (although unlikely) that we'll end up with st > et.
 
 	// Speed of sound varies based on temperature, air pressure, and
 	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
-	return ((endT - startT) >> 1) * 0.0343;
+	return (et - st) * 0.01715;
 }
 
 double maviPollSensor(maviSensorID sensor)
