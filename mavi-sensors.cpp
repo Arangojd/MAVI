@@ -80,7 +80,7 @@ double maviPollSensorUS(maviSensorID sensor)
 
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
-	delay(1); // ms
+	delayMicroseconds(10);
 	digitalWrite(trigPin, 0);
 
 	// Wait for sensor to process trigger
