@@ -72,7 +72,7 @@ double maviPollSensorUS(maviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	int
+	maviPin
 		trigPin = maviUSTrigPinMapping(sensor),
 		echoPin = maviUSEchoPinMapping(sensor);
 

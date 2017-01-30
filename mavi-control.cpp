@@ -23,6 +23,23 @@ void maviInit(pthread_t *spThread, pthread_t *fbThread)
 		wiringPiSetup();
 	#endif
 
+	pinMode(MAVI_PIN_VL, OUTPUT);
+	pinMode(MAVI_PIN_VL, OUTPUT);
+	pinMode(MAVI_PIN_VL, OUTPUT);
+
+	pinMode(MAVI_PIN_IRS, INPUT);
+	pinMode(MAVI_PIN_IRM, INPUT);
+	pinMode(MAVI_PIN_IRL, INPUT);
+
+	pinMode(MAVI_PIN_USL_TRIG, OUTPUT);
+	pinMode(MAVI_PIN_USR_TRIG, OUTPUT);
+	pinMode(MAVI_PIN_USL_ECHO,  INPUT);
+	pinMode(MAVI_PIN_USR_ECHO,  INPUT);
+
+	pinMode(MAVI_PIN_POWER, INPUT);
+	pinMode(MAVI_PIN_PAUSE, INPUT);
+	pinMode(MAVI_PIN_CALIB, INPUT);
+
 	ao_initialize();
 
 	pthread_create(spThread, NULL, maviSenseAndAnalyze, NULL);
