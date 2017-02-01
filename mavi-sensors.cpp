@@ -91,10 +91,6 @@ double maviPollSensorUS(maviSensorID sensor)
 	while (digitalRead(echoPin));
 	et = micros();
 
-	// TODO: Detect time wrapping
-	// micros() wraps every 71 minutes, so it's conceivable
-	// (although unlikely) that we'll end up with st > et.
-
 	// Speed of sound varies based on temperature, air pressure, and
 	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
 	return (et - st) * 0.01715;
