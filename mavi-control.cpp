@@ -23,6 +23,9 @@ void maviInit(pthread_t *spThread, pthread_t *fbThread)
 		wiringPiSetup();
 	#endif
 
+	// MAVI is an HRT system; shift this process to the maximum possible priority.
+	piHiPri(99);
+
 	pinMode(MAVI_PIN_VL, OUTPUT);
 	pinMode(MAVI_PIN_VL, OUTPUT);
 	pinMode(MAVI_PIN_VL, OUTPUT);
@@ -40,7 +43,11 @@ void maviInit(pthread_t *spThread, pthread_t *fbThread)
 	pinMode(MAVI_PIN_PAUSE, INPUT);
 	pinMode(MAVI_PIN_CALIB, INPUT);
 
+	// TODO: Register ISRs (for buttons)
+
 	ao_initialize();
+
+	// TODO: Load audio resources
 
 	pthread_create(spThread, NULL, maviSenseAndAnalyze, NULL);
 	pthread_create(fbThread, NULL, maviProvideFeedback, NULL);
