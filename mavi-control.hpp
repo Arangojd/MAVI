@@ -10,9 +10,7 @@
 
 #include <pthread.h>
 
-void maviInit    (pthread_t *spThread, pthread_t *fbThread);
-void maviPause   (void);
-void maviCalib   (void);
-void maviShutdown(void);
+void maviInit    (pthread_t *saThread, pthread_t *fbThread);
+void maviShutdown(pthread_t *saThread, pthread_t *fbThread);
 
 #endif

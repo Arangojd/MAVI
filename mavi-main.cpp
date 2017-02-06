@@ -22,8 +22,12 @@ int main(int argc, char ** argv)
 	maviInit(&spThread, &fbThread);
 
 	// Main Loop
-	while (true)
+	while (maviState != MAVI_STATE_SHUTDOWN)
 	{
 		// TODO
 	}
+
+	maviShutdown(&spThread, &fbThread);
+
+	return 0;
 }
