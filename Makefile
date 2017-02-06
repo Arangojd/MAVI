@@ -8,6 +8,7 @@ FEXEC = mavi-final
 
 SOURCES = \
 	mavi-analysis.cpp \
+	mavi-buttons.cpp  \
 	mavi-control.cpp  \
 	mavi-feedback.cpp \
 	mavi-main.cpp     \
