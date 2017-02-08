@@ -11,8 +11,16 @@
 
 #include "mavi-control.hpp"
 #include "mavi-state.hpp"
+#include "mavi-calib.hpp"
 
 volatile maviState_t maviState = MAVI_STATE_PREINIT;
+
+double
+	refDistUSL = 100.0,
+	refDistUSR = 100.0,
+	refDistIRS = 80.0,
+	refDistIRM = 100.0,
+	refDistIRL = 150.0;
 
 int main(int argc, char ** argv)
 {
