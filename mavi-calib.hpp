@@ -13,6 +13,10 @@ extern double
 	refDistUSR,
 	refDistIRS,
 	refDistIRM,
-	refDistIRL;
+	refDistIRL,
+	refAngleIRS,
+	refAngleIRM,
+	refAngleIRL,
+	refHeightBelt;
 
 #endif
