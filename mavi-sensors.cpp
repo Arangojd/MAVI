@@ -51,6 +51,8 @@ double maviPollSensorShortIR(maviSensorID sensor)
 	}
 
 	// TODO
+
+	return 0.0;
 }
 
 double maviPollSensorLongIR(maviSensorID sensor)
@@ -62,6 +64,8 @@ double maviPollSensorLongIR(maviSensorID sensor)
 	}
 
 	// TODO
+
+	return 0.0;
 }
 
 double maviPollSensorUS(maviSensorID sensor)
