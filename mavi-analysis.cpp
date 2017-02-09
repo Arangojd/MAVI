@@ -96,20 +96,20 @@ void *maviSenseAndAnalyze(void* args)
 		
 		if (nextStepScan == MAVI_NEXTSTEP_NOTHING) {
 			if (slopeScan == MAVI_SLOPE_ASCENDING)
-				cout << "Verbal: Ascending Stairs Ahead";
+				cout << "Verbal Output: Ascending Stairs Ahead";
 			else if (slopeScan == MAVI_SLOPE_DESCENDING)
-				cout << "Verbal: Descending Stairs Ahead";
+				cout << "Verbal Output: Descending Stairs Ahead";
 			else if (slopeScan == MAVI_SLOPE_OTHER)
-				cout << "Vibrate: Center (Obstacle Ahead)";
+				cout << "Vibration Output: Center (Obstacle Ahead)";
 			else if (slopeScan == MAVI_SLOPE_FLAT) {
 				MaviMidRangeScan midRangeScan = maviMidRangeScan();
 				
 				if (midRangeScan == MAVI_MIDRANGE_BOTH)
-					cout << "Vibrate: Center (Obstacle Ahead)";
+					cout << "Vibration Output: Center (Obstacle Ahead)";
 				else if (midRangeScan == MAVI_MIDRANGE_LEFT)
-					cout << "Vibrate: Left (Obstacle on Left)";
+					cout << "Vibration Output: Left (Obstacle on Left)";
 				else if (midRangeScan == MAVI_MIDRANGE_RIGHT)
-					cout << "Vibrate: Right (Obstacle on Right)";
+					cout << "Vibration Output: Right (Obstacle on Right)";
 				else if (midRangeScan == MAVI_MIDRANGE_NEITHER)
 					cout << "No Obstacle Detected";
 				else
@@ -118,6 +118,25 @@ void *maviSenseAndAnalyze(void* args)
 			else
 				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
 		}
-		
+		else if (nextStepScan == MAVI_NEXTSTEP_OTHER)
+			cout << "Audio Output: Immediate Hazard Warning";
+		else if (nextStepScan == MAVI_NEXTSTEP_STEPUP) {
+			if (slopeScan == MAVI_SLOPE_ASCENDING)
+				cout << "Verbal Output: First Step Up";
+			else if (slopeScan == MAVI_SLOPE_FLAT)
+				cout << "Verbal Output: Single Step Up";
+			else
+				cout << "Audio Output: Immediate Hazard Warning";
+		}
+		else if (nextStepScan == MAVI_NEXTSTEP_STEPDOWN) {
+			if (slopeScan == MAVI_SLOPE_DESCENDING)
+				cout << "Verbal Output: First Step Down";
+			else if (slopeScan == MAVI_SLOPE_FLAT)
+				cout << "Verbal Output: Single Step Down";
+			else
+				cout << "Audio Output: Immediate Hazard Warning";
+		}
+		else
+			cout << "Sensing and Analysis Error: Received invalid next step data.";
 	}
 }
