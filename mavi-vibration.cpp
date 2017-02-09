@@ -22,7 +22,7 @@ maviPin maviVibratorPinMapping(maviVibratorID vibrator)
 void maviVibrate(maviVibratorID vibrator, double force, long duration)
 {
 	maviPin pin = maviVibratorPinMapping(vibrator);
-	unsigned int period = (unsigned int)(1.0 / force);
+	unsigned int period = (unsigned int)(1.0 / force); // Numerator may need to be larger
 	unsigned int st = millis();
 
 	while (millis() - st < duration)
