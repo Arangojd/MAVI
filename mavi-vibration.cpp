@@ -22,13 +22,14 @@ MaviDigitalPin maviVibratorPinMapping(MaviVibratorID vibrator)
 void maviVibrate(MaviVibratorID vibrator, double force, long duration)
 {
 	MaviDigitalPin pin = maviVibratorPinMapping(vibrator);
-	unsigned int period = (unsigned int)(1.0 / force); // Numerator may need to be larger
+	unsigned int halfPeriod = (unsigned int)(1.0 / force); // Numerator may need to be larger
 	unsigned int st = millis();
 
 	while (millis() - st < duration)
 	{
 		digitalWrite(pin, 1);
-		delay(period);
+		delay(halfPeriod);
 		digitalWrite(pin, 0);
+		delay(halfPeriod);
 	}
 }
