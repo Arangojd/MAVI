@@ -19,4 +19,6 @@ enum MaviSensorID
 
 double maviPollSensor(MaviSensorID sensor);
 
+void maviPollAllIR(double *irs, double *irm, double *irl);
+
 #endif

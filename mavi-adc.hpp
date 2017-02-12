@@ -8,14 +8,9 @@
 #ifndef MAVI_ADC_HPP
 #define MAVI_ADC_HPP
 
-extern int adc; // ADC file descriptor
+#include "mavi-pins.hpp"
 
-enum MaviAnalogPin : int
-{
-	MAVI_PIN_IRS = 0,
-	MAVI_PIN_IRM = 2,
-	MAVI_PIN_IRL = 4
-};
+extern int adc; // ADC file descriptor
 
 enum AD7997RegAddress : int
 {

@@ -8,16 +8,17 @@
 #include <wiringPi.h>
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
+#include "mavi-adc.hpp"
 
 #define MAVI_INVALID_SENSOR_ID -1.0
 
-MaviDigitalPin maviIRSensorPinMapping(MaviSensorID sensor)
+MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-	case MAVI_SENSOR_IRL: return MAVI_PIN_IRL;
-	case MAVI_SENSOR_IRM: return MAVI_PIN_IRM;
 	case MAVI_SENSOR_IRS: return MAVI_PIN_IRS;
+	case MAVI_SENSOR_IRM: return MAVI_PIN_IRM;
+	case MAVI_SENSOR_IRL: return MAVI_PIN_IRL;
 	default: return 0;
 	};
 }
@@ -50,9 +51,10 @@ double maviPollSensorShortIR(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	// TODO
+	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
+	double dist = (double)signal; // TODO
 
-	return 0.0;
+	return dist;
 }
 
 double maviPollSensorLongIR(MaviSensorID sensor)
@@ -63,7 +65,10 @@ double maviPollSensorLongIR(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	// TODO
+	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
+	double dist = (double)signal; // TODO
+
+	return dist;
 
 	return 0.0;
 }
@@ -118,4 +123,16 @@ double maviPollSensor(MaviSensorID sensor)
 	default:
 		return MAVI_INVALID_SENSOR_ID;
 	};
+}
+
+// Simultaneously poll and store distance values from the
+// short, medium, and long IR sensors, in that order.
+void maviPollAllIR(double dist[3])
+{
+	static const MaviAnalogPin IR_PINS[3] = {MAVI_PIN_IRS, MAVI_PIN_IRM, MAVI_PIN_IRL};
+	int sigs[3];
+
+	maviADCReadAll(3, IR_PINS, sigs);
+
+	// TODO
 }
