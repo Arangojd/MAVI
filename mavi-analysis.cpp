@@ -14,7 +14,7 @@ using namespace std;
 
 MaviNextStepKind maviNextStepScan(void)
 {
-	double irDist, irHeight, realtive_Dif;
+	double irDist, irHeight, relative_Dif;
 
 	irDist = maviPollSensor(MAVI_SENSOR_IRS);
 	irHeight = irDist * cos(refAngleIRS);
@@ -23,11 +23,11 @@ MaviNextStepKind maviNextStepScan(void)
 	if (abs(relative_Dif) < 5)
 		return MAVI_NEXTSTEP_NOTHING;
 	else if (relative_Dif > 15 && relative_Dif < 25)
-		return MAVI_NEXTSTEP_STEP_UP
+		return MAVI_NEXTSTEP_STEP_UP;
 	else if (relative_Dif < -15 && relative_Dif > -25)
-		return MAVI_NEXTSTEP_STEP_DOWN
+		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
-		return MAVI_NEXTSTEP_OBSTACLE
+		return MAVI_NEXTSTEP_OBSTACLE;
 }
 
 MaviSlopeKind maviSlopeScan(void)
@@ -86,10 +86,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 		usLDist = maviPollSensor(MAVI_SENSOR_USL),
 		usRDist = maviPollSensor(MAVI_SENSOR_USR);
 
-	if (abs(refDistUSL - usLDist) > 5)
-		scanResult |= MAVI_MIDRANGE_LEFT;
-	if (abs(refDistUSR - usRDist) > 5)
-		scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (abs(refDistUSL - usLDist) > 5) scanResult |= MAVI_MIDRANGE_LEFT;
+	if (abs(refDistUSR - usRDist) > 5) scanResult |= MAVI_MIDRANGE_RIGHT;
 
 	return scanResult;
 }

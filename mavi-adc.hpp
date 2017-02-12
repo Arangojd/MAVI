@@ -39,4 +39,6 @@ enum AD7997RegAddress : int
 
 int maviADCRead(MaviAnalogPin apin);
 
+void maviADCReadAll(int c, MaviAnalogPin *pins, int *values);
+
 #endif

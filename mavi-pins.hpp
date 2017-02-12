@@ -11,9 +11,8 @@
 
 #define MAVI_PINTYPE_BCM
 
-// wpi:  8, 9
-// bcm1: 0, 1
-// bcm2: 2, 3
+// wpi: 8, 9
+// bcm: 2, 3
 // These pins are reserved for the I2C interface,
 // which is needed for the analog-digital converter,
 // which is needed for the infrared sensors.
