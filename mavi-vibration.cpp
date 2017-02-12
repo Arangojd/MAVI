@@ -9,7 +9,7 @@
 #include "mavi-vibration.hpp"
 #include "mavi-pins.hpp"
 
-maviPin maviVibratorPinMapping(maviVibratorID vibrator)
+MaviDigitalPin maviVibratorPinMapping(MaviVibratorID vibrator)
 {
 	switch (vibrator)
 	{
@@ -19,9 +19,9 @@ maviPin maviVibratorPinMapping(maviVibratorID vibrator)
 	};
 }
 
-void maviVibrate(maviVibratorID vibrator, double force, long duration)
+void maviVibrate(MaviVibratorID vibrator, double force, long duration)
 {
-	maviPin pin = maviVibratorPinMapping(vibrator);
+	MaviDigitalPin pin = maviVibratorPinMapping(vibrator);
 	unsigned int period = (unsigned int)(1.0 / force); // Numerator may need to be larger
 	unsigned int st = millis();
 

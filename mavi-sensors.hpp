@@ -8,7 +8,7 @@
 #ifndef MAVI_SENSORS_HPP
 #define MAVI_SENSORS_HPP
 
-enum maviSensorID
+enum MaviSensorID
 {
 	MAVI_SENSOR_IRS,
 	MAVI_SENSOR_IRM,
@@ -17,6 +17,6 @@ enum maviSensorID
 	MAVI_SENSOR_USR
 };
 
-double maviPollSensor(maviSensorID sensor);
+double maviPollSensor(MaviSensorID sensor);
 
 #endif

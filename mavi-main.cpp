@@ -13,7 +13,7 @@
 #include "mavi-state.hpp"
 #include "mavi-calib.hpp"
 
-volatile maviState_t maviState = MAVI_STATE_PREINIT;
+volatile MaviState_t maviState = MAVI_STATE_PREINIT;
 
 double
 	refDistUSL = 100.0,

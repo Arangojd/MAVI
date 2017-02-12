@@ -8,7 +8,7 @@
 #ifndef MAVI_BUTTONS_HPP
 #define MAVI_BUTTONS_HPP
 
-enum maviButtonID
+enum MaviButtonID
 {
 	MAVI_BUTTON_POWER,
 	MAVI_BUTTON_PAUSE,

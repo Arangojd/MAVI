@@ -11,7 +11,7 @@
 
 #define MAVI_INVALID_SENSOR_ID -1.0
 
-maviPin maviIRSensorPinMapping(maviSensorID sensor)
+MaviDigitalPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
@@ -22,7 +22,7 @@ maviPin maviIRSensorPinMapping(maviSensorID sensor)
 	};
 }
 
-maviPin maviUSTrigPinMapping(maviSensorID sensor)
+MaviDigitalPin maviUSTrigPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
@@ -32,7 +32,7 @@ maviPin maviUSTrigPinMapping(maviSensorID sensor)
 	};
 }
 
-maviPin maviUSEchoPinMapping(maviSensorID sensor)
+MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
@@ -42,7 +42,7 @@ maviPin maviUSEchoPinMapping(maviSensorID sensor)
 	};
 }
 
-double maviPollSensorShortIR(maviSensorID sensor)
+double maviPollSensorShortIR(MaviSensorID sensor)
 {
 	if (sensor != MAVI_SENSOR_IRS)
 	{
@@ -55,7 +55,7 @@ double maviPollSensorShortIR(maviSensorID sensor)
 	return 0.0;
 }
 
-double maviPollSensorLongIR(maviSensorID sensor)
+double maviPollSensorLongIR(MaviSensorID sensor)
 {
 	if (sensor != MAVI_SENSOR_IRM && sensor != MAVI_SENSOR_IRL)
 	{
@@ -68,7 +68,7 @@ double maviPollSensorLongIR(maviSensorID sensor)
 	return 0.0;
 }
 
-double maviPollSensorUS(maviSensorID sensor)
+double maviPollSensorUS(MaviSensorID sensor)
 {
 	if (sensor != MAVI_SENSOR_USL && sensor != MAVI_SENSOR_USR)
 	{
@@ -76,7 +76,7 @@ double maviPollSensorUS(maviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	maviPin
+	MaviDigitalPin
 		trigPin = maviUSTrigPinMapping(sensor),
 		echoPin = maviUSEchoPinMapping(sensor);
 
@@ -100,7 +100,7 @@ double maviPollSensorUS(maviSensorID sensor)
 	return (et - st) * 0.01715;
 }
 
-double maviPollSensor(maviSensorID sensor)
+double maviPollSensor(MaviSensorID sensor)
 {
 	switch (sensor)
 	{

@@ -9,7 +9,7 @@
 #include "mavi-pins.hpp"
 #include "mavi-state.hpp"
 
-maviPin maviButtonPinMapping(maviButtonID button)
+MaviDigitalPin maviButtonPinMapping(MaviButtonID button)
 {
 	switch (button)
 	{

@@ -8,7 +8,7 @@
 #ifndef MAVI_STATE_HPP
 #define MAVI_STATE_HPP
 
-enum maviState_t
+enum MaviState_t
 {
 	MAVI_STATE_PREINIT,
 	MAVI_STATE_RUNNING,
@@ -17,6 +17,6 @@ enum maviState_t
 	MAVI_STATE_SHUTDOWN
 };
 
-extern volatile maviState_t maviState;
+extern volatile MaviState_t maviState;
 
 #endif

@@ -11,24 +11,28 @@
 
 #define MAVI_PINTYPE_BCM
 
-enum maviPin : int
+// wpi:  8, 9
+// bcm1: 0, 1
+// bcm2: 2, 3
+// These pins are reserved for the I2C interface,
+// which is needed for the analog-digital converter,
+// which is needed for the infrared sensors.
+// i.e. DO NOT USE THEM HERE!!!
+
+enum MaviDigitalPin : int
 {
-	MAVI_PIN_VL = 2,
-	MAVI_PIN_VC = 3,
-	MAVI_PIN_VR = 4,
+	MAVI_PIN_VL,
+	MAVI_PIN_VC,
+	MAVI_PIN_VR,
 
-	MAVI_PIN_IRS = 17,
-	MAVI_PIN_IRM = 27,
-	MAVI_PIN_IRL = 22,
+	MAVI_PIN_USL_TRIG,
+	MAVI_PIN_USR_TRIG,
+	MAVI_PIN_USL_ECHO,
+	MAVI_PIN_USR_ECHO,
 
-	MAVI_PIN_USL_TRIG =  9,
-	MAVI_PIN_USR_TRIG = 11,
-	MAVI_PIN_USL_ECHO = 25,
-	MAVI_PIN_USR_ECHO =  8,
-
-	MAVI_PIN_POWER = 14,
-	MAVI_PIN_PAUSE = 15,
-	MAVI_PIN_CALIB = 18
+	MAVI_PIN_POWER,
+	MAVI_PIN_PAUSE,
+	MAVI_PIN_CALIB
 };
 
 #endif
