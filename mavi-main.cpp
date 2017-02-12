@@ -15,6 +15,8 @@
 
 volatile MaviState_t maviState = MAVI_STATE_PREINIT;
 
+int adc;
+
 double
 	refDistUSL = 100.0,
 	refDistUSR = 100.0,

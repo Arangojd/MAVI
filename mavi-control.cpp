@@ -26,7 +26,7 @@ void maviInit(pthread_t *saThread, pthread_t *fbThread)
 		wiringPiSetup();
 	#endif
 
-	adc = wiringPiI2CSetup(/* ADC devID should go here */);
+	adc = wiringPiI2CSetup(0x22);
 
 	// MAVI is an HRT system; shift this process to the maximum possible priority.
 	piHiPri(99);
