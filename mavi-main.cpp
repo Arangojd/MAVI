@@ -22,7 +22,11 @@ double
 	refDistUSR = 100.0,
 	refDistIRS = 80.0,
 	refDistIRM = 100.0,
-	refDistIRL = 150.0;
+	refDistIRL = 150.0,
+	refAngleIRS,
+	refAngleIRM,
+	refAngleIRL,
+	refHeightBelt;
 
 int main(int argc, char ** argv)
 {

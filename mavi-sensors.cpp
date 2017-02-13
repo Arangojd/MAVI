@@ -52,9 +52,12 @@ double maviPollSensorShortIR(MaviSensorID sensor)
 	}
 
 	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
-	double dist = (double)signal; // TODO
+	double voltage = lerp((double)sig, 0.0, (double)(1 << 9), 0.0, 3.3); // Volts
+	double distance = lerp(voltage, 0.0, 3.3, 20, 150); // Centimetres
 
-	return dist;
+	// FIXME
+
+	return distance;
 }
 
 double maviPollSensorLongIR(MaviSensorID sensor)
@@ -66,11 +69,12 @@ double maviPollSensorLongIR(MaviSensorID sensor)
 	}
 
 	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
-	double dist = (double)signal; // TODO
+	double voltage = lerp((double)sig, 0.0, (double)(1 << 9), 0.0, 3.3); // Volts
+	double distance = lerp(voltage, 0.0, 3.3, 100.0, 550.0); // Centimetres
 
-	return dist;
+	// FIXME
 
-	return 0.0;
+	return distance;
 }
 
 double maviPollSensorUS(MaviSensorID sensor)

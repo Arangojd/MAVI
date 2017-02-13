@@ -9,29 +9,29 @@
 #include <wiringPiI2C.h>
 #include "mavi-adc.hpp"
 
-inline int decruft_AD7997_result(int msB, int lsB)
+inline int decruft_AD7997_result(int outcode)
 {
-	return (msB & 0xF) << 6 | lsB >> 2;
+	return (outcode >> 2) & ((1 << 10) - 1);
 }
 
 int maviADCRead(MaviAnalogPin apin)
 {
-	// NOTE: If we need to run the ADC in fast mode, this
-	// code will need to be revised to avoid timing issues.
+	int outcode;
 
-	int msB, lsB;
-
+	// Write to the Address Pointer Register
 	// Tell the ADC "I want the signal on this pin converted."
 	wiringPiI2CWrite(adc, 0x80 | (apin << 4));
 
-	// Read from the conversion register
-	msB = wiringPiI2CRead(adc);
-	lsB = wiringPiI2CRead(adc);
+	// IMPORTANT: If the ADC is in Fast mode, insert a delay here to ensure
+	// that the conversion is finished before we attempt to read it.
 
-	//~ assert(msB >> 4 & 0b111 == apin);
+	// Read from the conversion register
+	outcode = wiringPiI2CReadReg16(adc, AD7997_REG_RESULT);
+
+	//~ assert(outcode >> 12 & 0x7 == apin);
 
 	// Return the converted value (minus cruft)
-	return decruft_AD7997_result(msB, lsB);
+	return decruft_AD7997_result(outcode);
 }
 
 void maviADCReadAll(int c, MaviAnalogPin *pins, int *values)
@@ -39,7 +39,7 @@ void maviADCReadAll(int c, MaviAnalogPin *pins, int *values)
 	// The AD7997 supports conversion for multiple signals
 	// in sequence, which is faster than querying one-by-one.
 
-	int i, msB, lsB, pinMask = 0;
+	int i, outcode, pinMask = 0;
 
 	for (i = 0; i < c; i++)
 		pinMask |= 1 << pins[i];
@@ -49,9 +49,8 @@ void maviADCReadAll(int c, MaviAnalogPin *pins, int *values)
 
 	for (i = 0; i < c; i++)
 	{
-		msB = wiringPiI2CRead(adc);
-		lsB = wiringPiI2CRead(adc);
-		//~ assert(msB >> 4 & 0b111 == pins[i]);
-		values[i] = decruft_AD7997_result(msB, lsB);
+		outcode = wiringPiI2CReadReg16(adc, AD7997_REG_RESULT);
+		//~ assert(outcode >> 12 & 0x7 == pins[i]);
+		values[i] = decruft_AD7997_result(outcode);
 	}
 }

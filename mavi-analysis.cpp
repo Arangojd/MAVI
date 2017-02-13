@@ -206,7 +206,7 @@ void *maviSenseAndAnalyze(void* args)
 
 		// NOTE: Exactly one of the following two statements should be commented out.
 
-		sleep(1);
-		//~ delay(1000);
+		//~ sleep(1);
+		delay(1000);
 	}
 }
