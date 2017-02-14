@@ -12,7 +12,7 @@
 
 using namespace std;
 
-MaviNextStepKind maviNextStepScan(void)
+/*MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
 
@@ -32,7 +32,29 @@ MaviNextStepKind maviNextStepScan(void)
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
-}
+}*/
+
+MaviNextStepKind maviNextStepScan(void)
+{
+	int irSig;
+	double irDist, irHeight, relative_Dif;
+
+	irSig = maviPollSensor(MAVI_SENSOR_IRS);
+
+	switch(irSig) 
+	{   
+		case 22 :
+      			return MAVI_NEXTSTEP_ERROR;
+		case 20 :
+			return MAVI_NEXTSTEP_STEPDOWN;
+		case 84 :
+			return MAVI_NEXTSTEP_NOTHING;
+		default :
+			return MAVI_NEXTSTEP_OBSTACLE;
+	}
+	
+ }
+
 
 MaviSlopeKind maviSlopeScan(void)
 {
