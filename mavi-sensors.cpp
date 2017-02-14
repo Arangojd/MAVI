@@ -6,20 +6,23 @@
  */
 
 #include <wiringPi.h>
+#include <cfloat>
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
 #include "mavi-adc.hpp"
+#include "interpolate.hpp"
 
-#define MAVI_INVALID_SENSOR_ID -1.0
+#define MAVI_INVALID_SENSOR_ID  DBL_MIN
+#define MAVI_BAD_SENSOR_READING DBL_MAX
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-	case MAVI_SENSOR_IRS: return MAVI_PIN_IRS;
-	case MAVI_SENSOR_IRM: return MAVI_PIN_IRM;
-	case MAVI_SENSOR_IRL: return MAVI_PIN_IRL;
-	default: return 0;
+		case MAVI_SENSOR_IRS: return MAVI_APIN_IRS;
+		case MAVI_SENSOR_IRM: return MAVI_APIN_IRM;
+		case MAVI_SENSOR_IRL: return MAVI_APIN_IRL;
+		default:              return MAVI_APIN_INVALID;
 	};
 }
 
@@ -27,9 +30,9 @@ MaviDigitalPin maviUSTrigPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-	case MAVI_SENSOR_USL: return MAVI_PIN_USL_TRIG;
-	case MAVI_SENSOR_USR: return MAVI_PIN_USR_TRIG;
-	default: return 0;
+		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_TRIG;
+		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_TRIG;
+		default:              return MAVI_DPIN_INVALID;
 	};
 }
 
@@ -37,44 +40,33 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-	case MAVI_SENSOR_USL: return MAVI_PIN_USL_ECHO;
-	case MAVI_SENSOR_USR: return MAVI_PIN_USR_ECHO;
-	default: return 0;
+		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_ECHO;
+		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_ECHO;
+		default:              return MAVI_DPIN_INVALID;
 	};
 }
 
-double maviPollSensorShortIR(MaviSensorID sensor)
+double maviPollSensorIR(MaviSensorID sensor)
 {
-	if (sensor != MAVI_SENSOR_IRS)
+	int
+		adcsig,  // Output from the ADC (relevant bits only)
+		voltage; // Voltage corresponding to that output (V)
+
+	MaviAnalogPin pin = maviIRSensorPinMapping(sensor);
+
+	if (pin == MAVI_APIN_INVALID)
 	{
 		// This function was called with the wrong sensor type!
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
-	double voltage = lerp((double)sig, 0.0, (double)(1 << 9), 0.0, 3.3); // Volts
-	double distance = lerp(voltage, 0.0, 3.3, 20, 150); // Centimetres
+	adcsig = maviADCRead(pin);
+	voltage = lerp((double)sig, 0.0, (double)(1 << 10 - 1), 0.0, 3.3);
 
-	// FIXME
-
-	return distance;
-}
-
-double maviPollSensorLongIR(MaviSensorID sensor)
-{
-	if (sensor != MAVI_SENSOR_IRM && sensor != MAVI_SENSOR_IRL)
-	{
-		// This function was called with the wrong sensor type!
-		return MAVI_INVALID_SENSOR_ID;
-	}
-
-	int sig = maviADCRead(maviIRSensorPinMapping(sensor));
-	double voltage = lerp((double)sig, 0.0, (double)(1 << 9), 0.0, 3.3); // Volts
-	double distance = lerp(voltage, 0.0, 3.3, 100.0, 550.0); // Centimetres
-
-	// FIXME
-
-	return distance;
+	if (sensor == MAVI_SENSOR_IRS)
+		return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
+	else
+		return voltage < 1.4 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 1.4, 2.5, 0.002, 0.01));
 }
 
 double maviPollSensorUS(MaviSensorID sensor)
@@ -95,14 +87,19 @@ double maviPollSensorUS(MaviSensorID sensor)
 	digitalWrite(trigPin, 1);
 	delayMicroseconds(10);
 	digitalWrite(trigPin, 0);
+	et = micros();
 
 	// Wait for sensor to process trigger
-	while (!digitalRead(echoPin));
+	while (!digitalRead(echoPin) && micros() - et < MAVI_US_TRIG_TIMEOUT);
 	st = micros();
 
+	if (st - et < MAVI_US_TRIG_TIMEOUT) return MAVI_BAD_SENSOR_READING;
+
 	// Wait for sensor to receive echo
-	while (digitalRead(echoPin));
+	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
+
+	if (et - st < MAVI_US_ECHO_TIMEOUT) return MAVI_BAD_SENSOR_READING;
 
 	// Speed of sound varies based on temperature, air pressure, and
 	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
@@ -115,10 +112,8 @@ double maviPollSensor(MaviSensorID sensor)
 	{
 	case MAVI_SENSOR_IRL:
 	case MAVI_SENSOR_IRM:
-		return maviPollSensorLongIR(sensor);
-
 	case MAVI_SENSOR_IRS:
-		return maviPollSensorShortIR(sensor);
+		return maviPollSensorIR(sensor);
 
 	case MAVI_SENSOR_USL:
 	case MAVI_SENSOR_USR:
@@ -127,16 +122,4 @@ double maviPollSensor(MaviSensorID sensor)
 	default:
 		return MAVI_INVALID_SENSOR_ID;
 	};
-}
-
-// Simultaneously poll and store distance values from the
-// short, medium, and long IR sensors, in that order.
-void maviPollAllIR(double dist[3])
-{
-	static const MaviAnalogPin IR_PINS[3] = {MAVI_PIN_IRS, MAVI_PIN_IRM, MAVI_PIN_IRL};
-	int sigs[3];
-
-	maviADCReadAll(3, IR_PINS, sigs);
-
-	// TODO
 }

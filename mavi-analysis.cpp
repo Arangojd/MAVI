@@ -17,6 +17,10 @@ MaviNextStepKind maviNextStepScan(void)
 	double irDist, irHeight, relative_Dif;
 
 	irDist = maviPollSensor(MAVI_SENSOR_IRS);
+
+	if (irDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_NEXTSTEP_ERROR;
+
 	irHeight = irDist * cos(refAngleIRS);
 	dif = refHeightBelt - irHeight;
 
@@ -36,6 +40,9 @@ MaviSlopeKind maviSlopeScan(void)
 
 	irMDist = maviPollSensor(MAVI_SENSOR_IRM);
 	irLDist = maviPollSensor(MAVI_SENSOR_IRL);
+
+	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_SLOPE_ERROR;
 
 	irM_RelativeHeight = refHeightBelt - irMDist * cos(refAngleIRM);
 	irL_RelativeHeight = refHeightBelt - irLDist * cos(refAngleIRL);
@@ -80,11 +87,14 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NEITHER;
+	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
 	double
 		usLDist = maviPollSensor(MAVI_SENSOR_USL),
 		usRDist = maviPollSensor(MAVI_SENSOR_USR);
+
+	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_MIDRANGE_ERROR;
 
 	if (abs(refDistUSL - usLDist) > 5) scanResult |= MAVI_MIDRANGE_LEFT;
 	if (abs(refDistUSR - usRDist) > 5) scanResult |= MAVI_MIDRANGE_RIGHT;
@@ -130,7 +140,7 @@ void *maviSenseAndAnalyze(void* args)
 					cout << "Vibration Output: Right (Obstacle on Right)";
 					break;
 
-				case MAVI_MIDRANGE_NEITHER:
+				case MAVI_MIDRANGE_NOTHING:
 					cout << "No Obstacle Detected";
 					break;
 

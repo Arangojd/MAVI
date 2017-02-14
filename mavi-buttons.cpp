@@ -13,9 +13,9 @@ MaviDigitalPin maviButtonPinMapping(MaviButtonID button)
 {
 	switch (button)
 	{
-	case MAVI_BUTTON_POWER: return MAVI_PIN_POWER;
-	case MAVI_BUTTON_PAUSE: return MAVI_PIN_PAUSE;
-	case MAVI_BUTTON_CALIB: return MAVI_PIN_CALIB;
+	case MAVI_BUTTON_POWER: return MAVI_DPIN_POWER;
+	case MAVI_BUTTON_PAUSE: return MAVI_DPIN_PAUSE;
+	case MAVI_BUTTON_CALIB: return MAVI_DPIN_CALIB;
 	};
 }
 

@@ -17,8 +17,9 @@ enum MaviSensorID
 	MAVI_SENSOR_USR
 };
 
-double maviPollSensor(MaviSensorID sensor);
+const unsigned int MAVI_US_TRIG_TIMEOUT = 5000;  // us
+const unsigned int MAVI_US_ECHO_TIMEOUT = 50000; // us
 
-void maviPollAllIR(double *irs, double *irm, double *irl);
+double maviPollSensor(MaviSensorID sensor);
 
 #endif
