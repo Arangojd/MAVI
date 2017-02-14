@@ -14,7 +14,8 @@
 
 using namespace std;
 
-/*MaviNextStepKind maviNextStepScan(void)
+/*
+MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
 
@@ -34,30 +35,27 @@ using namespace std;
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
-}*/
+}
+*/
 
 MaviNextStepKind maviNextStepScan(void)
 {
-	int irSig;
-	double irDist, irHeight, relative_Dif;
+	// Kill me now - Emmanuel
 
-	irSig = maviPollSensor(MAVI_SENSOR_IRS);
+	wiringPiI2CWrite(adc, 0x80 | (MAVI_APIN_IRS << 4));
+	int outcode = wiringPiI2CRead(adc);
+	outcode = ((outcode << 6) & 0xF) | (outcode >> 2);
 
-	switch(irSig) 
-	{   
-		case 22 :
-      			return MAVI_NEXTSTEP_ERROR;
-		case 20 :
-			return MAVI_NEXTSTEP_STEPDOWN;
-		case 84 :
-			return MAVI_NEXTSTEP_NOTHING;
-		default :
-			return MAVI_NEXTSTEP_OBSTACLE;
+	switch (outcode)
+	{
+		case 22: return MAVI_NEXTSTEP_ERROR;
+		case 20: return MAVI_NEXTSTEP_STEPDOWN;
+		case 84: return MAVI_NEXTSTEP_NOTHING;
+		default: return MAVI_NEXTSTEP_OBSTACLE;
 	}
-	
- }
+}
 
-
+/*
 MaviSlopeKind maviSlopeScan(void)
 {
 	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
@@ -108,6 +106,7 @@ MaviSlopeKind maviSlopeScan(void)
 		return MAVI_SLOPE_FLAT;
 	}
 }
+*/
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
@@ -130,7 +129,7 @@ void *maviSenseAndAnalyze(void* args)
 {
 	unsigned int cycleStart;
 	MaviNextStepKind nextStepScan;
-	MaviSlopeKind slopeScan;
+	//~ MaviSlopeKind slopeScan;
 
 	while (maviState != MAVI_STATE_SHUTDOWN)
 	{
@@ -144,22 +143,22 @@ void *maviSenseAndAnalyze(void* args)
 			setw(0) << dec << left;
 
 		nextStepScan = maviNextStepScan();
-		slopeScan = maviSlopeScan();
+		//~ slopeScan = maviSlopeScan();
 
 		switch (nextStepScan)
 		{
 		case MAVI_NEXTSTEP_NOTHING:
-			switch (slopeScan)
-			{
-			case MAVI_SLOPE_ASCENDING:
-				cout << "Verbal Output: Ascending Stairs Ahead";
-				break;
+			//~ switch (slopeScan)
+			//~ {
+			//~ case MAVI_SLOPE_ASCENDING:
+				//~ cout << "Verbal Output: Ascending Stairs Ahead";
+				//~ break;
 
-			case MAVI_SLOPE_DESCENDING:
-				cout << "Verbal Output: Descending Stairs Ahead";
-				break;
+			//~ case MAVI_SLOPE_DESCENDING:
+				//~ cout << "Verbal Output: Descending Stairs Ahead";
+				//~ break;
 
-			case MAVI_SLOPE_FLAT:
+			//~ case MAVI_SLOPE_FLAT:
 				switch (maviMidRangeScan())
 				{
 				case MAVI_MIDRANGE_BOTH:
@@ -185,59 +184,65 @@ void *maviSenseAndAnalyze(void* args)
 
 				break;
 
-			case MAVI_SLOPE_OTHER:
-				cout << "Vibration Output: Center (Obstacle Ahead)";
-				break;
+			//~ case MAVI_SLOPE_OTHER:
+				//~ cout << "Vibration Output: Center (Obstacle Ahead)";
+				//~ break;
 
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
+			//~ default:
+				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				//~ break;
+			//~ }
 
-		case MAVI_NEXTSTEP_STEPUP:
-			switch (slopeScan)
-			{
-			case MAVI_SLOPE_ASCENDING:
-				cout << "Verbal Output: (First) Step Up";
-				break;
+			//~ break;
 
-			case MAVI_SLOPE_FLAT:
-				cout << "Verbal Output: Single/Last Step Up";
-				break;
+		//~ case MAVI_NEXTSTEP_STEPUP:
+			//~ switch (slopeScan)
+			//~ {
+			//~ case MAVI_SLOPE_ASCENDING:
+				//~ cout << "Verbal Output: (First) Step Up";
+				//~ break;
 
-			case MAVI_SLOPE_DESCENDING:
-			case MAVI_SLOPE_OTHER:
-				cout << "Omni-Output: Immediate Hazard Warning";
-				break;
+			//~ case MAVI_SLOPE_FLAT:
+				//~ cout << "Verbal Output: Single/Last Step Up";
+				//~ break;
 
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
+			//~ case MAVI_SLOPE_DESCENDING:
+			//~ case MAVI_SLOPE_OTHER:
+				//~ cout << "Omni-Output: Immediate Hazard Warning";
+				//~ break;
+
+			//~ default:
+				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				//~ break;
+			//~ }
+
+			//~ break;
 
 		case MAVI_NEXTSTEP_STEP_DOWN:
-			switch (slopeScan)
-			{
-			case MAVI_SLOPE_DESCENDING:
+			//~ switch (slopeScan)
+			//~ {
+			//~ case MAVI_SLOPE_DESCENDING:
 
 				cout << "Verbal Output: (First) Step Down";
 				break;
 
-			case MAVI_SLOPE_FLAT:
+			//~ case MAVI_SLOPE_FLAT:
 
-				cout << "Verbal Output: Single/Last Step Down";
-				break;
+				//~ cout << "Verbal Output: Single/Last Step Down";
+				//~ break;
 
-			case MAVI_SLOPE_ASCENDING:
-			case MAVI_SLOPE_OTHER:
+			//~ case MAVI_SLOPE_ASCENDING:
+			//~ case MAVI_SLOPE_OTHER:
 
-				cout << "Omni-Output: Immediate Hazard Warning";
-				break;
+				//~ cout << "Omni-Output: Immediate Hazard Warning";
+				//~ break;
 
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
+			//~ default:
+				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				//~ break;
+			//~ }
+
+			//~ break;
 
 		case MAVI_NEXTSTEP_OBSTACLE:
 			cout << "Omni-Output: Immediate Hazard Warning";
