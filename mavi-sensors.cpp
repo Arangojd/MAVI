@@ -48,9 +48,9 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 
 double maviPollSensorIR(MaviSensorID sensor)
 {
-	int
-		adcsig,  // Output from the ADC (relevant bits only)
-		voltage; // Voltage corresponding to that output (V)
+	double
+		adcsig  = 0.0, // (Filtered) output from the ADC (relevant bits only)
+		voltage = 0.0; // Voltage corresponding to that output (V)
 
 	MaviAnalogPin pin = maviIRSensorPinMapping(sensor);
 
@@ -60,8 +60,13 @@ double maviPollSensorIR(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	adcsig = maviADCRead(pin);
-	voltage = lerp((double)sig, 0.0, (double)(1 << 10 - 1), 0.0, 3.3);
+	for (int i = 0; i < MAVI_IR_FILTER_WINDOW_SIZE; i++)
+	{
+		adcsig += (double)maviADCRead(pin);
+		delayMicroseconds(MAVI_IR_FILTER_SAMPLE_PERIOD);
+	}
+
+	voltage = lerp(adcsig / MAVI_IR_FILTER_WINDOW_SIZE, 0.0, (double)(1 << 10 - 1), 0.0, 3.3);
 
 	if (sensor == MAVI_SENSOR_IRS)
 		return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));

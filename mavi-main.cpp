@@ -5,13 +5,16 @@
  * This is the entry point for the MAVI program.
  */
 
-#include <ao/ao.h>
 #include <wiringPi.h>
-#include <pthread.h>
+#include <csignal>
 
-#include "mavi-control.hpp"
 #include "mavi-state.hpp"
 #include "mavi-calib.hpp"
+#include "mavi-pins.hpp"
+#include "mavi-sensors.hpp"
+#include "mavi-adc.hpp"
+
+using namespace std;
 
 volatile MaviState_t maviState = MAVI_STATE_PREINIT;
 
@@ -28,20 +31,37 @@ double
 	refAngleIRL,
 	refHeightBelt;
 
+void onInterrupt(int s)
+{
+	cout << "SIGINT received; exiting" << endl;
+	exit(0);
+}
+
 int main(int argc, char ** argv)
 {
 	// Initialization
 
-	pthread_t spThread, fbThread;
-	maviInit(&spThread, &fbThread);
+	#ifdef MAVI_PINTYPE_BCM
+		wiringPiSetupGpio();
+	#else
+		wiringPiSetup();
+	#endif
 
-	// Main Loop
-	while (maviState != MAVI_STATE_SHUTDOWN)
-	{
-		// TODO
-	}
+	adc = wiringPiI2CSetup(0x22);
 
-	maviShutdown(&spThread, &fbThread);
+	// MAVI is an HRT system; shift this process to the maximum possible priority.
+	piHiPri(99);
+
+	pinMode(MAVI_DPIN_USL_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USR_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USL_ECHO,  INPUT);
+	pinMode(MAVI_DPIN_USR_ECHO,  INPUT);
+
+	signal(SIGINT, onInterrupt);
+
+	maviState = MAVI_STATE_RUNNING;
+
+	maviSenseAndAnalyze(NULL);
 
 	return 0;
 }

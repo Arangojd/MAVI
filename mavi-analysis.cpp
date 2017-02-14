@@ -7,6 +7,8 @@
 
 #include <cmath>
 #include <iostream>
+#include <iomanip>
+
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
 
@@ -126,11 +128,21 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 void *maviSenseAndAnalyze(void* args)
 {
+	unsigned int cycleStart;
 	MaviNextStepKind nextStepScan;
 	MaviSlopeKind slopeScan;
 
 	while (maviState != MAVI_STATE_SHUTDOWN)
 	{
+		cycleStart = millis();
+
+		cout <<
+			"IR Sensor signals:" << endl <<
+			setw(7) << hex << right <<
+			"Short" << "Medium" << "Long" << endl <<
+			maviADCRead(MAVI_APIN_IRS) << maviADCRead(MAVI_APIN_IRS) << maviADCRead(MAVI_APIN_IRS) << endl <<
+			setw(0) << dec << left;
+
 		nextStepScan = maviNextStepScan();
 		slopeScan = maviSlopeScan();
 
@@ -236,9 +248,6 @@ void *maviSenseAndAnalyze(void* args)
 			break;
 		}
 
-		// NOTE: Exactly one of the following two statements should be commented out.
-
-		//~ sleep(1);
-		delay(1000);
+		delay(cycleStart + 2000 - millis());
 	}
 }
