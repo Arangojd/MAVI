@@ -62,7 +62,7 @@ double maviPollSensorIR(MaviSensorID sensor)
 		delayMicroseconds(MAVI_IR_FILTER_SAMPLE_PERIOD);
 	}
 
-	voltage = lerp(adcsig / MAVI_IR_FILTER_WINDOW_SIZE, 0.0, (double)(1 << 10 - 1), 0.0, 3.3);
+	voltage = lerp(adcsig / MAVI_IR_FILTER_WINDOW_SIZE, 0.0, (double)((1 << 10) - 1), 0.0, 3.3);
 
 	if (sensor == MAVI_SENSOR_IRS)
 		return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
@@ -72,15 +72,15 @@ double maviPollSensorIR(MaviSensorID sensor)
 
 double maviPollSensorUS(MaviSensorID sensor)
 {
-	if (sensor != MAVI_SENSOR_USL && sensor != MAVI_SENSOR_USR)
+	MaviDigitalPin
+		trigPin = maviUSTrigPinMapping(sensor),
+		echoPin = maviUSEchoPinMapping(sensor);
+
+	if (trigPin == MAVI_DPIN_INVALID || echoPin == MAVI_DPIN_INVALID)
 	{
 		// This function was called with the wrong sensor type!
 		return MAVI_INVALID_SENSOR_ID;
 	}
-
-	MaviDigitalPin
-		trigPin = maviUSTrigPinMapping(sensor),
-		echoPin = maviUSEchoPinMapping(sensor);
 
 	unsigned int st, et;
 
