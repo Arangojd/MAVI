@@ -6,14 +6,10 @@
  */
 
 #include <wiringPi.h>
-#include <cfloat>
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
 #include "mavi-adc.hpp"
 #include "interpolate.hpp"
-
-#define MAVI_INVALID_SENSOR_ID  DBL_MIN
-#define MAVI_BAD_SENSOR_READING DBL_MAX
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
@@ -98,13 +94,13 @@ double maviPollSensorUS(MaviSensorID sensor)
 	while (!digitalRead(echoPin) && micros() - et < MAVI_US_TRIG_TIMEOUT);
 	st = micros();
 
-	if (st - et < MAVI_US_TRIG_TIMEOUT) return MAVI_BAD_SENSOR_READING;
+	if (st - et >= MAVI_US_TRIG_TIMEOUT) return MAVI_BAD_SENSOR_READING;
 
 	// Wait for sensor to receive echo
 	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
 
-	if (et - st < MAVI_US_ECHO_TIMEOUT) return MAVI_BAD_SENSOR_READING;
+	if (et - st >= MAVI_US_ECHO_TIMEOUT) return MAVI_BAD_SENSOR_READING;
 
 	// Speed of sound varies based on temperature, air pressure, and
 	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
@@ -126,5 +122,5 @@ double maviPollSensor(MaviSensorID sensor)
 
 	default:
 		return MAVI_INVALID_SENSOR_ID;
-	};
+	}
 }

@@ -7,7 +7,7 @@ DEXEC = mavi-debug
 FEXEC = mavi-final
 
 SOURCES = \
-	mavi-adc.cpp
+	mavi-adc.cpp      \
 	mavi-analysis.cpp \
 	mavi-buttons.cpp  \
 	mavi-control.cpp  \

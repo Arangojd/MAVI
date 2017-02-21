@@ -5,9 +5,11 @@
  * ...
  */
 
+#include <cassert>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include "mavi-adc.hpp"
+#include "mavi-pins.hpp"
 
 inline int decruft_AD7997_result(int outcode)
 {
@@ -28,29 +30,8 @@ int maviADCRead(MaviAnalogPin apin)
 	// Read from the conversion register
 	outcode = wiringPiI2CReadReg16(adc, AD7997_REG_RESULT);
 
-	//~ assert(outcode >> 12 & 0x7 == apin);
+	assert(outcode >> 12 & 0x7 == apin);
 
 	// Return the converted value (minus cruft)
 	return decruft_AD7997_result(outcode);
-}
-
-void maviADCReadAll(int c, MaviAnalogPin *pins, int *values)
-{
-	// The AD7997 supports conversion for multiple signals
-	// in sequence, which is faster than querying one-by-one.
-
-	int i, outcode, pinMask = 0;
-
-	for (i = 0; i < c; i++)
-		pinMask |= 1 << pins[i];
-
-	wiringPiI2CWriteReg16(adc, AD7997_REG_CONFIG, pinMask << 4 | 0x8);
-	wiringPiI2CWrite(adc, 0x70);
-
-	for (i = 0; i < c; i++)
-	{
-		outcode = wiringPiI2CReadReg16(adc, AD7997_REG_RESULT);
-		//~ assert(outcode >> 12 & 0x7 == pins[i]);
-		values[i] = decruft_AD7997_result(outcode);
-	}
 }

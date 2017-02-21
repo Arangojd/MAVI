@@ -13,9 +13,10 @@ MaviDigitalPin maviVibratorPinMapping(MaviVibratorID vibrator)
 {
 	switch (vibrator)
 	{
-	case MAVI_VIB_C: return MAVI_DPIN_VC;
-	case MAVI_VIB_L: return MAVI_DPIN_VL;
-	case MAVI_VIB_R: return MAVI_DPIN_VR;
+		case MAVI_VIB_C: return MAVI_DPIN_VC;
+		case MAVI_VIB_L: return MAVI_DPIN_VL;
+		case MAVI_VIB_R: return MAVI_DPIN_VR;
+		default:         return MAVI_DPIN_INVALID;
 	};
 }
 

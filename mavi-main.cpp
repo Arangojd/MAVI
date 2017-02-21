@@ -6,12 +6,13 @@
  */
 
 #include <wiringPi.h>
+#include <cstdlib>
 #include <csignal>
+#include <iostream>
 
+#include "mavi-control.hpp"
 #include "mavi-state.hpp"
 #include "mavi-calib.hpp"
-#include "mavi-pins.hpp"
-#include "mavi-sensors.hpp"
 #include "mavi-adc.hpp"
 
 using namespace std;
@@ -34,34 +35,15 @@ double
 void onInterrupt(int s)
 {
 	cout << "SIGINT received; exiting" << endl;
-	exit(0);
+	maviShutdown();
 }
 
 int main(int argc, char ** argv)
 {
-	// Initialization
-
-	#ifdef MAVI_PINTYPE_BCM
-		wiringPiSetupGpio();
-	#else
-		wiringPiSetup();
-	#endif
-
-	adc = wiringPiI2CSetup(0x22);
-
-	// MAVI is an HRT system; shift this process to the maximum possible priority.
-	piHiPri(99);
-
-	pinMode(MAVI_DPIN_USL_TRIG, OUTPUT);
-	pinMode(MAVI_DPIN_USR_TRIG, OUTPUT);
-	pinMode(MAVI_DPIN_USL_ECHO,  INPUT);
-	pinMode(MAVI_DPIN_USR_ECHO,  INPUT);
-
 	signal(SIGINT, onInterrupt);
 
-	maviState = MAVI_STATE_RUNNING;
-
-	maviSenseAndAnalyze(NULL);
+	pthread_t saThread, fbThread;
+	maviInit(&saThread, &fbThread);
 
 	return 0;
 }

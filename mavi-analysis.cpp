@@ -6,15 +6,12 @@
  */
 
 #include <cmath>
-#include <iostream>
-#include <iomanip>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
 
 using namespace std;
 
-/*
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
@@ -36,26 +33,7 @@ MaviNextStepKind maviNextStepScan(void)
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
 }
-*/
 
-MaviNextStepKind maviNextStepScan(void)
-{
-	// Kill me now - Emmanuel
-
-	wiringPiI2CWrite(adc, 0x80 | (MAVI_APIN_IRS << 4));
-	int outcode = wiringPiI2CRead(adc);
-	outcode = ((outcode << 6) & 0xF) | (outcode >> 2);
-
-	switch (outcode)
-	{
-		case 22: return MAVI_NEXTSTEP_ERROR;
-		case 20: return MAVI_NEXTSTEP_STEPDOWN;
-		case 84: return MAVI_NEXTSTEP_NOTHING;
-		default: return MAVI_NEXTSTEP_OBSTACLE;
-	}
-}
-
-/*
 MaviSlopeKind maviSlopeScan(void)
 {
 	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
@@ -106,11 +84,10 @@ MaviSlopeKind maviSlopeScan(void)
 		return MAVI_SLOPE_FLAT;
 	}
 }
-*/
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
+	int scanResult = 0;
 
 	double
 		usLDist = maviPollSensor(MAVI_SENSOR_USL),
@@ -119,46 +96,53 @@ MaviMidRangeKind maviMidRangeScan(void)
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
 
-	if (abs(refDistUSL - usLDist) > 5) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (abs(refDistUSR - usRDist) > 5) scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (abs(refDistUSR - usRDist) > 5) scanResult |= 0b01;
+	if (abs(refDistUSL - usLDist) > 5) scanResult |= 0b10;
 
-	return scanResult;
+	switch (scanResult)
+	{
+		case 0b00: return MAVI_MIDRANGE_NOTHING;
+		case 0b01: return MAVI_MIDRANGE_RIGHT;
+		case 0b10: return MAVI_MIDRANGE_LEFT;
+		case 0b11: return MAVI_MIDRANGE_BOTH;
+		default:   return MAVI_MIDRANGE_ERROR;
+	}
 }
 
 void *maviSenseAndAnalyze(void* args)
 {
-	unsigned int cycleStart;
 	MaviNextStepKind nextStepScan;
-	//~ MaviSlopeKind slopeScan;
+	MaviSlopeKind slopeScan;
+
+	unsigned int nextCycle = millis() + 2000;
 
 	while (maviState != MAVI_STATE_SHUTDOWN)
 	{
-		cycleStart = millis();
-
 		cout <<
 			"IR Sensor signals:" << endl <<
-			setw(7) << hex << right <<
-			"Short" << "Medium" << "Long" << endl <<
-			maviADCRead(MAVI_APIN_IRS) << maviADCRead(MAVI_APIN_IRS) << maviADCRead(MAVI_APIN_IRS) << endl <<
-			setw(0) << dec << left;
+			"  Short Medium   Long" << endl << hex << right <<
+			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
+			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
+			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
+			endl << endl << dec << left;
 
 		nextStepScan = maviNextStepScan();
-		//~ slopeScan = maviSlopeScan();
+		slopeScan = maviSlopeScan();
 
 		switch (nextStepScan)
 		{
 		case MAVI_NEXTSTEP_NOTHING:
-			//~ switch (slopeScan)
-			//~ {
-			//~ case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Verbal Output: Ascending Stairs Ahead";
-				//~ break;
+			switch (slopeScan)
+			{
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Verbal Output: Ascending Stairs Ahead";
+				break;
 
-			//~ case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Verbal Output: Descending Stairs Ahead";
-				//~ break;
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Verbal Output: Descending Stairs Ahead";
+				break;
 
-			//~ case MAVI_SLOPE_FLAT:
+			case MAVI_SLOPE_FLAT:
 				switch (maviMidRangeScan())
 				{
 				case MAVI_MIDRANGE_BOTH:
@@ -184,65 +168,65 @@ void *maviSenseAndAnalyze(void* args)
 
 				break;
 
-			//~ case MAVI_SLOPE_OTHER:
-				//~ cout << "Vibration Output: Center (Obstacle Ahead)";
-				//~ break;
+			case MAVI_SLOPE_OTHER:
+				cout << "Vibration Output: Center (Obstacle Ahead)";
+				break;
 
-			//~ default:
-				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				//~ break;
-			//~ }
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
 
-			//~ break;
+			break;
 
-		//~ case MAVI_NEXTSTEP_STEPUP:
-			//~ switch (slopeScan)
-			//~ {
-			//~ case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Verbal Output: (First) Step Up";
-				//~ break;
+		case MAVI_NEXTSTEP_STEPUP:
+			switch (slopeScan)
+			{
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Verbal Output: (First) Step Up";
+				break;
 
-			//~ case MAVI_SLOPE_FLAT:
-				//~ cout << "Verbal Output: Single/Last Step Up";
-				//~ break;
+			case MAVI_SLOPE_FLAT:
+				cout << "Verbal Output: Single/Last Step Up";
+				break;
 
-			//~ case MAVI_SLOPE_DESCENDING:
-			//~ case MAVI_SLOPE_OTHER:
-				//~ cout << "Omni-Output: Immediate Hazard Warning";
-				//~ break;
+			case MAVI_SLOPE_DESCENDING:
+			case MAVI_SLOPE_OTHER:
+				cout << "Omni-Output: Immediate Hazard Warning";
+				break;
 
-			//~ default:
-				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				//~ break;
-			//~ }
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
 
-			//~ break;
+			break;
 
 		case MAVI_NEXTSTEP_STEP_DOWN:
-			//~ switch (slopeScan)
-			//~ {
-			//~ case MAVI_SLOPE_DESCENDING:
+			switch (slopeScan)
+			{
+			case MAVI_SLOPE_DESCENDING:
 
 				cout << "Verbal Output: (First) Step Down";
 				break;
 
-			//~ case MAVI_SLOPE_FLAT:
+			case MAVI_SLOPE_FLAT:
 
-				//~ cout << "Verbal Output: Single/Last Step Down";
-				//~ break;
+				cout << "Verbal Output: Single/Last Step Down";
+				break;
 
-			//~ case MAVI_SLOPE_ASCENDING:
-			//~ case MAVI_SLOPE_OTHER:
+			case MAVI_SLOPE_ASCENDING:
+			case MAVI_SLOPE_OTHER:
 
-				//~ cout << "Omni-Output: Immediate Hazard Warning";
-				//~ break;
+				cout << "Omni-Output: Immediate Hazard Warning";
+				break;
 
-			//~ default:
-				//~ cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				//~ break;
-			//~ }
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
 
-			//~ break;
+			break;
 
 		case MAVI_NEXTSTEP_OBSTACLE:
 			cout << "Omni-Output: Immediate Hazard Warning";
@@ -253,6 +237,9 @@ void *maviSenseAndAnalyze(void* args)
 			break;
 		}
 
-		delay(cycleStart + 2000 - millis());
+		cout << endl << endl;
+
+		delay(nextCycle - millis());
+		nextCycle += 2000;
 	}
 }

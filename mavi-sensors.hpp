@@ -8,6 +8,11 @@
 #ifndef MAVI_SENSORS_HPP
 #define MAVI_SENSORS_HPP
 
+#include <cfloat>
+
+#define MAVI_INVALID_SENSOR_ID  DBL_MIN
+#define MAVI_BAD_SENSOR_READING DBL_MAX
+
 enum MaviSensorID
 {
 	MAVI_SENSOR_IRS,
