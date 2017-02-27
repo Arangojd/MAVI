@@ -1,12 +1,12 @@
 /*
- * mavi-adc.hpp
- * ------------
+ * mavi-ad7997.hpp
+ * ---------------
  *
  * ...
  */
 
-#ifndef MAVI_ADC_HPP
-#define MAVI_ADC_HPP
+#ifndef MAVI_AD7997_HPP
+#define MAVI_AD7997_HPP
 
 #include "mavi-pins.hpp"
 

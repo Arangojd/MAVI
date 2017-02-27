@@ -22,12 +22,22 @@ enum MaviSensorID
 	MAVI_SENSOR_USR
 };
 
-const unsigned int MAVI_IR_FILTER_SAMPLE_PERIOD = 2; // us
-const unsigned int MAVI_IR_FILTER_WINDOW_SIZE = 20;
+struct MaviSensorFilterParams
+{
+	MaviSensorID sensor;
+	unsigned long samplePeriod;
+	unsigned long windowSize;
+	double *window;
+};
+
+//~ const unsigned int MAVI_IR_FILTER_SAMPLE_PERIOD = 2; // us
+//~ const unsigned int MAVI_IR_FILTER_WINDOW_SIZE = 20;
 
 const unsigned int MAVI_US_TRIG_TIMEOUT = 5000;  // us
 const unsigned int MAVI_US_ECHO_TIMEOUT = 50000; // us
 
 double maviPollSensor(MaviSensorID sensor);
+
+void *maviSensorFilter(void*);
 
 #endif

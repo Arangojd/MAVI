@@ -13,7 +13,6 @@
 #include "mavi-control.hpp"
 #include "mavi-state.hpp"
 #include "mavi-calib.hpp"
-#include "mavi-adc.hpp"
 
 using namespace std;
 

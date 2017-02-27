@@ -1,6 +1,6 @@
 /*
- * mavi-adc.cpp
- * ------------
+ * mavi-ad7997.cpp
+ * ---------------
  *
  * ...
  */
@@ -8,7 +8,7 @@
 #include <cassert>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include "mavi-adc.hpp"
+#include "mavi-ad7997.hpp"
 #include "mavi-pins.hpp"
 
 inline int decruft_AD7997_result(int outcode)

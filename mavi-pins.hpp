@@ -3,7 +3,7 @@
  * -------------
  *
  * Contains the pin # definitions for MAVI's component
- * connections on the RPi GPIO array and the AD7997 channels.
+ * connections on the RPi GPIO array and the ADC channels.
  */
 
 #ifndef MAVI_PINS_HPP
@@ -13,12 +13,13 @@
 // See http://wiringpi.com/pins for more details.
 #define MAVI_PINTYPE_BCM
 
+// I2C Pins (needed for AD7997)
 // wpi: 8, 9
 // bcm: 2, 3
-// These pins are reserved for the I2C interface,
-// which is needed for the analog-digital converter,
-// which is needed for the infrared sensors.
-// i.e. DO NOT USE THEM HERE!!!
+
+// SPI Pins (needed for MCP3008)
+// wpi: 10~14
+// bcm: 7~11
 
 enum MaviDigitalPin : int
 {

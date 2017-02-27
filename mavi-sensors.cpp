@@ -8,7 +8,7 @@
 #include <wiringPi.h>
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
-#include "mavi-adc.hpp"
+#include "mavi-ad7997.hpp"
 #include "interpolate.hpp"
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
@@ -122,5 +122,15 @@ double maviPollSensor(MaviSensorID sensor)
 
 	default:
 		return MAVI_INVALID_SENSOR_ID;
+	}
+}
+
+void *maviSensorFilter(void *arg)
+{
+	MaviSensorFilterParams *param = (MaviSensorFilterParams*)arg;
+
+	for (int i = 0;; i = (i+1) % param->windowSize)
+	{
+		// ...
 	}
 }
