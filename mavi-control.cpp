@@ -6,8 +6,7 @@
  */
 
 #include <wiringPi.h>
-#include <wiringPiI2C.h>
-//~ #include <ao/ao.h>
+#include <ao/ao.h>
 #include <pthread.h>
 
 #include "mavi-control.hpp"
@@ -25,8 +24,6 @@ void maviInit(pthread_t *saThread, pthread_t *fbThread)
 		wiringPiSetup();
 	#endif
 
-	adc = wiringPiI2CSetup(0x22);
-
 	// MAVI is an HRT system; shift this process to the maximum possible priority.
 	piHiPri(99);
 
@@ -43,7 +40,7 @@ void maviInit(pthread_t *saThread, pthread_t *fbThread)
 	wiringPiISR(MAVI_DPIN_PAUSE, INT_EDGE_FALLING, maviPauseButtonPressed);
 	wiringPiISR(MAVI_DPIN_CALIB, INT_EDGE_FALLING, maviCalibButtonPressed);
 
-	//~ ao_initialize();
+	ao_initialize();
 
 	// TODO: Load audio resources
 

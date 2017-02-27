@@ -7,12 +7,12 @@ DEXEC = mavi-debug
 FEXEC = mavi-final
 
 SOURCES = \
-	mavi-ad7997.cpp   \
 	mavi-analysis.cpp \
 	mavi-buttons.cpp  \
 	mavi-control.cpp  \
 	mavi-feedback.cpp \
 	mavi-main.cpp     \
+	mavi-mcp3008.cpp  \
 	mavi-sensors.cpp  \
 	mavi-vibration.cpp
 

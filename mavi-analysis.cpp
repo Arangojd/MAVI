@@ -9,6 +9,7 @@
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
+#include "mavi-mcp3008.hpp"
 
 using namespace std;
 
@@ -121,9 +122,9 @@ void *maviSenseAndAnalyze(void* args)
 		cout <<
 			"IR Sensor signals:" << endl <<
 			"  Short Medium   Long" << endl << hex << right <<
-			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
-			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
-			setw(7) << maviADCRead(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
 			endl << endl << dec << left;
 
 		nextStepScan = maviNextStepScan();

@@ -32,6 +32,10 @@ enum AD7997RegAddress : int
 	AD7997_REG_DHYST_4;
 };
 
-int maviADCRead(MaviAnalogPin apin);
+void maviAD7997Init(void);
+
+int maviAD7997ReadRaw(MaviAnalogPin apin);
+
+double maviAD7997Read(MaviAnalogPin apin);
 
 #endif

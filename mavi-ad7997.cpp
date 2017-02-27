@@ -10,13 +10,19 @@
 #include <wiringPiI2C.h>
 #include "mavi-ad7997.hpp"
 #include "mavi-pins.hpp"
+#include "interpolate.hpp"
 
 inline int decruft_AD7997_result(int outcode)
 {
 	return (outcode >> 2) & ((1 << 10) - 1);
 }
 
-int maviADCRead(MaviAnalogPin apin)
+void maviAD7997Init(void)
+{
+	adc = wiringPiI2CSetup(0x22);
+}
+
+int maviAD7997ReadRaw(MaviAnalogPin apin)
 {
 	int outcode;
 
@@ -34,4 +40,9 @@ int maviADCRead(MaviAnalogPin apin)
 
 	// Return the converted value (minus cruft)
 	return decruft_AD7997_result(outcode);
+}
+
+double maviAD7997Read(MaviAnalogPin apin)
+{
+	return lerp(maviAD7997ReadRaw(apin), 0.0, (double)((1 << 10) - 1), 0.0, 3.3);
 }

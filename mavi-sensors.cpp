@@ -8,7 +8,7 @@
 #include <wiringPi.h>
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
-#include "mavi-ad7997.hpp"
+#include "mavi-mcp3008.hpp"
 #include "interpolate.hpp"
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
@@ -44,9 +44,7 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 
 double maviPollSensorIR(MaviSensorID sensor)
 {
-	double
-		adcsig  = 0.0, // (Filtered) output from the ADC (relevant bits only)
-		voltage = 0.0; // Voltage corresponding to that output (V)
+	double voltage; // Sensor voltage reading (as interpreted by the ADC)
 
 	MaviAnalogPin pin = maviIRSensorPinMapping(sensor);
 
@@ -56,13 +54,7 @@ double maviPollSensorIR(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	for (int i = 0; i < MAVI_IR_FILTER_WINDOW_SIZE; i++)
-	{
-		adcsig += (double)maviADCRead(pin);
-		delayMicroseconds(MAVI_IR_FILTER_SAMPLE_PERIOD);
-	}
-
-	voltage = lerp(adcsig / MAVI_IR_FILTER_WINDOW_SIZE, 0.0, (double)((1 << 10) - 1), 0.0, 3.3);
+	voltage = maviMCP3008Read(pin);
 
 	if (sensor == MAVI_SENSOR_IRS)
 		return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
@@ -125,6 +117,7 @@ double maviPollSensor(MaviSensorID sensor)
 	}
 }
 
+/*
 void *maviSensorFilter(void *arg)
 {
 	MaviSensorFilterParams *param = (MaviSensorFilterParams*)arg;
@@ -134,3 +127,4 @@ void *maviSensorFilter(void *arg)
 		// ...
 	}
 }
+*/
