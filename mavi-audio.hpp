@@ -1,7 +1,14 @@
+/*
+ * mavi-audio.hpp
+ * --------------
+ *
+ * ...
+ */
+
 #ifndef MAVI_AUDIO_HPP
 #define MAVI_AUDIO_HPP
 
-typedef char* MaviAudioID;
+typedef const char* MaviAudioID;
 
 MaviAudioID
 	MAVI_AUDIO_BTN_CALIB = "audio/mavi-button-calibration.wav",

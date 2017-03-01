@@ -1,9 +1,19 @@
-#inlcude "mavi-audio.hpp"
-#include <stdlib.h>
+/*
+ * mavi-audio.cpp
+ * --------------
+ *
+ * ...
+ */
+
+#include <cstdlib>
+#include <cstring>
+#include "mavi-audio.hpp"
 
 int maviAudioPlay(MaviAudioID audioFile)
 {
-	std::string cmd = "omxplayer " + audioFile;
+	char cmd[strlen(audioFile) + 10];
+	strcpy(cmd, "omxplayer ");
+	strcat(cmd, audioFile);
 	system(cmd);
 	return 0;
 }
