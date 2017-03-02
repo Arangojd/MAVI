@@ -15,6 +15,8 @@
 #include "mavi-pins.hpp"
 #include "mavi-state.hpp"
 
+#include "mavi-mcp3008.hpp"
+
 void maviInit(pthread_t *saThread, pthread_t *fbThread)
 {
 	#ifdef MAVI_PINTYPE_BCM
@@ -36,6 +38,9 @@ void maviInit(pthread_t *saThread, pthread_t *fbThread)
 	pinMode(MAVI_DPIN_USR_TRIG, OUTPUT);
 	pinMode(MAVI_DPIN_USL_ECHO,  INPUT);
 	pinMode(MAVI_DPIN_USR_ECHO,  INPUT);
+
+	// Initialize ADC
+	maviMCP3008Init();
 
 	// Register button ISRs
 	// Or don't, because no buttons on the current prototype! :(

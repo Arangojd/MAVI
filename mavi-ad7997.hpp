@@ -30,6 +30,8 @@ enum AD7997RegAddress : int
 	AD7997_REG_DHYST_4;
 };
 
+const double AD7997_VREF = 3.3; // Volts
+
 void maviAD7997Init(void);
 
 int maviAD7997ReadRaw(MaviAnalogPin apin);

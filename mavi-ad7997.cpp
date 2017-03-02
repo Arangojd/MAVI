@@ -10,7 +10,6 @@
 #include <wiringPiI2C.h>
 #include "mavi-ad7997.hpp"
 #include "mavi-pins.hpp"
-#include "interpolate.hpp"
 
 int adc; // AD7997 file descriptor
 
@@ -46,5 +45,5 @@ int maviAD7997ReadRaw(MaviAnalogPin apin)
 
 double maviAD7997Read(MaviAnalogPin apin)
 {
-	return lerp(maviAD7997ReadRaw(apin), 0.0, (double)((1 << 10) - 1), 0.0, 3.3);
+	return maviAD7997ReadRaw(apin) * AD7997_VREF / 1024.0;
 }

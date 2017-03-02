@@ -32,9 +32,9 @@ int maviMCP3008ReadRaw(MaviAnalogPin apin)
 {
 	unsigned char buffer[3];
 
-	buffer[0] = 1;
-	buffer[1] = 0b10000000 | (apin << 4);
-	buffer[2] = 0;
+	buffer[0] = 0x01;
+	buffer[1] = 0x80 | (apin << 4);
+	buffer[2] = 0x00;
 
 	wiringPiSPIDataRW(0, buffer, 3);
 
