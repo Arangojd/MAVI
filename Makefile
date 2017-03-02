@@ -2,18 +2,21 @@ SHELL = /bin/sh
 
 CXX = g++
 CXXFLAGS = -Wall -march=native
-LDFLAGS = -lwiringPi -lao -lpthread
+LDFLAGS = -lm -lwiringPi -lpthread
 DEXEC = mavi-debug
 FEXEC = mavi-final
 
 SOURCES = \
 	mavi-analysis.cpp \
+	mavi-audio.cpp    \
 	mavi-buttons.cpp  \
+	mavi-calib.cpp    \
 	mavi-control.cpp  \
 	mavi-feedback.cpp \
 	mavi-main.cpp     \
 	mavi-mcp3008.cpp  \
 	mavi-sensors.cpp  \
+	mavi-state.cpp    \
 	mavi-vibration.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)

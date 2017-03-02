@@ -10,7 +10,7 @@
 
 typedef const char* MaviAudioID;
 
-MaviAudioID
+const MaviAudioID
 	MAVI_AUDIO_BTN_CALIB = "audio/mavi-button-calibration.wav",
 	MAVI_AUDIO_BTN_POWER = "audio/mavi-button-power.wav",
 	MAVI_AUDIO_BTN_SLEEP = "audio/mavi-button-sleep.wav",

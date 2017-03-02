@@ -5,6 +5,8 @@
  * ...
  */
 
+#include "mavi-calib.hpp"
+
 double
 	refDistUSL    = MAVI_DEFAULT_REF_DIST_USL,
 	refDistUSR    = MAVI_DEFAULT_REF_DIST_USR,

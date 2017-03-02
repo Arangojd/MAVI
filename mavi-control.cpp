@@ -17,6 +17,8 @@
 
 void maviInit(pthread_t *saThread, pthread_t *fbThread)
 {
+	maviInitStateMonitor();
+
 	#ifdef MAVI_PINTYPE_BCM
 		wiringPiSetupGpio();
 	#else
@@ -47,15 +49,15 @@ void maviInit(pthread_t *saThread, pthread_t *fbThread)
 	pthread_create(saThread, NULL, maviSenseAndAnalyze, NULL);
 	pthread_create(fbThread, NULL, maviProvideFeedback, NULL);
 
-	maviState = MAVI_STATE_RUNNING;
+	maviSetState(MAVI_STATE_RUNNING);
 }
 
 void maviShutdown(pthread_t *saThread, pthread_t *fbThread)
 {
-	maviState = MAVI_STATE_SHUTDOWN;
+	maviSetState(MAVI_STATE_SHUTDOWN);
 
 	pthread_join(saThread, NULL);
 	pthread_join(fbThread, NULL);
 
-	exit(0);
+	maviTeardownStateMonitor();
 }

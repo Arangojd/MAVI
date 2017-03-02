@@ -10,8 +10,6 @@
 
 #include "mavi-pins.hpp"
 
-extern int adc; // ADC file descriptor
-
 enum AD7997RegAddress : int
 {
 	AD7997_REG_RESULT = 0,

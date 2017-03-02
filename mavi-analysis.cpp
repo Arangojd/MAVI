@@ -131,7 +131,7 @@ void *maviSenseAndAnalyze(void* args)
 
 	unsigned int nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
 
-	while (maviState != MAVI_STATE_SHUTDOWN)
+	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
 		delay(nextCycle - millis());
 		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
@@ -140,8 +140,8 @@ void *maviSenseAndAnalyze(void* args)
 			"IR Sensor signals:" << endl <<
 			"  Short Medium   Long" << endl << hex << right <<
 			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
-			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
-			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRM) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRL) <<
 			endl << endl << dec << left;
 
 		nextStepScan = maviNextStepScan();
@@ -257,4 +257,10 @@ void *maviSenseAndAnalyze(void* args)
 
 		cout << endl << endl;
 	}
+
+	maviIRSFilter.stopFiltering();
+	maviIRMFilter.stopFiltering();
+	maviIRLFilter.stopFiltering();
+	maviUSLFilter.stopFiltering();
+	maviUSRFilter.stopFiltering();
 }

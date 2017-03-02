@@ -16,18 +16,21 @@
 
 using namespace std;
 
+pthread_t saThread, fbThread;
+
 void onInterrupt(int s)
 {
 	cout << "SIGINT received; exiting" << endl;
-	maviShutdown();
+	maviShutdown(&saThread, &fbThread);
 }
 
 int main(int argc, char ** argv)
 {
 	signal(SIGINT, onInterrupt);
 
-	pthread_t saThread, fbThread;
 	maviInit(&saThread, &fbThread);
+	pthread_join(&saThread, NULL);
+	pthread_join(&fbThread, NULL);
 
 	return 0;
 }

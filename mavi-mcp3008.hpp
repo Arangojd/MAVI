@@ -10,9 +10,7 @@
 
 #include "mavi-pins.hpp"
 
-extern int adc; // ADC file descriptor
-
-const unsigned long MCP3008_CLOCK_SPEED = 32000000; // 32 million; counting 0's is hard
+const unsigned long MCP3008_CLOCK_SPEED = 32000000; // 32 MHz
 const double MCP3008_VREF = 5.0; // Volts
 
 void maviMCP3008Init(void);

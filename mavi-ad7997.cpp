@@ -12,7 +12,7 @@
 #include "mavi-pins.hpp"
 #include "interpolate.hpp"
 
-int adc;
+int adc; // AD7997 file descriptor
 
 inline int decruft_AD7997_result(int outcode)
 {
