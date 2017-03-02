@@ -18,6 +18,8 @@
 #include "mavi-mcp3008.hpp"
 #include "mavi-pins.hpp"
 
+int adc;
+
 void maviMCP3008Init(void)
 {
 	wiringPiSPISetup(0, MCP3008_CLOCK_SPEED);

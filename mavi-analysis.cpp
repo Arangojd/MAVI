@@ -6,6 +6,7 @@
  */
 
 #include <cmath>
+#include <iostream>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
@@ -13,17 +14,24 @@
 
 using namespace std;
 
+MaviSensorFilter
+	maviIRSFilter(MAVI_SENSOR_IRS, 5000, 20),
+	maviIRMFilter(MAVI_SENSOR_IRM, 5000, 20),
+	maviIRLFilter(MAVI_SENSOR_IRL, 5000, 20),
+	maviUSLFilter(MAVI_SENSOR_USL, 5000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 5000, 20);
+
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
 
-	irDist = maviPollSensor(MAVI_SENSOR_IRS);
+	irDist = maviIRSFilter.poll();
 
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
 
 	irHeight = irDist * cos(refAngleIRS);
-	dif = refHeightBelt - irHeight;
+	dif = refBeltHeight - irHeight;
 
 	if (abs(relative_Dif) < 5)
 		return MAVI_NEXTSTEP_NOTHING;
@@ -39,14 +47,14 @@ MaviSlopeKind maviSlopeScan(void)
 {
 	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
 
-	irMDist = maviPollSensor(MAVI_SENSOR_IRM);
-	irLDist = maviPollSensor(MAVI_SENSOR_IRL);
+	irMDist = maviIRMFilter.poll();
+	irLDist = maviIRLFilter.poll();
 
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
 
-	irM_RelativeHeight = refHeightBelt - irMDist * cos(refAngleIRM);
-	irL_RelativeHeight = refHeightBelt - irLDist * cos(refAngleIRL);
+	irM_RelativeHeight = refBeltHeight - irMDist * cos(refAngleIRM);
+	irL_RelativeHeight = refBeltHeight - irLDist * cos(refAngleIRL);
 
 	if (abs(irM_relativeHeight > 5))
 	{
@@ -91,8 +99,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 	int scanResult = 0;
 
 	double
-		usLDist = maviPollSensor(MAVI_SENSOR_USL),
-		usRDist = maviPollSensor(MAVI_SENSOR_USR);
+		usLDist = maviUSLFilter.poll(),
+		usRDist = maviUSRFilter.poll();
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
@@ -112,13 +120,22 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 void *maviSenseAndAnalyze(void* args)
 {
+	maviIRSFilter.startFiltering();
+	maviIRMFilter.startFiltering();
+	maviIRLFilter.startFiltering();
+	maviUSLFilter.startFiltering();
+	maviUSRFilter.startFiltering();
+
 	MaviNextStepKind nextStepScan;
 	MaviSlopeKind slopeScan;
 
-	unsigned int nextCycle = millis() + 2000;
+	unsigned int nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
 
 	while (maviState != MAVI_STATE_SHUTDOWN)
 	{
+		delay(nextCycle - millis());
+		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
+
 		cout <<
 			"IR Sensor signals:" << endl <<
 			"  Short Medium   Long" << endl << hex << right <<
@@ -239,8 +256,5 @@ void *maviSenseAndAnalyze(void* args)
 		}
 
 		cout << endl << endl;
-
-		delay(nextCycle - millis());
-		nextCycle += 2000;
 	}
 }

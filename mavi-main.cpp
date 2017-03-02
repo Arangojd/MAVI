@@ -16,21 +16,6 @@
 
 using namespace std;
 
-volatile MaviState_t maviState = MAVI_STATE_PREINIT;
-
-int adc;
-
-double
-	refDistUSL = 100.0,
-	refDistUSR = 100.0,
-	refDistIRS = 80.0,
-	refDistIRM = 100.0,
-	refDistIRL = 150.0,
-	refAngleIRS,
-	refAngleIRM,
-	refAngleIRL,
-	refHeightBelt;
-
 void onInterrupt(int s)
 {
 	cout << "SIGINT received; exiting" << endl;

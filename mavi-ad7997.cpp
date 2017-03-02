@@ -12,6 +12,8 @@
 #include "mavi-pins.hpp"
 #include "interpolate.hpp"
 
+int adc;
+
 inline int decruft_AD7997_result(int outcode)
 {
 	return (outcode >> 2) & ((1 << 10) - 1);
