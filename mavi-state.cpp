@@ -8,19 +8,8 @@
 #include <pthread.h>
 #include "mavi-state.hpp"
 
-volatile MaviState currentState;
-pthread_rwlock_t statelock;
-
-void maviInitStateMonitor(void)
-{
-	currentState = MAVI_STATE_PREINIT;
-	pthread_rwlock_init(&statelock, NULL);
-}
-
-void maviTeardownStateMonitor(void)
-{
-	pthread_rwlock_destroy(&statelock);
-}
+volatile MaviState currentState = MAVI_STATE_PREINIT;
+pthread_rwlock_t statelock = PTHREAD_RWLOCK_INITIALIZER;
 
 MaviState maviGetState(void)
 {

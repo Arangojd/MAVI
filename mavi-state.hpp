@@ -17,8 +17,6 @@ enum MaviState
 	MAVI_STATE_SHUTDOWN
 };
 
-void maviInitStateMonitor(void);
-void maviTeardownStateMonitor(void);
 MaviState maviGetState(void);
 void maviSetState(MaviState newState);
 
