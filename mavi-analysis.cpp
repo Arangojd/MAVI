@@ -5,9 +5,9 @@
  * ...
  */
 
+#include <wiringPi.h>
 #include <cmath>
 #include <iostream>
-#include <wiringPi.h>
 #include <iomanip>
 
 #include "mavi-analysis.hpp"
@@ -225,12 +225,12 @@ void *maviSenseAndAnalyze(void* args)
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
 				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
-					
+
 			case MAVI_SLOPE_OTHER:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
 				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
-					
+
 			default:
 				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
 				break;
@@ -250,17 +250,17 @@ void *maviSenseAndAnalyze(void* args)
 				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
 				cout << "Verbal Output: Single/Last Step Down";
 				break;
-					
+
 			case MAVI_SLOPE_ASCENDING:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
 				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
-					
+
 			case MAVI_SLOPE_OTHER:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
 				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
-					
+
 			default:
 				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
 				break;
@@ -286,6 +286,6 @@ void *maviSenseAndAnalyze(void* args)
 	maviIRLFilter.stopFiltering();
 	maviUSLFilter.stopFiltering();
 	maviUSRFilter.stopFiltering();
-	
+
 	return NULL;
 }

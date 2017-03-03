@@ -117,6 +117,31 @@ double maviPollSensor(MaviSensorID sensor)
 	}
 }
 
+void *filterRoutine(void *arg)
+{
+	MaviSensorFilter *filter = (MaviSensorFilter*)arg;
+	int i = 0;
+	unsigned int nextSample = micros();
+
+	while (filter->running)
+	{
+		nextSample += filter->samplePeriod;
+
+		pthread_rwlock_wrlock(&filter->lock);
+		{
+			filter->sampleSum -= filter->window[i];
+			filter->window[i] = maviPollSensor(filter->sensor);
+			filter->sampleSum += filter->window[i];
+		}
+		pthread_rwlock_unlock(&filter->lock);
+
+		i = (i+1) % filter->windowSize;
+		delayMicroseconds(nextSample - micros());
+	}
+
+	return NULL;
+}
+
 MaviSensorFilter::MaviSensorFilter(MaviSensorID s, unsigned int per, int sz)
 {
 	this->sensor = s;
@@ -176,28 +201,4 @@ double MaviSensorFilter::poll(void)
 	pthread_rwlock_unlock(&this->lock);
 
 	return v / this->windowSize;
-}
-
-void *MaviSensorFilter::filterRoutine(void *arg)
-{
-	int i = 0;
-	unsigned int nextSample = micros();
-
-	while (this->running)
-	{
-		nextSample += this->samplePeriod;
-
-		pthread_rwlock_wrlock(&this->lock);
-		{
-			this->sampleSum -= this->window[i];
-			this->window[i] = maviPollSensor(this->sensor);
-			this->sampleSum += this->window[i];
-		}
-		pthread_rwlock_unlock(&this->lock);
-
-		i = (i+1) % this->windowSize;
-		delayMicroseconds(nextSample - micros());
-	}
-
-	return NULL;
 }

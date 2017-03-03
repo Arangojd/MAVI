@@ -28,9 +28,8 @@ const unsigned int MAVI_US_ECHO_TIMEOUT = 50000; // us
 
 double maviPollSensor(MaviSensorID sensor);
 
-class MaviSensorFilter
+struct MaviSensorFilter
 {
-private:
 	MaviSensorID sensor;
 	unsigned int samplePeriod; // us
 	int windowSize;
@@ -40,9 +39,6 @@ private:
 	pthread_rwlock_t lock;
 	bool running;
 
-	void *filterRoutine(void*);
-
-public:
 	MaviSensorFilter(MaviSensorID s, unsigned int per, int sz);
 	~MaviSensorFilter(void);
 
