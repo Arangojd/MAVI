@@ -158,13 +158,13 @@ void MaviSensorFilter::startFiltering(void)
 	this->sampleSum = 0.0;
 	this->running = true;
 
-	pthread_create(this->thread, NULL, this->filterRoutine, NULL);
+	pthread_create(&this->thread, NULL, this->filterRoutine, NULL);
 }
 
 void MaviSensorFilter::stopFiltering(void)
 {
 	this->running = false;
-	pthread_join(this->thread);
+	pthread_join(this->thread, NULL);
 }
 
 double MaviSensorFilter::poll(void)
@@ -198,4 +198,6 @@ void *MaviSensorFilter::filterRoutine(void *arg)
 		i = (i+1) % this->windowSize;
 		delayMicroseconds(nextSample - micros());
 	}
+
+	return NULL;
 }

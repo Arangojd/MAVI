@@ -23,7 +23,7 @@ void maviMCP3008Init(void)
 	wiringPiSPISetup(0, MCP3008_CLOCK_SPEED);
 }
 
-inline int decruft_MCP3008_result(char buffer[3])
+inline int decruft_MCP3008_result(unsigned char buffer[3])
 {
 	return ((buffer[1] << 8) | buffer[2]) & 0x3FF;
 }

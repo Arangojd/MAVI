@@ -29,8 +29,8 @@ int main(int argc, char ** argv)
 	signal(SIGINT, onInterrupt);
 
 	maviInit(&saThread, &fbThread);
-	pthread_join(&saThread, NULL);
-	pthread_join(&fbThread, NULL);
+	pthread_join(saThread, NULL);
+	pthread_join(fbThread, NULL);
 
 	return 0;
 }

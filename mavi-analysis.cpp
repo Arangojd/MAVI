@@ -7,10 +7,15 @@
 
 #include <cmath>
 #include <iostream>
+#include <wiringPi.h>
+#include <iomanip>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
 #include "mavi-mcp3008.hpp"
+#include "mavi-audio.hpp"
+#include "mavi-calib.hpp"
+#include "mavi-state.hpp"
 
 using namespace std;
 
@@ -31,7 +36,7 @@ MaviNextStepKind maviNextStepScan(void)
 		return MAVI_NEXTSTEP_ERROR;
 
 	irHeight = irDist * cos(refAngleIRS);
-	dif = refBeltHeight - irHeight;
+	relative_Dif = refBeltHeight - irHeight;
 
 	if (abs(relative_Dif) < 5)
 		return MAVI_NEXTSTEP_NOTHING;
@@ -56,11 +61,11 @@ MaviSlopeKind maviSlopeScan(void)
 	irM_RelativeHeight = refBeltHeight - irMDist * cos(refAngleIRM);
 	irL_RelativeHeight = refBeltHeight - irLDist * cos(refAngleIRL);
 
-	if (abs(irM_relativeHeight > 5))
+	if (abs(irM_RelativeHeight > 5))
 	{
-		if (abs(irL_relativeHeight > 5))
+		if (abs(irL_RelativeHeight > 5))
 		{
-			if (irM_relativeHeight < 0 && irL_relativeHeight < 0)
+			if (irM_RelativeHeight < 0 && irL_RelativeHeight < 0)
 			{
 				return MAVI_SLOPE_DESCENDING;
 			}
@@ -203,7 +208,7 @@ void *maviSenseAndAnalyze(void* args)
 
 			break;
 
-		case MAVI_NEXTSTEP_STEPUP:
+		case MAVI_NEXTSTEP_STEP_UP:
 			switch (slopeScan)
 			{
 			case MAVI_SLOPE_ASCENDING:
@@ -281,4 +286,6 @@ void *maviSenseAndAnalyze(void* args)
 	maviIRLFilter.stopFiltering();
 	maviUSLFilter.stopFiltering();
 	maviUSRFilter.stopFiltering();
+	
+	return NULL;
 }

@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 
 CXX = g++
-CXXFLAGS = -Wall -march=native
+CXXFLAGS = -Wall -std=c++11
 LDFLAGS = -lm -lwiringPi -lpthread
 DEXEC = mavi-debug
 FEXEC = mavi-final
@@ -9,7 +9,6 @@ FEXEC = mavi-final
 SOURCES = \
 	mavi-analysis.cpp \
 	mavi-audio.cpp    \
-	mavi-buttons.cpp  \
 	mavi-calib.cpp    \
 	mavi-control.cpp  \
 	mavi-feedback.cpp \

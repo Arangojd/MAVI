@@ -59,6 +59,6 @@ void maviShutdown(pthread_t *saThread, pthread_t *fbThread)
 {
 	maviSetState(MAVI_STATE_SHUTDOWN);
 
-	pthread_join(saThread, NULL);
-	pthread_join(fbThread, NULL);
+	pthread_join(*saThread, NULL);
+	pthread_join(*fbThread, NULL);
 }
