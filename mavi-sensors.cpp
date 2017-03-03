@@ -132,6 +132,24 @@ MaviSensorFilter::~MaviSensorFilter(void)
 	pthread_rwlock_destroy(&this->lock);
 }
 
+MaviSensorID MaviSensorFilter::setSensor(MaviSensorID newSensor)
+{
+	if (!this->running) this->sensor = newSensor;
+	return this->sensor;
+}
+
+unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
+{
+	if (!this->running) this->samplePeriod = newPeriod;
+	return this->samplePeriod;
+}
+
+int MaviSensorFilter::setWindowSize(int newSize)
+{
+	if (!this->running) this->windowSize = newSize;
+	return this->windowSize;
+}
+
 void MaviSensorFilter::startFiltering(void)
 {
 	for (int i = 0; i < this->windowSize; i++)

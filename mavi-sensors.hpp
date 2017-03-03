@@ -46,6 +46,14 @@ public:
 	MaviSensorFilter(MaviSensorID s, unsigned int per, int sz);
 	~MaviSensorFilter(void);
 
+	inline MaviSensorID getSensor(void)       { return this->sensor;       }
+	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }
+	inline          int getWindowSize(void)   { return this->windowSize;   }
+
+	MaviSensorID setSensor(MaviSensorID newSensor);
+	unsigned int setSamplePeriod(unsigned int newPeriod);
+	int setWindowSize(int newSize);
+
 	void startFiltering(void);
 	void stopFiltering(void);
 	double poll(void);
