@@ -20,11 +20,11 @@
 using namespace std;
 
 MaviSensorFilter
-	maviIRSFilter(MAVI_SENSOR_IRS, 5000, 20),
-	maviIRMFilter(MAVI_SENSOR_IRM, 5000, 20),
-	maviIRLFilter(MAVI_SENSOR_IRL, 5000, 20),
-	maviUSLFilter(MAVI_SENSOR_USL, 5000, 20),
-	maviUSRFilter(MAVI_SENSOR_USR, 5000, 20);
+	maviIRSFilter(MAVI_SENSOR_IRS, 10000, 20),
+	maviIRMFilter(MAVI_SENSOR_IRM, 10000, 20),
+	maviIRLFilter(MAVI_SENSOR_IRL, 10000, 20),
+	maviUSLFilter(MAVI_SENSOR_USL, 10000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 10000, 20);
 
 MaviNextStepKind maviNextStepScan(void)
 {
@@ -138,7 +138,9 @@ void *maviSenseAndAnalyze(void* args)
 
 	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
-		delay(nextCycle - millis());
+		if (nextCycle - millis() <= MAVI_ANALYSIS_SAMPLE_PERIOD)
+			delay(nextCycle - millis());
+
 		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
 
 		cout <<

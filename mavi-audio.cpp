@@ -38,9 +38,8 @@ const MaviAudioID
 
 int maviAudioPlay(MaviAudioID audioFile)
 {
-	char cmd[strlen(audioFile) + 10];
-	strcpy(cmd, "omxplayer ");
-	strcat(cmd, audioFile);
-	system(cmd);
+	if (vfork() == 0)
+		execlp("aplay", "aplay", audioFile, NULL);
+
 	return 0;
 }
