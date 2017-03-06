@@ -7,6 +7,7 @@
 
 #include <pthread.h>
 #include <wiringPi.h>
+#include <cmath>
 
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
@@ -41,7 +42,7 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_ECHO;
 		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_ECHO;
 		default:              return MAVI_DPIN_INVALID;
-	};
+	}
 }
 
 double maviPollSensorIR(MaviSensorID sensor)
@@ -55,13 +56,18 @@ double maviPollSensorIR(MaviSensorID sensor)
 		// This function was called with the wrong sensor type!
 		return MAVI_INVALID_SENSOR_ID;
 	}
-
-	voltage = maviMCP3008Read(pin);
-
+	
 	if (sensor == MAVI_SENSOR_IRS)
-		return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
+		return 2.54 * 8229.3 * pow(maviMCP3008ReadRaw(pin), -1.095);
 	else
-		return voltage < 1.4 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 1.4, 2.5, 0.002, 0.01));
+		return 2.54 * 200000000.0 * pow(maviMCP3008ReadRaw(pin), -2.442);
+
+	//~ voltage = maviMCP3008Read(pin);
+
+	//~ if (sensor == MAVI_SENSOR_IRS)
+		//~ return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
+	//~ else
+		//~ return voltage < 1.4 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 1.4, 2.5, 0.002, 0.01));
 }
 
 double maviPollSensorUS(MaviSensorID sensor)

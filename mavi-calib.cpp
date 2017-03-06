@@ -16,4 +16,8 @@ double
 	refAngleIRS   = MAVI_DEFAULT_REF_ANGLE_IRS,
 	refAngleIRM   = MAVI_DEFAULT_REF_ANGLE_IRM,
 	refAngleIRL   = MAVI_DEFAULT_REF_ANGLE_IRL,
-	refBeltHeight = MAVI_DEFAULT_REF_BELT_HEIGHT;
+	refBeltHeight = MAVI_DEFAULT_REF_BELT_HEIGHT,
+	stairHeight   = MAVI_STAIR_HEIGHT,
+	minStairSlope = MAVI_MIN_STAIR_SLOPE,
+	maxStairSlope = MAVI_MAX_STAIR_SLOPE,
+	errorMargin	  = MAVI_ERROR_MARGIN;

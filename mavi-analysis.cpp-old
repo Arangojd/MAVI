@@ -19,32 +19,31 @@
 
 using namespace std;
 
-//~ MaviSensorFilter
-	//~ maviIRSFilter(MAVI_SENSOR_IRS, 5000, 20),
-	//~ maviIRMFilter(MAVI_SENSOR_IRM, 5000, 20),
-	//~ maviIRLFilter(MAVI_SENSOR_IRL, 5000, 20),
-	//~ maviUSLFilter(MAVI_SENSOR_USL, 5000, 20),
-	//~ maviUSRFilter(MAVI_SENSOR_USR, 5000, 20);
+MaviSensorFilter
+	maviIRSFilter(MAVI_SENSOR_IRS, 5000, 20),
+	maviIRMFilter(MAVI_SENSOR_IRM, 5000, 20),
+	maviIRLFilter(MAVI_SENSOR_IRL, 5000, 20),
+	maviUSLFilter(MAVI_SENSOR_USL, 5000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 5000, 20);
 
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
 
-	irDist = maviPollSensor(MAVI_SENSOR_IRS); //maviIRSFilter.poll();
-	
+	irDist = maviIRSFilter.poll();
+	cout << "IR_S: " << irDist << endl;
+
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
-	
-	cout << "IR_S Distance: " << irDist << endl;
 
-	//irHeight = irDist * cos(refAngleIRS);
-	relative_Dif = refDistIRS - irDist;
+	irHeight = irDist * cos(refAngleIRS);
+	relative_Dif = refBeltHeight - irHeight;
 
-	if (abs(relative_Dif) <= errorMargin)
+	if (abs(relative_Dif) < 5)
 		return MAVI_NEXTSTEP_NOTHING;
-	else if (relative_Dif > errorMargin && relative_Dif < (stairHeight+errorMargin))
+	else if (relative_Dif > 15 && relative_Dif < 25)
 		return MAVI_NEXTSTEP_STEP_UP;
-	else if (relative_Dif < -(errorMargin) && relative_Dif > -(stairHeight+errorMargin))
+	else if (relative_Dif < -15 && relative_Dif > -25)
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
@@ -54,21 +53,18 @@ MaviSlopeKind maviSlopeScan(void)
 {
 	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
 
-	irMDist = maviPollSensor(MAVI_SENSOR_IRM); //maviIRMFilter.poll();
-	irLDist = maviPollSensor(MAVI_SENSOR_IRL); //maviIRLFilter.poll();
+	irMDist = maviIRMFilter.poll();
+	irLDist = maviIRLFilter.poll();
 
-	cout << "IR_M Distance: " << irMDist << endl;
-	cout << "IR_L Distance: " << irLDist << endl;
-	
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
-	
-	irM_RelativeHeight = refBeltHeight - ( irMDist * cos(refAngleIRM) );
-	irL_RelativeHeight = refBeltHeight - ( irLDist * cos(refAngleIRL) );
 
-	if (abs(irM_RelativeHeight) > errorMargin)
+	irM_RelativeHeight = refBeltHeight - irMDist * cos(refAngleIRM);
+	irL_RelativeHeight = refBeltHeight - irLDist * cos(refAngleIRL);
+
+	if (abs(irM_RelativeHeight > 5))
 	{
-		if (abs(irL_RelativeHeight) > errorMargin)
+		if (abs(irL_RelativeHeight > 5))
 		{
 			if (irM_RelativeHeight < 0 && irL_RelativeHeight < 0)
 			{
@@ -83,7 +79,7 @@ MaviSlopeKind maviSlopeScan(void)
 
 				slope = (irL_RelativeLength - irM_RelativeLength) / (irL_RelativeHeight - irM_RelativeHeight);
 
-				if (slope >= minStairSlope && slope <= maxStairSlope)
+				if (slope >= 0.5 && slope <= 0.7)
 					return MAVI_SLOPE_ASCENDING;
 				else
 					return MAVI_SLOPE_OTHER;
@@ -94,7 +90,7 @@ MaviSlopeKind maviSlopeScan(void)
 			return MAVI_SLOPE_OTHER;
 		}
 	}
-	else if (abs(irL_RelativeHeight) > errorMargin)
+	else if (abs(irL_RelativeHeight) > 5)
 	{
 		return MAVI_SLOPE_OTHER;
 	}
@@ -106,57 +102,55 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	//~ int scanResult = 0;
-//~ 
-	//~ double
-		//~ usLDist = maviPollSensor(MAVI_SENSOR_USL), //maviUSLFilter.poll();
-		//~ usRDist = maviPollSensor(MAVI_SENSOR_USR); //maviUSRFilter.poll();
-	//~ 
-	//~ if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
-		//~ return MAVI_MIDRANGE_ERROR;
-//~ 
-	//~ if (abs(refDistUSR - usRDist) >= errorMargin) scanResult |= 0b01;
-	//~ if (abs(refDistUSL - usLDist) >= errorMargin) scanResult |= 0b10;
-//~ 
-	//~ switch (scanResult)
-	//~ {
-		//~ case 0b00: return MAVI_MIDRANGE_NOTHING;
-		//~ case 0b01: return MAVI_MIDRANGE_RIGHT;
-		//~ case 0b10: return MAVI_MIDRANGE_LEFT;
-		//~ case 0b11: return MAVI_MIDRANGE_BOTH;
-		//~ default:   return MAVI_MIDRANGE_ERROR;
-	//~ }
-	
-	return MAVI_MIDRANGE_NOTHING;
+	int scanResult = 0;
+
+	double
+		usLDist = maviUSLFilter.poll(),
+		usRDist = maviUSRFilter.poll();
+
+	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_MIDRANGE_ERROR;
+
+	if (abs(refDistUSR - usRDist) > 5) scanResult |= 0b01;
+	if (abs(refDistUSL - usLDist) > 5) scanResult |= 0b10;
+
+	switch (scanResult)
+	{
+		case 0b00: return MAVI_MIDRANGE_NOTHING;
+		case 0b01: return MAVI_MIDRANGE_RIGHT;
+		case 0b10: return MAVI_MIDRANGE_LEFT;
+		case 0b11: return MAVI_MIDRANGE_BOTH;
+		default:   return MAVI_MIDRANGE_ERROR;
+	}
 }
 
 void *maviSenseAndAnalyze(void* args)
 {
-	//~ maviIRSFilter.startFiltering();
-	//~ maviIRMFilter.startFiltering();
-	//~ maviIRLFilter.startFiltering();
-	//~ maviUSLFilter.startFiltering();
-	//~ maviUSRFilter.startFiltering();
+	maviIRSFilter.startFiltering();
+	maviIRMFilter.startFiltering();
+	maviIRLFilter.startFiltering();
+	maviUSLFilter.startFiltering();
+	maviUSRFilter.startFiltering();
 
 	MaviNextStepKind nextStepScan;
 	MaviSlopeKind slopeScan;
 
-	unsigned int nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
-		
+	//unsigned int nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
+
 	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
-		if (nextCycle - millis() <= MAVI_ANALYSIS_SAMPLE_PERIOD)
-			delay(nextCycle - millis());
-		
-		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
-		
-		//~ cout <<
-			//~ "IR Sensor signals:" << endl <<
-			//~ "  Short Medium   Long" << endl << hex << right <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRM) <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRL) <<
-			//~ endl << endl << dec << left;
+		//delay(nextCycle - millis());
+		//nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
+
+		/*
+		cout <<
+			"IR Sensor signals:" << endl <<
+			"  Short Medium   Long" << endl << hex << right <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRM) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRL) <<
+			endl << endl << dec << left;
+		*/
 
 		nextStepScan = maviNextStepScan();
 		slopeScan = maviSlopeScan();
@@ -168,12 +162,12 @@ void *maviSenseAndAnalyze(void* args)
 			{
 			case MAVI_SLOPE_ASCENDING:
 				maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
-				cout << "Next step safe - slope ascending";
+				cout << "Verbal Output: Ascending Stairs Ahead";
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
 				maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
-				cout << "Next step safe - slope descending";
+				cout << "Verbal Output: Descending Stairs Ahead";
 				break;
 
 			case MAVI_SLOPE_FLAT:
@@ -181,21 +175,21 @@ void *maviSenseAndAnalyze(void* args)
 				{
 				case MAVI_MIDRANGE_BOTH:
 					//maviAudioPlay(MAVI_AUDIO_VIBRATE_BOTH);
-					cout << "Next step safe - slope falt - left & right";
+					cout << "Vibration Output: Both (Obstacle Left & Right)";
 					break;
 
 				case MAVI_MIDRANGE_LEFT:
 					maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-					cout << "Next step safe - slope flat - left";
+					cout << "Vibration Output: Left (Obstacle on Left)";
 					break;
 
 				case MAVI_MIDRANGE_RIGHT:
 					maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-					cout << "Next step safe - slope flat - right";
+					cout << "Vibration Output: Right (Obstacle on Right)";
 					break;
 
 				case MAVI_MIDRANGE_NOTHING:
-					cout << "Next step safe - slope flat - nothing";
+					cout << "No Obstacle Detected";
 					break;
 
 				default:
@@ -207,7 +201,7 @@ void *maviSenseAndAnalyze(void* args)
 
 			case MAVI_SLOPE_OTHER:
 				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				cout << "Next step safe - slope other";
+				cout << "Vibration Output: Center (Obstacle Ahead)";
 				break;
 
 			default:
@@ -222,22 +216,22 @@ void *maviSenseAndAnalyze(void* args)
 			{
 			case MAVI_SLOPE_ASCENDING:
 				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
-				cout << "Next step up - slope ascending";
+				cout << "Verbal Output: (First) Step Up";
 				break;
 
 			case MAVI_SLOPE_FLAT:
 				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
-				cout << "Next step up - slope flat";
+				cout << "Verbal Output: Single/Last Step Up";
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-				cout << "Next step up - Slope descending";
+				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
 
 			case MAVI_SLOPE_OTHER:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-				cout << "Next step up - Slope other";
+				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
 
 			default:
@@ -252,22 +246,22 @@ void *maviSenseAndAnalyze(void* args)
 			{
 			case MAVI_SLOPE_DESCENDING:
 				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
-				cout << "Next step down - slope descending";
+				cout << "Verbal Output: (First) Step Down";
 				break;
 
 			case MAVI_SLOPE_FLAT:
 				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
-				cout << "Next step down - slope flat";
+				cout << "Verbal Output: Single/Last Step Down";
 				break;
 
 			case MAVI_SLOPE_ASCENDING:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-				cout << "Next step down - slope ascending";
+				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
 
 			case MAVI_SLOPE_OTHER:
 				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-				cout << "Next step down - slope other";
+				cout << "Omni-Output: Immediate Hazard Warning";
 				break;
 
 			default:
@@ -279,7 +273,7 @@ void *maviSenseAndAnalyze(void* args)
 
 		case MAVI_NEXTSTEP_OBSTACLE:
 			maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-			cout << "Next step unsafe";
+			cout << "Omni-Output: Immediate Hazard Warning";
 			break;
 
 		default:
@@ -288,18 +282,13 @@ void *maviSenseAndAnalyze(void* args)
 		}
 
 		cout << endl << endl;
-		
-		//~ end = millis();
-
-		//~ if (end - start < minCycle)
-			//~ delay(minCycle - (end - start));
 	}
 
-	//~ maviIRSFilter.stopFiltering();
-	//~ maviIRMFilter.stopFiltering();
-	//~ maviIRLFilter.stopFiltering();
-	//~ maviUSLFilter.stopFiltering();
-	//~ maviUSRFilter.stopFiltering();
+	maviIRSFilter.stopFiltering();
+	maviIRMFilter.stopFiltering();
+	maviIRLFilter.stopFiltering();
+	maviUSLFilter.stopFiltering();
+	maviUSRFilter.stopFiltering();
 
 	return NULL;
 }
