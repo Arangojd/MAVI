@@ -7,6 +7,9 @@
 
 #include <cstdlib>
 #include <cstring>
+
+#include <unistd.h>
+
 #include "mavi-audio.hpp"
 
 const MaviAudioID
