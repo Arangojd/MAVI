@@ -198,7 +198,7 @@ void MaviSensorFilter::startFiltering(void)
 	this->sampleSum = 0.0;
 	this->running = true;
 
-	pthread_create(&this->thread, NULL, this->filterRoutine, NULL);
+	pthread_create(&this->thread, NULL, filterRoutine, (void*)this);
 }
 
 void MaviSensorFilter::stopFiltering(void)
