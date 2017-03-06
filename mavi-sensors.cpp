@@ -5,7 +5,9 @@
  * ...
  */
 
+#include <pthread.h>
 #include <wiringPi.h>
+
 #include "mavi-sensors.hpp"
 #include "mavi-pins.hpp"
 #include "mavi-mcp3008.hpp"
@@ -64,6 +66,10 @@ double maviPollSensorIR(MaviSensorID sensor)
 
 double maviPollSensorUS(MaviSensorID sensor)
 {
+	static pthread_mutex_t
+		mut_usl = PTHREAD_MUTEX_INITIALIZER,
+		mut_usr = PTHREAD_MUTEX_INITIALIZER;
+
 	MaviDigitalPin
 		trigPin = maviUSTrigPinMapping(sensor),
 		echoPin = maviUSEchoPinMapping(sensor);
@@ -76,6 +82,9 @@ double maviPollSensorUS(MaviSensorID sensor)
 
 	unsigned int st, et;
 
+	pthread_mutex_t *mut = (sensor == MAVI_SENSOR_USL ? &mut_usl : &mut_usr);
+	pthread_mutex_lock(mut);
+
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
 	delayMicroseconds(10);
@@ -86,17 +95,23 @@ double maviPollSensorUS(MaviSensorID sensor)
 	while (!digitalRead(echoPin) && micros() - et < MAVI_US_TRIG_TIMEOUT);
 	st = micros();
 
-	if (st - et >= MAVI_US_TRIG_TIMEOUT) return MAVI_BAD_SENSOR_READING;
+	if (st - et >= MAVI_US_TRIG_TIMEOUT)
+	{
+		pthread_mutex_unlock(mut);
+		return MAVI_BAD_SENSOR_READING;
+	}
 
 	// Wait for sensor to receive echo
 	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
+	pthread_mutex_unlock(mut);
 
-	if (et - st >= MAVI_US_ECHO_TIMEOUT) return MAVI_BAD_SENSOR_READING;
-
-	// Speed of sound varies based on temperature, air pressure, and
-	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
-	return (et - st) * 0.01715;
+	if (et - st >= MAVI_US_ECHO_TIMEOUT)
+		return MAVI_BAD_SENSOR_READING;
+	else
+		// Speed of sound varies based on temperature, air pressure, and
+		// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
+		return (et - st) * 0.01715;
 }
 
 double maviPollSensor(MaviSensorID sensor)

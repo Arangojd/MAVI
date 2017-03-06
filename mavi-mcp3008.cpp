@@ -12,6 +12,7 @@
  *   - Emmanuel
  */
 
+#include <pthread.h>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -30,13 +31,16 @@ inline int decruft_MCP3008_result(unsigned char buffer[3])
 
 int maviMCP3008ReadRaw(MaviAnalogPin apin)
 {
+	static pthread_mutex_t mut_adc = PTHREAD_MUTEX_INITIALIZER;
 	unsigned char buffer[3];
 
 	buffer[0] = 0x01;
 	buffer[1] = 0x80 | (apin << 4);
 	buffer[2] = 0x00;
 
+	pthread_mutex_lock(&mut_adc);
 	wiringPiSPIDataRW(0, buffer, 3);
+	pthread_mutex_unlock(&mut_adc);
 
 	return decruft_MCP3008_result(buffer);
 }
