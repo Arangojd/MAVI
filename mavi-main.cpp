@@ -5,30 +5,35 @@
  * This is the entry point for the MAVI program.
  */
 
-#include <wiringPi.h>
+#include <iostream>
 #include <cstdlib>
 #include <csignal>
-#include <iostream>
+#include <pthread.h>
 
-#include "mavi-control.hpp"
+#include "mavi-analysis.hpp"
+#include "mavi-feedback.hpp"
+#include "mavi-init.hpp"
 #include "mavi-state.hpp"
-#include "mavi-calib.hpp"
 
 using namespace std;
 
-pthread_t saThread, fbThread;
-
 void onInterrupt(int s)
 {
-	cout << "SIGINT received; exiting" << endl;
-	maviShutdown(&saThread, &fbThread);
+	cout << endl << "SIGINT received" << endl;
+	maviSetState(MAVI_STATE_SHUTDOWN);
 }
 
 int main(int argc, char ** argv)
 {
+	pthread_t saThread, fbThread;
+
+	maviInit();
+
 	signal(SIGINT, onInterrupt);
 
-	maviInit(&saThread, &fbThread);
+	pthread_create(&saThread, NULL, maviSenseAndAnalyze, NULL);
+	pthread_create(&fbThread, NULL, maviProvideFeedback, NULL);
+
 	pthread_join(saThread, NULL);
 	pthread_join(fbThread, NULL);
 

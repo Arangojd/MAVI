@@ -181,7 +181,7 @@ void *maviSenseAndAnalyze(void* args)
 				{
 				case MAVI_MIDRANGE_BOTH:
 					//maviAudioPlay(MAVI_AUDIO_VIBRATE_BOTH);
-					cout << "Next step safe - slope falt - left & right";
+					cout << "Next step safe - slope flat - left & right";
 					break;
 
 				case MAVI_MIDRANGE_LEFT:
@@ -294,6 +294,8 @@ void *maviSenseAndAnalyze(void* args)
 		//~ if (end - start < minCycle)
 			//~ delay(minCycle - (end - start));
 	}
+
+	cout << "Shutting down" << endl;
 
 	//~ maviIRSFilter.stopFiltering();
 	//~ maviIRMFilter.stopFiltering();

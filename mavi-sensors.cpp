@@ -22,7 +22,7 @@ MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 		case MAVI_SENSOR_IRM: return MAVI_APIN_IRM;
 		case MAVI_SENSOR_IRL: return MAVI_APIN_IRL;
 		default:              return MAVI_APIN_INVALID;
-	};
+	}
 }
 
 MaviDigitalPin maviUSTrigPinMapping(MaviSensorID sensor)
@@ -32,7 +32,7 @@ MaviDigitalPin maviUSTrigPinMapping(MaviSensorID sensor)
 		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_TRIG;
 		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_TRIG;
 		default:              return MAVI_DPIN_INVALID;
-	};
+	}
 }
 
 MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
@@ -56,7 +56,7 @@ double maviPollSensorIR(MaviSensorID sensor)
 		// This function was called with the wrong sensor type!
 		return MAVI_INVALID_SENSOR_ID;
 	}
-	
+
 	if (sensor == MAVI_SENSOR_IRS)
 		return 2.54 * 8229.3 * pow(maviMCP3008ReadRaw(pin), -1.095);
 	else
@@ -157,7 +157,9 @@ void *filterRoutine(void *arg)
 		pthread_rwlock_unlock(&filter->lock);
 
 		i = (i+1) % filter->windowSize;
-		delayMicroseconds(nextSample - micros());
+
+		if (nextSample - micros() <= filter->samplePeriod)
+			delayMicroseconds(nextSample - micros());
 	}
 
 	return NULL;

@@ -9,9 +9,10 @@ FEXEC = mavi-final
 SOURCES = \
 	mavi-analysis.cpp \
 	mavi-audio.cpp    \
+	mavi-buttons.cpp  \
 	mavi-calib.cpp    \
-	mavi-control.cpp  \
 	mavi-feedback.cpp \
+	mavi-init.cpp     \
 	mavi-main.cpp     \
 	mavi-mcp3008.cpp  \
 	mavi-sensors.cpp  \
