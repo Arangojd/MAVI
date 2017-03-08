@@ -19,18 +19,18 @@
 
 using namespace std;
 
-//~ MaviSensorFilter
-	//~ maviIRSFilter(MAVI_SENSOR_IRS, 5000, 20),
-	//~ maviIRMFilter(MAVI_SENSOR_IRM, 5000, 20),
-	//~ maviIRLFilter(MAVI_SENSOR_IRL, 5000, 20),
-	//~ maviUSLFilter(MAVI_SENSOR_USL, 5000, 20),
-	//~ maviUSRFilter(MAVI_SENSOR_USR, 5000, 20);
+MaviSensorFilter
+	maviIRSFilter(MAVI_SENSOR_IRS, 20000, 20),
+	maviIRMFilter(MAVI_SENSOR_IRM, 20000, 20),
+	maviIRLFilter(MAVI_SENSOR_IRL, 20000, 20),
+	maviUSLFilter(MAVI_SENSOR_USL, 20000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 20000, 20);
 
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, irHeight, relative_Dif;
 
-	irDist = maviPollSensor(MAVI_SENSOR_IRS); //maviIRSFilter.poll();
+	irDist = maviIRSFilter.poll();
 
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
@@ -54,8 +54,8 @@ MaviSlopeKind maviSlopeScan(void)
 {
 	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
 
-	irMDist = maviPollSensor(MAVI_SENSOR_IRM); //maviIRMFilter.poll();
-	irLDist = maviPollSensor(MAVI_SENSOR_IRL); //maviIRLFilter.poll();
+	irMDist = maviIRMFilter.poll();
+	irLDist = maviIRLFilter.poll();
 
 	cout << "IR_M Distance: " << irMDist << endl;
 	cout << "IR_L Distance: " << irLDist << endl;
@@ -107,17 +107,17 @@ MaviSlopeKind maviSlopeScan(void)
 MaviMidRangeKind maviMidRangeScan(void)
 {
 	//~ int scanResult = 0;
-//~
+
 	//~ double
-		//~ usLDist = maviPollSensor(MAVI_SENSOR_USL), //maviUSLFilter.poll();
-		//~ usRDist = maviPollSensor(MAVI_SENSOR_USR); //maviUSRFilter.poll();
-	//~
+		//~ usLDist = maviUSLFilter.poll(),
+		//~ usRDist = maviUSRFilter.poll();
+
 	//~ if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		//~ return MAVI_MIDRANGE_ERROR;
-//~
+
 	//~ if (abs(refDistUSR - usRDist) >= errorMargin) scanResult |= 0b01;
 	//~ if (abs(refDistUSL - usLDist) >= errorMargin) scanResult |= 0b10;
-//~
+
 	//~ switch (scanResult)
 	//~ {
 		//~ case 0b00: return MAVI_MIDRANGE_NOTHING;
@@ -132,9 +132,9 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 void *maviSenseAndAnalyze(void* args)
 {
-	//~ maviIRSFilter.startFiltering();
-	//~ maviIRMFilter.startFiltering();
-	//~ maviIRLFilter.startFiltering();
+	maviIRSFilter.startFiltering();
+	maviIRMFilter.startFiltering();
+	maviIRLFilter.startFiltering();
 	//~ maviUSLFilter.startFiltering();
 	//~ maviUSRFilter.startFiltering();
 
@@ -150,13 +150,13 @@ void *maviSenseAndAnalyze(void* args)
 
 		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
 
-		//~ cout <<
-			//~ "IR Sensor signals:" << endl <<
-			//~ "  Short Medium   Long" << endl << hex << right <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRM) <<
-			//~ setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRL) <<
-			//~ endl << endl << dec << left;
+		cout <<
+			"IR Sensor signals:" << endl <<
+			"  Short Medium   Long" << endl << hex << right <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRS) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRM) <<
+			setw(7) << maviMCP3008ReadRaw(MAVI_APIN_IRL) <<
+			endl << endl << dec << left;
 
 		nextStepScan = maviNextStepScan();
 		slopeScan = maviSlopeScan();
@@ -288,18 +288,13 @@ void *maviSenseAndAnalyze(void* args)
 		}
 
 		cout << endl << endl;
-
-		//~ end = millis();
-
-		//~ if (end - start < minCycle)
-			//~ delay(minCycle - (end - start));
 	}
 
 	cout << "Shutting down" << endl;
 
-	//~ maviIRSFilter.stopFiltering();
-	//~ maviIRMFilter.stopFiltering();
-	//~ maviIRLFilter.stopFiltering();
+	maviIRSFilter.stopFiltering();
+	maviIRMFilter.stopFiltering();
+	maviIRLFilter.stopFiltering();
 	//~ maviUSLFilter.stopFiltering();
 	//~ maviUSRFilter.stopFiltering();
 
