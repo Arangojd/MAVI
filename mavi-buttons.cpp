@@ -28,7 +28,7 @@ void maviPowerButtonPressed(void)
 	case MAVI_STATE_SHUTDOWN:
 		break;
 	default:
-		maviState = MAVI_STATE_SHUTDOWN;
+		maviSetState(MAVI_STATE_SHUTDOWN);
 		break;
 	}
 }
@@ -38,10 +38,10 @@ void maviPauseButtonPressed(void)
 	switch (maviState)
 	{
 	case MAVI_STATE_RUNNING:
-		maviState = MAVI_STATE_PAUSED;
+		maviSetState(MAVI_STATE_PAUSED);
 		break;
 	case MAVI_STATE_PAUSED:
-		maviState = MAVI_STATE_RUNNING;
+		maviSetState(MAVI_STATE_RUNNING);
 		break;
 	default:
 		break;
@@ -54,7 +54,7 @@ void maviCalibButtonPressed(void)
 	{
 	case MAVI_STATE_RUNNING: // NOTE: Can we go directly from running to calibrating?
 	case MAVI_STATE_PAUSED:
-		maviState = MAVI_STATE_CALIB;
+		maviSetState(MAVI_STATE_CALIB);
 		break;
 	default:
 		break;

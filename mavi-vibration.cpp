@@ -20,9 +20,10 @@ MaviDigitalPin maviVibratorPinMapping(MaviVibratorID vibrator)
 	};
 }
 
-void maviVibrate(MaviVibratorID vibrator, double force, long duration)
+void maviVibrate(MaviVibratorID vibrator, double force, unsigned int duration)
 {
 	MaviDigitalPin pin = maviVibratorPinMapping(vibrator);
+	if (pin == MAVI_DPIN_INVALID) return;
 	unsigned int halfPeriod = (unsigned int)(1.0 / force); // Numerator may need to be larger
 	unsigned int st = millis();
 

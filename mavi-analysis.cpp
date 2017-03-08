@@ -31,10 +31,10 @@ MaviNextStepKind maviNextStepScan(void)
 	double irDist, irHeight, relative_Dif;
 
 	irDist = maviPollSensor(MAVI_SENSOR_IRS); //maviIRSFilter.poll();
-	
+
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
-	
+
 	cout << "IR_S Distance: " << irDist << endl;
 
 	//irHeight = irDist * cos(refAngleIRS);
@@ -59,10 +59,10 @@ MaviSlopeKind maviSlopeScan(void)
 
 	cout << "IR_M Distance: " << irMDist << endl;
 	cout << "IR_L Distance: " << irLDist << endl;
-	
+
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
-	
+
 	irM_RelativeHeight = refBeltHeight - ( irMDist * cos(refAngleIRM) );
 	irL_RelativeHeight = refBeltHeight - ( irLDist * cos(refAngleIRL) );
 
@@ -107,17 +107,17 @@ MaviSlopeKind maviSlopeScan(void)
 MaviMidRangeKind maviMidRangeScan(void)
 {
 	//~ int scanResult = 0;
-//~ 
+//~
 	//~ double
 		//~ usLDist = maviPollSensor(MAVI_SENSOR_USL), //maviUSLFilter.poll();
 		//~ usRDist = maviPollSensor(MAVI_SENSOR_USR); //maviUSRFilter.poll();
-	//~ 
+	//~
 	//~ if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		//~ return MAVI_MIDRANGE_ERROR;
-//~ 
+//~
 	//~ if (abs(refDistUSR - usRDist) >= errorMargin) scanResult |= 0b01;
 	//~ if (abs(refDistUSL - usLDist) >= errorMargin) scanResult |= 0b10;
-//~ 
+//~
 	//~ switch (scanResult)
 	//~ {
 		//~ case 0b00: return MAVI_MIDRANGE_NOTHING;
@@ -126,7 +126,7 @@ MaviMidRangeKind maviMidRangeScan(void)
 		//~ case 0b11: return MAVI_MIDRANGE_BOTH;
 		//~ default:   return MAVI_MIDRANGE_ERROR;
 	//~ }
-	
+
 	return MAVI_MIDRANGE_NOTHING;
 }
 
@@ -142,14 +142,14 @@ void *maviSenseAndAnalyze(void* args)
 	MaviSlopeKind slopeScan;
 
 	unsigned int nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
-		
+
 	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
 		if (nextCycle - millis() <= MAVI_ANALYSIS_SAMPLE_PERIOD)
 			delay(nextCycle - millis());
-		
+
 		nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
-		
+
 		//~ cout <<
 			//~ "IR Sensor signals:" << endl <<
 			//~ "  Short Medium   Long" << endl << hex << right <<
@@ -288,7 +288,7 @@ void *maviSenseAndAnalyze(void* args)
 		}
 
 		cout << endl << endl;
-		
+
 		//~ end = millis();
 
 		//~ if (end - start < minCycle)

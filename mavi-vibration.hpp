@@ -16,6 +16,6 @@ enum MaviVibratorID
 	MAVI_VIB_R
 };
 
-void maviVibrate(MaviVibratorID vibrator, double force, long duration);
+void maviVibrate(MaviVibratorID vibrator, double force, unsigned int duration);
 
 #endif

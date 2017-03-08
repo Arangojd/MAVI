@@ -42,7 +42,10 @@ const MaviAudioID
 int maviAudioPlay(MaviAudioID audioFile)
 {
 	if (vfork() == 0)
+	{
 		execlp("aplay", "aplay", audioFile, NULL);
+		exit(-1);
+	}
 
 	return 0;
 }
