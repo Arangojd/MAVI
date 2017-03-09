@@ -16,6 +16,7 @@ SOURCES = \
 	mavi-main.cpp     \
 	mavi-mcp3008.cpp  \
 	mavi-sensors.cpp  \
+	mavi-signals.cpp  \
 	mavi-state.cpp    \
 	mavi-vibration.cpp
 

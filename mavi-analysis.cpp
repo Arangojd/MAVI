@@ -4,7 +4,7 @@
  *
  * ...
  */
-#include <wiringPiSPI.h>
+
 #include <wiringPi.h>
 #include <cmath>
 #include <iostream>
@@ -142,7 +142,7 @@ void *maviSenseAndAnalyze(void* args)
 	MaviNextStepKind nextStepScan;
 	MaviSlopeKind slopeScan;
 
-	while(maviGetState() != MAVI_STATE_SHUTDOWN)
+	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
 
 		if (maviGetState() != MAVI_STATE_RUNNING)
