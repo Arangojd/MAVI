@@ -14,10 +14,8 @@ const double
 	MAVI_DEFAULT_REF_DIST_IRS    = 90.0,  // cm
 	MAVI_DEFAULT_REF_DIST_IRM    = 150.0, // cm
 	MAVI_DEFAULT_REF_DIST_IRL    = 230.0, // cm
-	MAVI_DEFAULT_REF_ANGLE_IRS   = 0.500, // rad, TODO
-	MAVI_DEFAULT_REF_ANGLE_IRM   = 0.976, // rad, TODO
-	MAVI_DEFAULT_REF_ANGLE_IRL   = 1.241, // rad, TODO
-	MAVI_DEFAULT_REF_BELT_HEIGHT = 82.50, // cm,  TODO
+	MAVI_DEFAULT_REF_ANGLE_IRM   = 0.976, // rad, angle between IRS and IRM
+	MAVI_DEFAULT_REF_ANGLE_IRL   = 1.241, // rad, angle between IRS and IRL
 	MAVI_STAIR_HEIGHT            = 20.0,  // cm
 	MAVI_MIN_STAIR_SLOPE         = 0.5,
 	MAVI_MAX_STAIR_SLOPE         = 0.7,
