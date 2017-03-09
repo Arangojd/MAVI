@@ -10,6 +10,7 @@
 
 #include "mavi-signals.hpp"
 #include "mavi-state.hpp"
+#include "mavi-calib.hpp"
 
 void onInterrupt(int s)
 {
@@ -24,12 +25,13 @@ void onInterrupt(int s)
 		cout << "MAVI already shutting down; ignoring";
 		break;
 	default:
-		cout << "Beginning shutdown";
+		cout << "System Shutting Down";
 		maviSetState(MAVI_STATE_SHUTDOWN);
+		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
 		break;
 	}
 
-	cout << endl;
+	cout << endl << endl;
 }
 
 void onUsr1(int s)
@@ -39,19 +41,21 @@ void onUsr1(int s)
 	switch (maviGetState())
 	{
 	case MAVI_STATE_RUNNING:
-		cout << "Pausing";
+		cout << "System Paused";
 		maviSetState(MAVI_STATE_PAUSED);
+		maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
 		break;
 	case MAVI_STATE_PAUSED:
-		cout << "Unpausing";
+		cout << "System Ready";
 		maviSetState(MAVI_STATE_RUNNING);
+		maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
 		break;
 	default:
 		cout << "Invalid current state; ignoring";
 		break;
 	}
 
-	cout << endl;
+	cout << endl << endl;
 }
 
 void onUsr2(int s)
@@ -61,15 +65,26 @@ void onUsr2(int s)
 	switch (maviState)
 	{
 	case MAVI_STATE_PAUSED:
-		cout << "Beginning calibration";
+		cout << "Starting Calibration";
 		maviSetState(MAVI_STATE_CALIB);
+		maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
+		if (maviCalibration()) {
+			cout << "Calibration Failed";
+			maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
+		}
+		else {
+			cout << "Calibration Successful";
+			maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
+		}
+		maviSetState(MAVI_STATE_PAUSED);
+		maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
 		break;
 	default:
 		cout << "Invalid current state; ignoring";
 		break;
 	}
 
-	cout << endl;
+	cout << endl << endl;
 }
 
 void maviRegisterSignalHandlers(void)
