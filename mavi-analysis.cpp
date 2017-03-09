@@ -11,7 +11,6 @@
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
-#include "mavi-mcp3008.hpp"
 #include "mavi-audio.hpp"
 #include "mavi-calib.hpp"
 #include "mavi-state.hpp"
