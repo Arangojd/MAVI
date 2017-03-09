@@ -6,7 +6,6 @@
  */
 
 #include <wiringPi.h>
-#include <cmath>
 #include <iostream>
 #include <iomanip>
 
@@ -16,6 +15,7 @@
 #include "mavi-audio.hpp"
 #include "mavi-calib.hpp"
 #include "mavi-state.hpp"
+#include "mavi-math.hpp"
 
 using namespace std;
 
@@ -37,13 +37,13 @@ MaviNextStepKind maviNextStepScan(void)
 
 	cout << "IR_S Distance: " << irDist << endl;
 
-	relative_Dif = refDistIRS - irDist;
+	relativeDif_IRS = refDistIRS - irDist;
 
-	if (abs(relative_Dif) <= errorMargin)
+	if (abs(relativeDif_IRS) <= MAVI_ERROR_MARGIN)
 		return MAVI_NEXTSTEP_NOTHING;
-	else if (relative_Dif > errorMargin && relative_Dif < (stairHeight+errorMargin))
+	else if (relativeDif_IRS > MAVI_ERROR_MARGIN && relativeDif_IRS < (MAVI_REF_STAIR_HEIGHT + MAVI_ERROR_MARGIN))
 		return MAVI_NEXTSTEP_STEP_UP;
-	else if (relative_Dif < -(errorMargin) && relative_Dif > -(stairHeight+errorMargin))
+	else if (relativeDif_IRS < -(MAVI_ERROR_MARGIN) && relativeDif_IRS > -(MAVI_REF_STAIR_HEIGHT + MAVI_ERROR_MARGIN))
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
@@ -51,7 +51,7 @@ MaviNextStepKind maviNextStepScan(void)
 
 MaviSlopeKind maviSlopeScan(void)
 {
-	double irMDist, irLDist, irM_RelativeHeight, irL_RelativeHeight;
+	double irMDist, irLDist, relativeDif_IRM, relativeDif_IRL;
 
 	irMDist = maviIRMFilter.poll();
 	irLDist = maviIRLFilter.poll();
@@ -62,27 +62,25 @@ MaviSlopeKind maviSlopeScan(void)
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
 
-	irM_RelativeHeight = refBeltHeight - ( irMDist * cos(refAngleIRM) );
-	irL_RelativeHeight = refBeltHeight - ( irLDist * cos(refAngleIRL) );
+	relativeDif_IRM = refDistIRM - irMDist;
+	relativeDif_IRL = refDistIRL - irLDist;
 
-	if (abs(irM_RelativeHeight) > errorMargin)
+	if (abs(relativeDif_IRM) > MAVI_ERROR_MARGIN)
 	{
-		if (abs(irL_RelativeHeight) > errorMargin)
+		if (abs(relativeDif_IRL) > MAVI_ERROR_MARGIN)
 		{
-			if (irM_RelativeHeight < 0 && irL_RelativeHeight < 0)
+			if (relativeDif_IRM < 0 && relativeDif_IRL < 0)
 			{
 				return MAVI_SLOPE_DESCENDING;
 			}
 			else
 			{
-				double irM_RelativeLength, irL_RelativeLength, slope;
+				double slope, irSDist;
+				irSDist = maviIRSFilter.poll();
+				
+				slope = maviGetSlope(irS, irM, irL);
 
-				irM_RelativeLength = irMDist * sin(refAngleIRM);
-				irL_RelativeLength = irLDist * sin(refAngleIRL);
-
-				slope = (irL_RelativeLength - irM_RelativeLength) / (irL_RelativeHeight - irM_RelativeHeight);
-
-				if (slope >= minStairSlope && slope <= maxStairSlope)
+				if (slope >= MAVI_MIN_STAIR_SLOPE && slope <= MAVI_MAX_STAIR_SLOPE)
 					return MAVI_SLOPE_ASCENDING;
 				else
 					return MAVI_SLOPE_OTHER;
@@ -93,7 +91,7 @@ MaviSlopeKind maviSlopeScan(void)
 			return MAVI_SLOPE_OTHER;
 		}
 	}
-	else if (abs(irL_RelativeHeight) > errorMargin)
+	else if (abs(relativeDif_IRL) > MAVI_ERROR_MARGIN)
 	{
 		return MAVI_SLOPE_OTHER;
 	}
@@ -107,15 +105,18 @@ MaviMidRangeKind maviMidRangeScan(void)
 {
 	//~ int scanResult = 0;
 
-	//~ double
+	//~ double relativeDif_RSL, relativeDif_USR,
 		//~ usLDist = maviUSLFilter.poll(),
 		//~ usRDist = maviUSRFilter.poll();
 
 	//~ if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		//~ return MAVI_MIDRANGE_ERROR;
+	
+	//~ relativeDif_USL = refDistUSL - usLDist;
+	//~ relativeDif_USR = refDistUSR - usRDist;
 
-	//~ if (abs(refDistUSR - usRDist) >= errorMargin) scanResult |= 0b01;
-	//~ if (abs(refDistUSL - usLDist) >= errorMargin) scanResult |= 0b10;
+	//~ if (abs(relativeDif_USL) >= MAVI_ERROR_MARGIN) scanResult |= 0b01;
+	//~ if (abs(relativeDif_USR) >= MAVI_ERROR_MARGIN) scanResult |= 0b10;
 
 	//~ switch (scanResult)
 	//~ {
