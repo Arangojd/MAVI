@@ -4,71 +4,53 @@
  *
  * ...
  */
+
 #include <iostream>
+#include <csignal>
+#include <wiringPi.h>
 
 #include "mavi-buttons.hpp"
 #include "mavi-pins.hpp"
-#include "mavi-state.hpp"
-#include "mavi-audio.hpp"
-
-using namespace std;
-
-MaviDigitalPin maviButtonPinMapping(MaviButtonID button)
-{
-	switch (button)
-	{
-		case MAVI_BUTTON_POWER: return MAVI_DPIN_POWER;
-		case MAVI_BUTTON_PAUSE: return MAVI_DPIN_PAUSE;
-		case MAVI_BUTTON_CALIB: return MAVI_DPIN_CALIB;
-		default:                return MAVI_DPIN_INVALID;
-	}
-}
 
 void maviPowerButtonPressed(void)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 100)
 	{
-	case MAVI_STATE_PREINIT:
-	case MAVI_STATE_SHUTDOWN:
-		break;
-	default:
-		cout << "Shutting Down" << endl;
-		maviSetState(MAVI_STATE_SHUTDOWN);
-		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
-		break;
+		timestamp = millis();
+		cout << "Power button pressed; raising SIGINT";
+		raise(SIGINT);
 	}
 }
 
 void maviPauseButtonPressed(void)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 100)
 	{
-	case MAVI_STATE_RUNNING:
-		cout << "Pausing" << endl;
-		maviSetState(MAVI_STATE_PAUSED);
-		maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
-		cout << "Paused" << endl << endl;
-		break;
-	case MAVI_STATE_PAUSED:
-		cout << "Starting" << endl;
-		maviSetState(MAVI_STATE_RUNNING);
-		maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
-		cout << "Ready" << endl << endl;
-		break;
-	default:
-		break;
+		timestamp = millis();
+		cout << "Pause button pressed; raising SIGUSR1";
+		raise(SIGUSR1);
 	}
 }
 
 void maviCalibButtonPressed(void)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 100)
 	{
-	case MAVI_STATE_RUNNING: // NOTE: Can we go directly from running to calibrating?
-	case MAVI_STATE_PAUSED:
-		maviSetState(MAVI_STATE_CALIB);
-		break;
-	default:
-		break;
+		timestamp = millis();
+		cout << "Calibrate button pressed; raising SIGUSR2";
+		raise(SIGUSR2);
 	}
+}
+
+void maviRegisterButtonISRs(void)
+{
+	wiringPiISR(MAVI_DPIN_POWER, INT_EDGE_FALLING, maviPowerButtonPressed);
+	wiringPiISR(MAVI_DPIN_PAUSE, INT_EDGE_FALLING, maviPauseButtonPressed);
+	wiringPiISR(MAVI_DPIN_CALIB, INT_EDGE_FALLING, maviCalibButtonPressed);
 }
