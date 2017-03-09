@@ -14,6 +14,13 @@
 #include "mavi-mcp3008.hpp"
 #include "interpolate.hpp"
 
+MaviSensorFilter
+	maviIRSFilter(MAVI_SENSOR_IRS, 20000, 20),
+	maviIRMFilter(MAVI_SENSOR_IRM, 35000, 20),
+	maviIRLFilter(MAVI_SENSOR_IRL, 35000, 20),
+	maviUSLFilter(MAVI_SENSOR_USL, 20000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 20000, 20);
+
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)

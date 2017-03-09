@@ -55,4 +55,11 @@ struct MaviSensorFilter
 	double poll(void);
 };
 
+extern MaviSensorFilter
+	maviIRSFilter,
+	maviIRMFilter,
+	maviIRLFilter,
+	maviUSLFilter,
+	maviUSRFilter;
+
 #endif
