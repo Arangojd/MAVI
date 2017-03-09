@@ -11,6 +11,9 @@
 #include "mavi-signals.hpp"
 #include "mavi-state.hpp"
 #include "mavi-calib.hpp"
+#include "mavi-audio.hpp"
+
+using namespace std;
 
 void onInterrupt(int s)
 {
@@ -62,7 +65,7 @@ void onUsr2(int s)
 {
 	cout << endl << "SIGUSR2 received; ";
 
-	switch (maviState)
+	switch (maviGetState())
 	{
 	case MAVI_STATE_PAUSED:
 		cout << "Starting Calibration";

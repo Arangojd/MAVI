@@ -8,6 +8,7 @@
 #include <wiringPi.h>
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
@@ -27,7 +28,7 @@ MaviSensorFilter
 
 MaviNextStepKind maviNextStepScan(void)
 {
-	double irDist, relative_Dif;
+	double irDist, relativeDif_IRS;
 
 	irDist = maviIRSFilter.poll();
 
@@ -76,8 +77,8 @@ MaviSlopeKind maviSlopeScan(void)
 			{
 				double slope, irSDist;
 				irSDist = maviIRSFilter.poll();
-				
-				slope = maviGetSlope(irS, irM, irL);
+
+				slope = maviGetSlope(irSDist, irMDist, irLDist);
 
 				if (slope >= MAVI_MIN_STAIR_SLOPE && slope <= MAVI_MAX_STAIR_SLOPE)
 					return MAVI_SLOPE_ASCENDING;
@@ -110,7 +111,7 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 	//~ if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		//~ return MAVI_MIDRANGE_ERROR;
-	
+
 	//~ relativeDif_USL = refDistUSL - usLDist;
 	//~ relativeDif_USR = refDistUSR - usRDist;
 

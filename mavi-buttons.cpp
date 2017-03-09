@@ -11,6 +11,9 @@
 
 #include "mavi-buttons.hpp"
 #include "mavi-pins.hpp"
+#include "mavi-audio.hpp"
+
+using namespace std;
 
 void maviPowerButtonPressed(void)
 {

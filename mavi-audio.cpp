@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "mavi-audio.hpp"
