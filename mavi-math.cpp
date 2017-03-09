@@ -1,5 +1,7 @@
 #include <cmath>
 
+#include "mavi-math.hpp"
+
 double maviGetSlope(double s_measured, double m_measured, double l_measured) 
 {
 	double m_height, l_height, m_length, l_length, net_height, net_length, measured_slope, actual_slope;
