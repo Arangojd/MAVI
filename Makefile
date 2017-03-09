@@ -14,6 +14,7 @@ SOURCES = \
 	mavi-feedback.cpp \
 	mavi-init.cpp     \
 	mavi-main.cpp     \
+	mavi-math.cpp	  \
 	mavi-mcp3008.cpp  \
 	mavi-sensors.cpp  \
 	mavi-signals.cpp  \
