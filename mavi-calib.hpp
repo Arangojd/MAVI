@@ -30,6 +30,7 @@ extern double
 	refDistIRM,    // cm
 	refDistIRL,    // cm
 	refSlope;
-	
+
+int maviCalibration(void);
 
 #endif
