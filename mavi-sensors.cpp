@@ -194,7 +194,13 @@ unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
 
 int MaviSensorFilter::setWindowSize(int newSize)
 {
-	if (!this->running) this->windowSize = newSize;
+	if (!this->running)
+	{
+		this->windowSize = newSize;
+		delete[] this->window;
+		this->window = new double[this->windowSize];
+	}
+
 	return this->windowSize;
 }
 

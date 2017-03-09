@@ -11,12 +11,15 @@
 
 #include "mavi-buttons.hpp"
 #include "mavi-pins.hpp"
+#include "mavi-signals.hpp"
 #include "mavi-state.hpp"
 
 #include "mavi-mcp3008.hpp"
 
 void maviInit(void)
 {
+	maviRegisterSignalHandlers();
+
 	#ifdef MAVI_PINTYPE_BCM
 		wiringPiSetupGpio();
 	#else
@@ -37,14 +40,8 @@ void maviInit(void)
 	pinMode(MAVI_DPIN_USL_ECHO,  INPUT);
 	pinMode(MAVI_DPIN_USR_ECHO,  INPUT);
 
-	// Initialize ADC
 	maviMCP3008Init();
-
-	// Register button ISRs
-
-	wiringPiISR(MAVI_DPIN_POWER, INT_EDGE_FALLING, maviPowerButtonPressed);
-	wiringPiISR(MAVI_DPIN_PAUSE, INT_EDGE_FALLING, maviPauseButtonPressed);
-	wiringPiISR(MAVI_DPIN_CALIB, INT_EDGE_FALLING, maviCalibButtonPressed);
+	maviRegisterButtonISRs();
 
 	maviSetState(MAVI_STATE_RUNNING);
 }
