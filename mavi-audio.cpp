@@ -41,10 +41,16 @@ const MaviAudioID
 
 int maviAudioPlay(MaviAudioID audioFile)
 {
-	if (vfork() == 0)
+	pid_t pid = vfork();
+
+	if (pid == 0)
 	{
-		execlp("aplay", "aplay", audioFile, NULL);
+		execlp("aplay", "aplay", "-q", audioFile, NULL);
 		exit(-1);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
 	}
 
 	return 0;

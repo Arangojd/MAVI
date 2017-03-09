@@ -20,4 +20,4 @@ double
 	stairHeight   = MAVI_STAIR_HEIGHT,
 	minStairSlope = MAVI_MIN_STAIR_SLOPE,
 	maxStairSlope = MAVI_MAX_STAIR_SLOPE,
-	errorMargin   = MAVI_ERROR_MARGIN;
+	errorMargin	  = MAVI_ERROR_MARGIN;

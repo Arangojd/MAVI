@@ -8,8 +8,8 @@
 #ifndef MAVI_ANALYSIS_HPP
 #define MAVI_ANALYSIS_HPP
 
-const int MAVI_ANALYSIS_INITIAL_DELAY = 100; // ms
-const int MAVI_ANALYSIS_SAMPLE_PERIOD = 3000; // ms
+const int MAVI_ANALYSIS_INITIAL_DELAY = 700; // ms
+const int MAVI_ANALYSIS_SAMPLE_PERIOD = 2000; // ms
 
 enum MaviNextStepKind
 {

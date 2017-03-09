@@ -10,7 +10,7 @@
 
 #include "mavi-pins.hpp"
 
-const unsigned long MCP3008_CLOCK_SPEED = 5000000; // 5 MHz
+const unsigned long MCP3008_CLOCK_SPEED = 500000; // 500 KHz
 const double MCP3008_VREF = 5.0; // Volts
 
 void maviMCP3008Init(void);

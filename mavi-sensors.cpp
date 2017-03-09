@@ -47,8 +47,6 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 
 double maviPollSensorIR(MaviSensorID sensor)
 {
-	double voltage; // Sensor voltage reading (as interpreted by the ADC)
-
 	MaviAnalogPin pin = maviIRSensorPinMapping(sensor);
 
 	if (pin == MAVI_APIN_INVALID)
@@ -58,16 +56,10 @@ double maviPollSensorIR(MaviSensorID sensor)
 	}
 
 	if (sensor == MAVI_SENSOR_IRS)
-		return 2.54 * 8229.3 * pow(maviMCP3008ReadRaw(pin), -1.095);
+		return 20902 * pow(maviMCP3008ReadRaw(pin), -1.095);
 	else
-		return 2.54 * 200000000.0 * pow(maviMCP3008ReadRaw(pin), -2.442);
+		return 440000000.0 * pow(maviMCP3008ReadRaw(pin), -2.442);
 
-	//~ voltage = maviMCP3008Read(pin);
-
-	//~ if (sensor == MAVI_SENSOR_IRS)
-		//~ return voltage < 0.5 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 0.5, 2.5, 1.0 / 150.0, 1.0 / 20.0));
-	//~ else
-		//~ return voltage < 1.4 || voltage > 2.5 ? MAVI_BAD_SENSOR_READING : (1.0 / lerp(voltage, 1.4, 2.5, 0.002, 0.01));
 }
 
 double maviPollSensorUS(MaviSensorID sensor)
@@ -194,13 +186,7 @@ unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
 
 int MaviSensorFilter::setWindowSize(int newSize)
 {
-	if (!this->running)
-	{
-		this->windowSize = newSize;
-		delete[] this->window;
-		this->window = new double[this->windowSize];
-	}
-
+	if (!this->running) this->windowSize = newSize;
 	return this->windowSize;
 }
 
