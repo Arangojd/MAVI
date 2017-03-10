@@ -18,8 +18,8 @@ MaviSensorFilter
 	maviIRSFilter(MAVI_SENSOR_IRS, 20000, 20),
 	maviIRMFilter(MAVI_SENSOR_IRM, 35000, 20),
 	maviIRLFilter(MAVI_SENSOR_IRL, 35000, 20),
-	maviUSLFilter(MAVI_SENSOR_USL, 20000, 20),
-	maviUSRFilter(MAVI_SENSOR_USR, 20000, 20);
+	maviUSLFilter(MAVI_SENSOR_USL, 50000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 50000, 20);
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
@@ -63,9 +63,9 @@ double maviPollSensorIR(MaviSensorID sensor)
 	}
 
 	if (sensor == MAVI_SENSOR_IRS)
-		return 20902 * pow(maviMCP3008ReadRaw(pin), -1.095);
+		return 9489.6 * 2.54 * pow(maviMCP3008ReadRaw(pin), -1.115);
 	else
-		return 440000000.0 * pow(maviMCP3008ReadRaw(pin), -2.442);
+		return 495542705.42 * 2.54 * pow(maviMCP3008ReadRaw(pin), -2.620);
 
 }
 

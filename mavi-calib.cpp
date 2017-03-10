@@ -26,6 +26,12 @@ double
 
 int maviCalibration(void)
 {
+	maviIRSFilter.startFiltering();
+	maviIRMFilter.startFiltering();
+	maviIRLFilter.startFiltering();
+	maviUSLFilter.startFiltering();
+	maviUSRFilter.startFiltering();
+
 	double irSDist, irMDist, irLDist, usLDist, usRDist;
 
 	cout << "Calibration Started" << endl;
@@ -75,5 +81,19 @@ int maviCalibration(void)
 
 	cout << "Calibration Sucessful" << endl << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
+
+	cout << "IRS 	= 	" << refDistIRS << endl;
+	cout << "IRM 	= 	" << refDistIRM << endl;
+	cout << "IRL 	= 	" << refDistIRL << endl;
+	cout << "USL 	= 	" << refDistUSL << endl;
+	cout << "USR 	= 	" << refDistUSR << endl;
+	cout << "SLOPE 	= 	" << refSlope << endl;
+
+	maviIRSFilter.stopFiltering();
+	maviIRMFilter.stopFiltering();
+	maviIRLFilter.stopFiltering();
+	maviUSLFilter.stopFiltering();
+	maviUSRFilter.stopFiltering();
+
 	return 0;
 }
