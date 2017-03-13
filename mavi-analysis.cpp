@@ -446,7 +446,7 @@ void *maviSenseAndAnalyze(void* args)
 			if (maviGetState() == MAVI_STATE_PAUSED && pauseFeedbackFlag)
 			{
 				pauseFeedbackFlag = false;
-				maviSendFeedback(MAVI_FEEDBACK_SYSTEM_PAUSED, feedbackTimerStart);
+				maviSendFeedback(MAVI_FEEDBACK_SYSTEM_PAUSED, 0);
 			}
 
 			delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
@@ -461,7 +461,7 @@ void *maviSenseAndAnalyze(void* args)
 			maviUSLFilter.startFiltering();
 			maviUSRFilter.startFiltering();
 
-			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY, feedbackTimerStart);
+			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY, 0);
 
 			maviMobilityAssistance();
 
@@ -474,7 +474,7 @@ void *maviSenseAndAnalyze(void* args)
 		}
 	}
 
-	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN, feedbackTimerStart);
+	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN, 0);
 
 	return NULL;
 }
