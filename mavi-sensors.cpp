@@ -5,9 +5,6 @@
  * ...
  */
 
-#include <iostream>
-using namespace std;
-
 #include <pthread.h>
 #include <wiringPi.h>
 #include <cmath>
@@ -21,8 +18,8 @@ MaviSensorFilter
 	maviIRSFilter(MAVI_SENSOR_IRS, 20000, 20),
 	maviIRMFilter(MAVI_SENSOR_IRM, 35000, 20),
 	maviIRLFilter(MAVI_SENSOR_IRL, 35000, 20),
-	maviUSLFilter(MAVI_SENSOR_USL, 100000, 20),
-	maviUSRFilter(MAVI_SENSOR_USR, 100000, 20);
+	maviUSLFilter(MAVI_SENSOR_USL, 50000, 20),
+	maviUSRFilter(MAVI_SENSOR_USR, 50000, 20);
 
 void maviStartAllFilters(void)
 {
@@ -109,10 +106,7 @@ double maviPollSensorUS(MaviSensorID sensor)
 	unsigned int st, et;
 
 	pthread_mutex_t *mut = (sensor == MAVI_SENSOR_USL ? &mut_usl : &mut_usr);
-
-	//~ cout << "Locking mutex for " << (sensor == MAVI_SENSOR_USL ? "USL" : "USR") << endl;
 	pthread_mutex_lock(mut);
-	//~ cout << "Locked mutex for " << (sensor == MAVI_SENSOR_USL ? "USL" : "USR") << endl;
 
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
@@ -127,7 +121,6 @@ double maviPollSensorUS(MaviSensorID sensor)
 	if (st - et >= MAVI_US_TRIG_TIMEOUT)
 	{
 		pthread_mutex_unlock(mut);
-		//~ cout << "Unlocked mutex for " << (sensor == MAVI_SENSOR_USL ? "USL" : "USR") << endl;
 		return MAVI_BAD_SENSOR_READING;
 	}
 
@@ -135,7 +128,6 @@ double maviPollSensorUS(MaviSensorID sensor)
 	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
 	pthread_mutex_unlock(mut);
-	//~ cout << "Unlocked mutex for " << (sensor == MAVI_SENSOR_USL ? "USL" : "USR") << endl;
 
 	if (et - st >= MAVI_US_ECHO_TIMEOUT)
 		return MAVI_BAD_SENSOR_READING;
@@ -165,48 +157,75 @@ double maviPollSensor(MaviSensorID sensor)
 
 void *filterRoutine(void *arg)
 {
+	#define takeSample(k)											\
+	{																\
+		currentReading = maviPollSensor(filter->sensor);			\
+		pthread_rwlock_wrlock(&filter->sumLock);					\
+		filter->sampleSum += currentReading - filter->buffer[k];	\
+		pthread_rwlock_unlock(&filter->sumLock);					\
+		filter->buffer[k] = currentReading;							\
+	}
+
+	#define waitForNext()									\
+	{														\
+		nextSample += filter->samplePeriod;					\
+		if (nextSample - micros() <= filter->samplePeriod)	\
+			delayMicroseconds(nextSample - micros());		\
+	}
+
 	MaviSensorFilter *filter = (MaviSensorFilter*)arg;
 	int i = 0;
 	unsigned int nextSample = micros();
+	double currentReading;
 
-	while (filter->running)
+	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
 	{
-		nextSample += filter->samplePeriod;
-
-		pthread_rwlock_wrlock(&filter->lock);
-		{
-			filter->sampleSum -= filter->window[i];
-			filter->window[i] = maviPollSensor(filter->sensor);
-			filter->sampleSum += filter->window[i];
-		}
-		pthread_rwlock_unlock(&filter->lock);
-
-		if (++i >= filter->windowSize)
-		{
-			filter->bufferFull = true;
-			i %= filter->windowSize;
-		}
-
-		if (nextSample - micros() <= filter->samplePeriod)
-			delayMicroseconds(nextSample - micros());
+		takeSample(i);
+		waitForNext();
 	}
+
+	if (filter->running)
+	{
+		takeSample(i);
+		bufferFull = true;
+	}
+
+	pthread_cond_broadcast(&filter->fullBufferCond);
+
+	for (i = 0; filter->running; i = (i+1) % filter->bufferSize)
+	{
+		takeSample(i);
+		waitForNext();
+	}
+
+	#undef takeSample
+	#undef waitForNext
 
 	return NULL;
 }
 
 MaviSensorFilter::MaviSensorFilter(MaviSensorID s, unsigned int per, int sz)
 {
-	this->sensor = s;
-	this->samplePeriod = per;
-	this->windowSize = sz;
-	this->window = new double[this->windowSize];
-	pthread_rwlock_init(&this->lock, NULL);
+	this->sensor         = s;
+	this->samplePeriod   = per;
+	this->bufferSize     = sz;
+	this->buffer         = new double[this->bufferSize];
+	this->sampleSum      = 0.0;
+	this->running        = false;
+	this->bufferFull     = false;
+	this->sumLock        = PTHREAD_RWLOCK_INITIALIZER;
+	this->fullBufferLock = PTHREAD_MUTEX_INITIALIZER;
+	this->fullBufferCond = PTHREAD_COND_INITIALIZER;
 }
 
 MaviSensorFilter::~MaviSensorFilter(void)
 {
-	delete[] this->window;
-	pthread_rwlock_destroy(&this->lock);
+	this->running = false;
+	pthread_join(this->thread, NULL);
+	delete[] this->buffer;
+	pthread_rwlock_destroy(&this->sumLock);
+	pthread_mutex_destroy(&this->fullBufferLock);
+	pthread_cond_destroy(&this->fullBufferCond);
 }
 
 MaviSensorID MaviSensorFilter::setSensor(MaviSensorID newSensor)
@@ -221,22 +240,22 @@ unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
 	return this->samplePeriod;
 }
 
-int MaviSensorFilter::setWindowSize(int newSize)
+int MaviSensorFilter::setBufferSize(int newSize)
 {
 	if (!this->running)
 	{
-		this->windowSize = newSize;
-		delete[] this->window;
-		this->window = new double[this->windowSize];
+		this->bufferSize = newSize;
+		delete[] this->buffer;
+		this->buffer = new double[this->bufferSize];
 	}
 
-	return this->windowSize;
+	return this->bufferSize;
 }
 
 void MaviSensorFilter::startFiltering(void)
 {
-	for (int i = 0; i < this->windowSize; i++)
-		this->window[i] = 0.0;
+	for (int i = 0; i < this->bufferSize; i++)
+		this->buffer[i] = 0.0;
 
 	this->sampleSum = 0.0;
 	this->running = true;
@@ -248,16 +267,23 @@ void MaviSensorFilter::startFiltering(void)
 void MaviSensorFilter::stopFiltering(void)
 {
 	this->running = false;
-	pthread_join(this->thread, NULL);
+	//~ pthread_join(this->thread, NULL);
 }
 
 double MaviSensorFilter::poll(void)
 {
 	double v;
 
-	pthread_rwlock_rdlock(&this->lock);
-	v = this->sampleSum;
-	pthread_rwlock_unlock(&this->lock);
+	if (this->running && !this->bufferFull)
+	{
+		pthread_mutex_lock(&this->fullBufferLock);
+		pthread_cond_wait(&this->fullBufferCond, &this->fullBufferLock);
+		pthread_mutex_unlock(&this->fullBufferLock);
+	}
 
-	return v / this->windowSize;
+	pthread_rwlock_rdlock(&this->sumLock);
+	v = this->sampleSum;
+	pthread_rwlock_unlock(&this->sumLock);
+
+	return v / this->bufferSize;
 }

@@ -34,24 +34,26 @@ struct MaviSensorFilter
 {
 	MaviSensorID sensor;
 	unsigned int samplePeriod; // us
-	int windowSize;
-	double *window;
+	int bufferSize;
+	double *buffer;
 	double sampleSum;
-	pthread_t thread;
-	pthread_rwlock_t lock;
 	bool running;
 	bool bufferFull;
+	pthread_t thread;
+	pthread_rwlock_t sumLock;
+	pthread_mutex_t  fullBufferLock;
+	pthread_cond_t   fullBufferCond;
 
 	MaviSensorFilter(MaviSensorID s, unsigned int per, int sz);
 	~MaviSensorFilter(void);
 
 	inline MaviSensorID getSensor(void)       { return this->sensor;       }
 	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }
-	inline          int getWindowSize(void)   { return this->windowSize;   }
+	inline          int getBufferSize(void)   { return this->bufferSize;   }
 
 	MaviSensorID setSensor(MaviSensorID newSensor);
 	unsigned int setSamplePeriod(unsigned int newPeriod);
-	int setWindowSize(int newSize);
+	int setBufferSize(int newSize);
 
 	void startFiltering(void);
 	void stopFiltering(void);
