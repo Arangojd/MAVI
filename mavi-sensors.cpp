@@ -157,48 +157,75 @@ double maviPollSensor(MaviSensorID sensor)
 
 void *filterRoutine(void *arg)
 {
+	#define takeSample(k)											\
+	{																\
+		currentReading = maviPollSensor(filter->sensor);			\
+		pthread_rwlock_wrlock(&filter->sumLock);					\
+		filter->sampleSum += currentReading - filter->buffer[k];	\
+		pthread_rwlock_unlock(&filter->sumLock);					\
+		filter->buffer[k] = currentReading;							\
+	}
+
+	#define waitForNext()									\
+	{														\
+		nextSample += filter->samplePeriod;					\
+		if (nextSample - micros() <= filter->samplePeriod)	\
+			delayMicroseconds(nextSample - micros());		\
+	}
+
 	MaviSensorFilter *filter = (MaviSensorFilter*)arg;
 	int i = 0;
 	unsigned int nextSample = micros();
+	double currentReading;
 
-	while (filter->running)
+	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
 	{
-		nextSample += filter->samplePeriod;
-
-		pthread_rwlock_wrlock(&filter->lock);
-		{
-			filter->sampleSum -= filter->window[i];
-			filter->window[i] = maviPollSensor(filter->sensor);
-			filter->sampleSum += filter->window[i];
-		}
-		pthread_rwlock_unlock(&filter->lock);
-
-		if (++i >= filter->windowSize)
-		{
-			bufferFull = true;
-			i %= filter->windowSize;
-		}
-
-		if (nextSample - micros() <= filter->samplePeriod)
-			delayMicroseconds(nextSample - micros());
+		takeSample(i);
+		waitForNext();
 	}
+
+	if (filter->running)
+	{
+		takeSample(i);
+		bufferFull = true;
+	}
+
+	pthread_cond_broadcast(&filter->fullBufferCond);
+
+	for (i = 0; filter->running; i = (i+1) % filter->bufferSize)
+	{
+		takeSample(i);
+		waitForNext();
+	}
+
+	#undef takeSample
+	#undef waitForNext
 
 	return NULL;
 }
 
 MaviSensorFilter::MaviSensorFilter(MaviSensorID s, unsigned int per, int sz)
 {
-	this->sensor = s;
-	this->samplePeriod = per;
-	this->windowSize = sz;
-	this->window = new double[this->windowSize];
-	pthread_rwlock_init(&this->lock, NULL);
+	this->sensor         = s;
+	this->samplePeriod   = per;
+	this->bufferSize     = sz;
+	this->buffer         = new double[this->bufferSize];
+	this->sampleSum      = 0.0;
+	this->running        = false;
+	this->bufferFull     = false;
+	this->sumLock        = PTHREAD_RWLOCK_INITIALIZER;
+	this->fullBufferLock = PTHREAD_MUTEX_INITIALIZER;
+	this->fullBufferCond = PTHREAD_COND_INITIALIZER;
 }
 
 MaviSensorFilter::~MaviSensorFilter(void)
 {
-	delete[] this->window;
-	pthread_rwlock_destroy(&this->lock);
+	this->running = false;
+	pthread_join(this->thread, NULL);
+	delete[] this->buffer;
+	pthread_rwlock_destroy(&this->sumLock);
+	pthread_mutex_destroy(&this->fullBufferLock);
+	pthread_cond_destroy(&this->fullBufferCond);
 }
 
 MaviSensorID MaviSensorFilter::setSensor(MaviSensorID newSensor)
@@ -213,22 +240,22 @@ unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
 	return this->samplePeriod;
 }
 
-int MaviSensorFilter::setWindowSize(int newSize)
+int MaviSensorFilter::setBufferSize(int newSize)
 {
 	if (!this->running)
 	{
-		this->windowSize = newSize;
-		delete[] this->window;
-		this->window = new double[this->windowSize];
+		this->bufferSize = newSize;
+		delete[] this->buffer;
+		this->buffer = new double[this->bufferSize];
 	}
 
-	return this->windowSize;
+	return this->bufferSize;
 }
 
 void MaviSensorFilter::startFiltering(void)
 {
-	for (int i = 0; i < this->windowSize; i++)
-		this->window[i] = 0.0;
+	for (int i = 0; i < this->bufferSize; i++)
+		this->buffer[i] = 0.0;
 
 	this->sampleSum = 0.0;
 	this->running = true;
@@ -240,16 +267,23 @@ void MaviSensorFilter::startFiltering(void)
 void MaviSensorFilter::stopFiltering(void)
 {
 	this->running = false;
-	pthread_join(this->thread, NULL);
+	//~ pthread_join(this->thread, NULL);
 }
 
 double MaviSensorFilter::poll(void)
 {
 	double v;
 
-	pthread_rwlock_rdlock(&this->lock);
-	v = this->sampleSum;
-	pthread_rwlock_unlock(&this->lock);
+	if (this->running && !this->bufferFull)
+	{
+		pthread_mutex_lock(&this->fullBufferLock);
+		pthread_cond_wait(&this->fullBufferCond, &this->fullBufferLock);
+		pthread_mutex_unlock(&this->fullBufferLock);
+	}
 
-	return v / this->windowSize;
+	pthread_rwlock_rdlock(&this->sumLock);
+	v = this->sampleSum;
+	pthread_rwlock_unlock(&this->sumLock);
+
+	return v / this->bufferSize;
 }
