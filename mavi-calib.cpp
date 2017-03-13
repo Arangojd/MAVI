@@ -33,47 +33,34 @@ int maviCalibration(void)
 		return 1;										\
 	}
 
-	maviIRSFilter.startFiltering();
-	maviIRMFilter.startFiltering();
-	maviIRLFilter.startFiltering();
-	maviUSLFilter.startFiltering();
-	maviUSRFilter.startFiltering();
+	maviStartAllFilters();
 
-	double irSDist, irMDist, irLDist, usLDist, usRDist;
+	double irSDist, irMDist, irLDist;
 
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
-	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > MAVI_ERROR_MARGIN) calibFailed();
-	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > MAVI_ERROR_MARGIN) calibFailed();
-	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > MAVI_ERROR_MARGIN) calibFailed();
-	usLDist = maviUSLFilter.poll(); if (abs(refDistUSL - usLDist) > MAVI_ERROR_MARGIN) calibFailed();
-	usRDist = maviUSRFilter.poll(); if (abs(refDistUSR - usRDist) > MAVI_ERROR_MARGIN) calibFailed();
+	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > 3 * MAVI_ERROR_MARGIN) calibFailed();
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;
 	refDistIRL = irLDist;
-	refDistUSL = usLDist;
-	refDistUSR = usRDist;
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
-
-	cout << "Calibration Sucessful" << endl << endl;
-	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
 
 	cout << "IRS 	= 	" << refDistIRS << endl;
 	cout << "IRM 	= 	" << refDistIRM << endl;
 	cout << "IRL 	= 	" << refDistIRL << endl;
-	cout << "USL 	= 	" << refDistUSL << endl;
-	cout << "USR 	= 	" << refDistUSR << endl;
 	cout << "SLOPE 	= 	" << refSlope << endl;
+	cout << endl;
 
-	maviIRSFilter.stopFiltering();
-	maviIRMFilter.stopFiltering();
-	maviIRLFilter.stopFiltering();
-	maviUSLFilter.stopFiltering();
-	maviUSRFilter.stopFiltering();
+	maviStopAllFilters();
 
-	#undef calibFailed()
+	cout << "Calibration Sucessful" << endl << endl;
+	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
+
+	#undef calibFailed
 
 	return 0;
 }

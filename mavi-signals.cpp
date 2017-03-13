@@ -57,7 +57,7 @@ void onUsr1(int s)
 
 void onUsr2(int s)
 {
-	//cout << endl << "SIGUSR2 received; ";
+	//~ cout << endl << "SIGUSR2 received; ";
 
 	switch (maviGetState())
 	{

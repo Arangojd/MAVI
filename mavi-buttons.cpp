@@ -43,10 +43,10 @@ void maviCalibButtonPressed(void)
 {
 	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp >= 1000)
+	if (millis() - timestamp >= 5000)
 	{
 		timestamp = millis();
-		cout << "Calibrate button pressed; raising SIGUSR2" << endl;
+		cout << "Calibration button pressed; raising SIGUSR2" << endl;
 		raise(SIGUSR2);
 	}
 }
@@ -54,6 +54,6 @@ void maviCalibButtonPressed(void)
 void maviRegisterButtonISRs(void)
 {
 	wiringPiISR(MAVI_DPIN_POWER, INT_EDGE_FALLING, maviPowerButtonPressed);
-	wiringPiISR(MAVI_DPIN_PAUSE, INT_EDGE_FALLING, maviPauseButtonPressed);
 	wiringPiISR(MAVI_DPIN_CALIB, INT_EDGE_FALLING, maviCalibButtonPressed);
+	wiringPiISR(MAVI_DPIN_PAUSE, INT_EDGE_FALLING, maviPauseButtonPressed);
 }

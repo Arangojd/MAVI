@@ -8,9 +8,12 @@
 #ifndef MAVI_ANALYSIS_HPP
 #define MAVI_ANALYSIS_HPP
 
-//const float MAVI_ANALYSIS_INITIAL_DELAY = 700; 	// ms
-const float MAVI_ANALYSIS_SAMPLE_PERIOD = 500; 	// ms
-const float MAVI_ANALYSIS_OUTPUT_PERIOD = 2000;		// ms
+#include "mavi-feedback.hpp"
+
+//const unsigned int MAVI_ANALYSIS_INITIAL_DELAY = 700; 	// ms
+const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = 250; 	// ms
+const unsigned int MAVI_VERBAL_OUTPUT_PERIOD = 2000;	// ms
+const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 1000;	// ms
 
 enum MaviNextStepKind
 {
@@ -45,7 +48,7 @@ MaviSlopeKind maviSlopeScan(void);
 
 MaviMidRangeKind maviMidRangeScan(void);
 
-unsigned int maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart);
+unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart);
 
 void maviMobilityAssistance(void);
 
