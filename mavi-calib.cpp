@@ -33,28 +33,24 @@ int maviCalibration(void)
 		return 1;										\
 	}
 
-	maviIRSFilter.startFiltering();
-	maviIRMFilter.startFiltering();
-	maviIRLFilter.startFiltering();
-	maviUSLFilter.startFiltering();
-	maviUSRFilter.startFiltering();
+	maviStartAllFilters();
 
 	double irSDist, irMDist, irLDist, usLDist, usRDist;
 
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
-	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > MAVI_ERROR_MARGIN) calibFailed();
-	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > MAVI_ERROR_MARGIN) calibFailed();
-	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > MAVI_ERROR_MARGIN) calibFailed();
-	usLDist = maviUSLFilter.poll(); if (abs(refDistUSL - usLDist) > MAVI_ERROR_MARGIN) calibFailed();
-	usRDist = maviUSRFilter.poll(); if (abs(refDistUSR - usRDist) > MAVI_ERROR_MARGIN) calibFailed();
+	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	//~ usLDist = maviUSLFilter.poll(); if (abs(refDistUSL - usLDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
+	//~ usRDist = maviUSRFilter.poll(); if (abs(refDistUSR - usRDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;
 	refDistIRL = irLDist;
-	refDistUSL = usLDist;
-	refDistUSR = usRDist;
+	//~ refDistUSL = usLDist;
+	//~ refDistUSR = usRDist;
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 
 	cout << "Calibration Sucessful" << endl << endl;
@@ -67,13 +63,9 @@ int maviCalibration(void)
 	cout << "USR 	= 	" << refDistUSR << endl;
 	cout << "SLOPE 	= 	" << refSlope << endl;
 
-	maviIRSFilter.stopFiltering();
-	maviIRMFilter.stopFiltering();
-	maviIRLFilter.stopFiltering();
-	maviUSLFilter.stopFiltering();
-	maviUSRFilter.stopFiltering();
+	maviStopAllFilters();
 
-	#undef calibFailed()
+	#undef calibFailed
 
 	return 0;
 }
