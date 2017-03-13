@@ -22,10 +22,17 @@ double
 	refDistIRS = MAVI_DEFAULT_REF_DIST_IRS,
 	refDistIRM = MAVI_DEFAULT_REF_DIST_IRM,
 	refDistIRL = MAVI_DEFAULT_REF_DIST_IRL,
-	refSlope = MAVI_DEFAULT_REF_SLOPE;
+	refSlope   = MAVI_DEFAULT_REF_SLOPE;
 
 int maviCalibration(void)
 {
+	#define calibFailed()								\
+	{													\
+		cout << "Calibration Failed" << endl << endl;	\
+		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);			\
+		return 1;										\
+	}
+
 	maviIRSFilter.startFiltering();
 	maviIRMFilter.startFiltering();
 	maviIRLFilter.startFiltering();
@@ -37,40 +44,11 @@ int maviCalibration(void)
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
-	irSDist = maviIRSFilter.poll();
-	if (abs(refDistIRS - irSDist) > MAVI_ERROR_MARGIN) {
-		cout << "Calibration Failed" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
-		return 1;
-	}
-
-	irMDist = maviIRMFilter.poll();
-	if (abs(refDistIRM - irMDist) > MAVI_ERROR_MARGIN) {
-		cout << "Calibration Failed" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
-		return 1;
-	}
-
-	irLDist = maviIRLFilter.poll();
-	if (abs(refDistIRL - irLDist) > MAVI_ERROR_MARGIN) {
-		cout << "Calibration Failed" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
-		return 1;
-	}
-
-	usLDist = maviUSLFilter.poll();
-	if (abs(refDistUSL - usLDist) > MAVI_ERROR_MARGIN) {
-		cout << "Calibration Failed" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
-		return 1;
-	}
-
-	usRDist = maviUSRFilter.poll();
-	if (abs(refDistUSR - usRDist) > MAVI_ERROR_MARGIN) {
-		cout << "Calibration Failed" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
-		return 1;
-	}
+	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > MAVI_ERROR_MARGIN) calibFailed();
+	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > MAVI_ERROR_MARGIN) calibFailed();
+	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > MAVI_ERROR_MARGIN) calibFailed();
+	usLDist = maviUSLFilter.poll(); if (abs(refDistUSL - usLDist) > MAVI_ERROR_MARGIN) calibFailed();
+	usRDist = maviUSRFilter.poll(); if (abs(refDistUSR - usRDist) > MAVI_ERROR_MARGIN) calibFailed();
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;
@@ -94,6 +72,8 @@ int maviCalibration(void)
 	maviIRLFilter.stopFiltering();
 	maviUSLFilter.stopFiltering();
 	maviUSRFilter.stopFiltering();
+
+	#undef calibFailed()
 
 	return 0;
 }
