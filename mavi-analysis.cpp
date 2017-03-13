@@ -171,7 +171,7 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 			break;
 	}
 
-	float t_elapsed = millis() - feedbackTimerStart;
+	unsigned int t_elapsed = millis() - feedbackTimerStart;
 
 	if (t_elapsed >= MAVI_ANALYSIS_OUTPUT_PERIOD)
 	{
@@ -289,8 +289,7 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 void maviMobilityAssistance(void)
 {
-	float t_elapsed;
-	unsigned int analysisTimerStart, feedbackTimerStart;
+	unsigned int analysisTimerStart, feedbackTimerStart, t_elapsed;
 
 	feedbackTimerStart = 0;
 	analysisTimerStart = 0;
