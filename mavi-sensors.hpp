@@ -27,6 +27,8 @@ const unsigned int MAVI_US_TRIG_TIMEOUT = 5000;  // us
 const unsigned int MAVI_US_ECHO_TIMEOUT = 50000; // us
 
 double maviPollSensor(MaviSensorID sensor);
+void maviStartAllFilters(void);
+void maviStopAllFilters(void);
 
 struct MaviSensorFilter
 {
@@ -38,6 +40,7 @@ struct MaviSensorFilter
 	pthread_t thread;
 	pthread_rwlock_t lock;
 	bool running;
+	bool bufferFull;
 
 	MaviSensorFilter(MaviSensorID s, unsigned int per, int sz);
 	~MaviSensorFilter(void);

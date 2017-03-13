@@ -21,6 +21,24 @@ MaviSensorFilter
 	maviUSLFilter(MAVI_SENSOR_USL, 50000, 20),
 	maviUSRFilter(MAVI_SENSOR_USR, 50000, 20);
 
+void maviStartAllFilters(void)
+{
+	maviIRSFilter.startFiltering();
+	maviIRMFilter.startFiltering();
+	maviIRLFilter.startFiltering();
+	maviUSLFilter.startFiltering();
+	maviUSRFilter.startFiltering();
+}
+
+void maviStopAllFilters(void)
+{
+	maviIRSFilter.stopFiltering();
+	maviIRMFilter.stopFiltering();
+	maviIRLFilter.stopFiltering();
+	maviUSLFilter.stopFiltering();
+	maviUSRFilter.stopFiltering();
+}
+
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
@@ -155,7 +173,11 @@ void *filterRoutine(void *arg)
 		}
 		pthread_rwlock_unlock(&filter->lock);
 
-		i = (i+1) % filter->windowSize;
+		if (++i >= filter->windowSize)
+		{
+			bufferFull = true;
+			i %= filter->windowSize;
+		}
 
 		if (nextSample - micros() <= filter->samplePeriod)
 			delayMicroseconds(nextSample - micros());
@@ -210,6 +232,7 @@ void MaviSensorFilter::startFiltering(void)
 
 	this->sampleSum = 0.0;
 	this->running = true;
+	this->bufferFull = false;
 
 	pthread_create(&this->thread, NULL, filterRoutine, (void*)this);
 }
