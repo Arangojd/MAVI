@@ -6,9 +6,11 @@
  */
 
 #include <wiringPi.h>
+#include <unistd.h>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <ctime>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
@@ -16,6 +18,7 @@
 #include "mavi-calib.hpp"
 #include "mavi-state.hpp"
 #include "mavi-math.hpp"
+#include "mavi-feedback.hpp"
 
 using namespace std;
 
@@ -145,32 +148,316 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 }
 
+clock_t maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart)
+{
+	// system notifications (always output but never reset timer)
+	switch(id)
+	{
+		case MAVI_FEEDBACK_SYSTEM_READY:
+			cout << "System Ready" << endl;
+			maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
+			return feedbackTimerStart;
+
+		case MAVI_FEEDBACK_SYSTEM_PAUSED:
+			cout << "System Paused" << endl;
+			maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
+			return feedbackTimerStart;
+
+		case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
+			cout << "System Shutting Down" << endl;
+			maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
+			return feedbackTimerStart;
+
+		default:
+			break;
+	}
+
+	float t_elapsed = ((float)(clock() - feedbackTimerStart))/CLOCKS_PER_SEC;
+
+	if (t_elapsed >= MAVI_ANALYSIS_OUTPUT_PERIOD)
+	{
+		// normal notifications (only output periodically and reset timer)
+		switch(id)
+		{
+			case MAVI_FEEDBACK_IM_HAZARD:
+				cout << "Immediate Hazard" << endl;
+				maviAudioPlay(MAVI_AUDIO_WARNING_IM_HAZARD);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FINAL:
+				cout << "Final Step" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FINAL);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+				cout << "First Step Down" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FIRSTUP:
+				cout << "First Step Up" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
+				break;
+
+			case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+				cout << "Single Step Down" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN);
+				break;
+
+			case MAVI_FEEDBACK_STEP_SINGLEUP:
+				cout << "Single Step Up" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
+				break;
+
+			case MAVI_FEEDBACK_STAIRS_ASC:
+				cout << "Stairs Ahead: Ascending" << endl;
+				maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
+				break;
+
+			case MAVI_FEEDBACK_STAIRS_DESC:
+				cout << "Stairs Ahead: Descending" << endl;
+				maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
+				break;
+
+			case MAVI_FEEDBACK_VIBRATE_CENTER:
+				cout << "Vibrate Center" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
+				break;
+
+			case MAVI_FEEDBACK_VIBRATE_LEFT:
+				cout << "Vibrate Left" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+				break;
+
+			case MAVI_FEEDBACK_VIBRATE_RIGHT:
+				cout << "Vibrate Right" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				break;
+
+			case MAVI_FEEDBACK_VIBRATE_BOTH:
+				cout << "Vibrate Both" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				break;
+
+			default:
+				break;
+		}
+	}
+	else
+	{
+		// priority notifications (always output and reset timer)
+
+		switch(id)
+		{
+			case MAVI_FEEDBACK_IM_HAZARD:
+				cout << "Immediate Hazard" << endl;
+				maviAudioPlay(MAVI_AUDIO_WARNING_IM_HAZARD);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FINAL:
+				cout << "Final Step" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FINAL);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+				cout << "First Step Down" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
+				break;
+
+			case MAVI_FEEDBACK_STEP_FIRSTUP:
+				cout << "First Step Up" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
+				break;
+
+			case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+				cout << "Single Step Down" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN);
+				break;
+
+			case MAVI_FEEDBACK_STEP_SINGLEUP:
+				cout << "Single Step Up" << endl;
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	return clock();
+}
+
+void maviMobilityAssistance(void)
+{
+	float t_elapsed;
+	clock_t analysisTimerStart;
+
+	analysisTimerStart = 0;
+
+	while (maviGetState() == MAVI_STATE_RUNNING)
+	{
+		t_elapsed = ((float)(clock() - analysisTimerStart))/CLOCKS_PER_SEC;
+
+		if (t_elapsed < MAVI_ANALYSIS_SAMPLE_PERIOD)
+			delay(MAVI_ANALYSIS_SAMPLE_PERIOD - t_elapsed);
+
+		analysisTimerStart = clock();
+
+		switch (maviNextStepScan())
+		{
+		case MAVI_NEXTSTEP_NOTHING:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Next step safe - slope ascending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Next step safe - slope descending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				switch (maviMidRangeScan())
+				{
+				case MAVI_MIDRANGE_BOTH:
+					cout << "Next step safe - slope flat - left & right";
+					feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_BOTH, feedbackTimerStart);
+					break;
+
+				case MAVI_MIDRANGE_LEFT:
+					cout << "Next step safe - slope flat - left";
+					feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT, feedbackTimerStart);
+					break;
+
+				case MAVI_MIDRANGE_RIGHT:
+					cout << "Next step safe - slope flat - right";
+					feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT, feedbackTimerStart);
+					break;
+
+				case MAVI_MIDRANGE_NOTHING:
+					cout << "Next step safe - slope flat - nothing";
+					break;
+
+				default:
+					cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
+					break;
+				}
+
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next step safe - slope other";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER, feedbackTimerStart);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			break;
+
+		case MAVI_NEXTSTEP_STEP_UP:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Next step up - slope ascending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTUP, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				cout << "Next step up - slope flat";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLUP, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Next step up - Slope descending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next step up - Slope other";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			break;
+
+		case MAVI_NEXTSTEP_STEP_DOWN:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Next step down - slope descending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				cout << "Next step down - slope flat";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEDOWN, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Next step down - slope ascending";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next step down - slope other";
+				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			break;
+
+		case MAVI_NEXTSTEP_OBSTACLE:
+			cout << "Next step unsafe";
+			feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+			break;
+
+		default:
+			cout << "Sensing and Analysis Error: Received invalid next step data.";
+			break;
+		}
+
+		cout << endl << endl;
+	}
+
+}
+
 void *maviSenseAndAnalyze(void* args)
 {
-	unsigned int nextCycle, pauseFeedbackFlag;
+	bool pauseFeedbackFlag;
+	clock_t feedbackTimerStart;
 
-	MaviNextStepKind nextStepScan;
-	MaviSlopeKind slopeScan;
-
-	pauseFeedbackFlag = 1;
+	pauseFeedbackFlag = true;
+	feedbackTimerStart = 0;
 
 	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
-
-		if (maviGetState() != MAVI_STATE_RUNNING) {
-
-			if (maviGetState() == MAVI_STATE_PAUSED && pauseFeedbackFlag) {
-				pauseFeedbackFlag = 0;
-				cout << "System Paused" << endl;
-				maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
+		if (maviGetState() != MAVI_STATE_RUNNING)
+		{
+			if (maviGetState() == MAVI_STATE_PAUSED && pauseFeedbackFlag)
+			{
+				pauseFeedbackFlag = false;
+				maviSendFeedback(MAVI_FEEDBACK_SYSTEM_PAUSED, feedbackTimerStart);
 			}
 
 			delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 		}
-		else {
-
-			nextCycle = millis() + MAVI_ANALYSIS_INITIAL_DELAY;
-			pauseFeedbackFlag = 1;
+		else
+		{
+			pauseFeedbackFlag = true;
 
 			maviIRSFilter.startFiltering();
 			maviIRMFilter.startFiltering();
@@ -178,150 +465,9 @@ void *maviSenseAndAnalyze(void* args)
 			maviUSLFilter.startFiltering();
 			maviUSRFilter.startFiltering();
 
-			cout << "System Ready" << endl;
-			maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
+			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY, feedbackTimerStart);
 
-			while (maviGetState() == MAVI_STATE_RUNNING)
-			{
-
-				if (nextCycle - millis() <= MAVI_ANALYSIS_SAMPLE_PERIOD)
-					delay(nextCycle - millis());
-
-				nextCycle += MAVI_ANALYSIS_SAMPLE_PERIOD;
-
-				nextStepScan = maviNextStepScan();
-				slopeScan = maviSlopeScan();
-
-				switch (nextStepScan)
-				{
-				case MAVI_NEXTSTEP_NOTHING:
-					switch (slopeScan)
-					{
-					case MAVI_SLOPE_ASCENDING:
-						maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
-						cout << "Next step safe - slope ascending";
-						break;
-
-					case MAVI_SLOPE_DESCENDING:
-						maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
-						cout << "Next step safe - slope descending";
-						break;
-
-					case MAVI_SLOPE_FLAT:
-						switch (maviMidRangeScan())
-						{
-						case MAVI_MIDRANGE_BOTH:
-							//maviAudioPlay(MAVI_AUDIO_VIBRATE_BOTH);
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-							cout << "Next step safe - slope flat - left & right";
-							break;
-
-						case MAVI_MIDRANGE_LEFT:
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-							cout << "Next step safe - slope flat - left";
-							break;
-
-						case MAVI_MIDRANGE_RIGHT:
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-							cout << "Next step safe - slope flat - right";
-							break;
-
-						case MAVI_MIDRANGE_NOTHING:
-							cout << "Next step safe - slope flat - nothing";
-							break;
-
-						default:
-							cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
-							break;
-						}
-
-						break;
-
-					case MAVI_SLOPE_OTHER:
-						maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-						cout << "Next step safe - slope other";
-						break;
-
-					default:
-						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-						break;
-					}
-
-					break;
-
-				case MAVI_NEXTSTEP_STEP_UP:
-					switch (slopeScan)
-					{
-					case MAVI_SLOPE_ASCENDING:
-						maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
-						cout << "Next step up - slope ascending";
-						break;
-
-					case MAVI_SLOPE_FLAT:
-						maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
-						cout << "Next step up - slope flat";
-						break;
-
-					case MAVI_SLOPE_DESCENDING:
-						maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-						cout << "Next step up - Slope descending";
-						break;
-
-					case MAVI_SLOPE_OTHER:
-						maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-						cout << "Next step up - Slope other";
-						break;
-
-					default:
-						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-						break;
-					}
-
-					break;
-
-				case MAVI_NEXTSTEP_STEP_DOWN:
-					switch (slopeScan)
-					{
-					case MAVI_SLOPE_DESCENDING:
-						maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
-						cout << "Next step down - slope descending";
-						break;
-
-					case MAVI_SLOPE_FLAT:
-						maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
-						cout << "Next step down - slope flat";
-						break;
-
-					case MAVI_SLOPE_ASCENDING:
-						maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-						cout << "Next step down - slope ascending";
-						break;
-
-					case MAVI_SLOPE_OTHER:
-						maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-						cout << "Next step down - slope other";
-						break;
-
-					default:
-						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-						break;
-					}
-
-					break;
-
-				case MAVI_NEXTSTEP_OBSTACLE:
-					maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
-					cout << "Next step unsafe";
-					break;
-
-				default:
-					cout << "Sensing and Analysis Error: Received invalid next step data.";
-					break;
-				}
-
-				cout << endl << endl;
-			}
+			maviMobilityAssistance();
 
 			maviIRSFilter.stopFiltering();
 			maviIRMFilter.stopFiltering();
@@ -332,8 +478,7 @@ void *maviSenseAndAnalyze(void* args)
 		}
 	}
 
-	cout << "System Shutting Down" << endl;
-	maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
+	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN, feedbackTimerStart);
 
 	return NULL;
 }
