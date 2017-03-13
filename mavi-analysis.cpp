@@ -203,6 +203,7 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 			default:
 				cout << "No Feedback" << endl;
+<<<<<<< HEAD
 				return feedbackTimerStart;
 		}
 	}
@@ -224,6 +225,8 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 				cout << "Vibrate Both" << endl;
 				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
 				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+=======
+>>>>>>> origin/master
 				break;
 
 			default:
@@ -269,7 +272,11 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 			default:
 				cout << "No Feedback" << endl;
+<<<<<<< HEAD
 				return feedbackTimerStart;
+=======
+				break;
+>>>>>>> origin/master
 		}
 	}
 
@@ -326,7 +333,11 @@ void maviMobilityAssistance(void)
 					break;
 
 				case MAVI_MIDRANGE_NOTHING:
+<<<<<<< HEAD
 					cout << "Next step safe - slope flat - nothing" << endl;
+=======
+					cout << "Next step safe - slope flat - nothing:" << endl;
+>>>>>>> origin/master
 					break;
 
 				default:

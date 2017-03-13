@@ -10,10 +10,16 @@
 
 #include "mavi-feedback.hpp"
 
+<<<<<<< HEAD
 //const unsigned int MAVI_ANALYSIS_INITIAL_DELAY = 700; 	// ms
 const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = 250; 	// ms
 const unsigned int MAVI_VERBAL_OUTPUT_PERIOD = 2000;	// ms
 const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 1000;	// ms
+=======
+//const float MAVI_ANALYSIS_INITIAL_DELAY = 700; 	// ms
+const float MAVI_ANALYSIS_SAMPLE_PERIOD = 1000; 	// ms
+const float MAVI_ANALYSIS_OUTPUT_PERIOD = 2000;		// ms
+>>>>>>> origin/master
 
 enum MaviNextStepKind
 {
