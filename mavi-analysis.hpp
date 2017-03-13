@@ -8,9 +8,9 @@
 #ifndef MAVI_ANALYSIS_HPP
 #define MAVI_ANALYSIS_HPP
 
-//const float MAVI_ANALYSIS_INITIAL_DELAY = 0.7; 	// s
-const float MAVI_ANALYSIS_SAMPLE_PERIOD = 0.5; 	// s
-const float MAVI_ANALYSIS_OUTPUT_PERIOD = 2.0;		// s
+//const float MAVI_ANALYSIS_INITIAL_DELAY = 700; 	// ms
+const float MAVI_ANALYSIS_SAMPLE_PERIOD = 500; 	// ms
+const float MAVI_ANALYSIS_OUTPUT_PERIOD = 2000;		// ms
 
 enum MaviNextStepKind
 {
@@ -44,6 +44,10 @@ MaviNextStepKind maviNextStepScan(void);
 MaviSlopeKind maviSlopeScan(void);
 
 MaviMidRangeKind maviMidRangeScan(void);
+
+unsigned int maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart);
+
+void maviMobilityAssistance(void);
 
 void *maviSenseAndAnalyze(void*);
 

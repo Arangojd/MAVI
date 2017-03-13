@@ -10,7 +10,6 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
-#include <ctime>
 
 #include "mavi-analysis.hpp"
 #include "mavi-sensors.hpp"
@@ -148,7 +147,7 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 }
 
-clock_t maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart)
+unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart)
 {
 	// system notifications (always output but never reset timer)
 	switch(id)
@@ -172,7 +171,7 @@ clock_t maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart)
 			break;
 	}
 
-	float t_elapsed = ((float)(clock() - feedbackTimerStart))/CLOCKS_PER_SEC;
+	float t_elapsed = millis() - feedbackTimerStart;
 
 	if (t_elapsed >= MAVI_ANALYSIS_OUTPUT_PERIOD)
 	{
@@ -285,24 +284,25 @@ clock_t maviSendFeedback(MaviFeedbackID id, clock_t feedbackTimerStart)
 		}
 	}
 
-	return clock();
+	return millis();
 }
 
 void maviMobilityAssistance(void)
 {
 	float t_elapsed;
-	clock_t analysisTimerStart;
+	unsigned int analysisTimerStart, feedbackTimerStart;
 
+	feedbackTimerStart = 0;
 	analysisTimerStart = 0;
 
 	while (maviGetState() == MAVI_STATE_RUNNING)
 	{
-		t_elapsed = ((float)(clock() - analysisTimerStart))/CLOCKS_PER_SEC;
+		t_elapsed = millis() - analysisTimerStart;
 
 		if (t_elapsed < MAVI_ANALYSIS_SAMPLE_PERIOD)
 			delay(MAVI_ANALYSIS_SAMPLE_PERIOD - t_elapsed);
 
-		analysisTimerStart = clock();
+		analysisTimerStart = millis();
 
 		switch (maviNextStepScan())
 		{
@@ -437,11 +437,7 @@ void maviMobilityAssistance(void)
 
 void *maviSenseAndAnalyze(void* args)
 {
-	bool pauseFeedbackFlag;
-	clock_t feedbackTimerStart;
-
-	pauseFeedbackFlag = true;
-	feedbackTimerStart = 0;
+	bool pauseFeedbackFlag = true;
 
 	while (maviGetState() != MAVI_STATE_SHUTDOWN)
 	{
