@@ -185,10 +185,6 @@ void *filterRoutine(void *arg)
 	int i = 0;
 	unsigned int nextSample = micros();
 	double currentReading;
-<<<<<<< HEAD
-
-	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
-=======
 
 	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
 	{
@@ -196,22 +192,6 @@ void *filterRoutine(void *arg)
 		waitForNext();
 	}
 
-	if (filter->running)
-	{
-		takeSample(i);
-		bufferFull = true;
-	}
-
-	pthread_cond_broadcast(&filter->fullBufferCond);
-
-	for (i = 0; filter->running; i = (i+1) % filter->bufferSize)
->>>>>>> origin/master
-	{
-		takeSample(i);
-		waitForNext();
-	}
-
-<<<<<<< HEAD
 	if (filter->running)
 	{
 		takeSample(i);
@@ -219,6 +199,7 @@ void *filterRoutine(void *arg)
 	}
 
 	pthread_cond_broadcast(&filter->fullBufferCond);
+	waitForNext();
 
 	for (i = 0; filter->running; i = (i+1) % filter->bufferSize)
 	{
@@ -226,8 +207,6 @@ void *filterRoutine(void *arg)
 		waitForNext();
 	}
 
-=======
->>>>>>> origin/master
 	#undef takeSample
 	#undef waitForNext
 
