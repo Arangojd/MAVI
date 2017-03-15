@@ -92,9 +92,15 @@ double maviPollSensorIR(MaviSensorID sensor)
 
 double maviPollSensorUS(MaviSensorID sensor)
 {
-	static pthread_mutex_t
-		mut_usl = PTHREAD_MUTEX_INITIALIZER,
-		mut_usr = PTHREAD_MUTEX_INITIALIZER;
+	#ifdef MAVI_SIMULTANEOUS_US
+		static pthread_mutex_t
+			mut_usl = PTHREAD_MUTEX_INITIALIZER,
+			mut_usr = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_t *mut = (sensor == MAVI_SENSOR_USL ? &mut_usl : &mut_usr);
+	#else
+		static pthread_mutex_t mut_us = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_t *mut = &mut_us;
+	#endif
 
 	MaviDigitalPin
 		trigPin = maviUSTrigPinMapping(sensor),
@@ -108,7 +114,6 @@ double maviPollSensorUS(MaviSensorID sensor)
 
 	unsigned int st, et;
 
-	pthread_mutex_t *mut = (sensor == MAVI_SENSOR_USL ? &mut_usl : &mut_usr);
 	pthread_mutex_lock(mut);
 
 	// Send trigger pulse

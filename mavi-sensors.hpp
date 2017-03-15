@@ -11,6 +11,8 @@
 #include <cfloat>
 #include <pthread.h>
 
+//~ #define MAVI_SIMULTANEOUS_US
+
 #define MAVI_INVALID_SENSOR_ID  DBL_MIN
 #define MAVI_BAD_SENSOR_READING DBL_MAX
 
