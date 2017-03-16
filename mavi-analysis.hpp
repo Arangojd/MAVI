@@ -50,6 +50,8 @@ MaviMidRangeKind maviMidRangeScan(void);
 
 unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart);
 
+void maviStairAssistance(void);
+
 void maviMobilityAssistance(void);
 
 void *maviSenseAndAnalyze(void*);
