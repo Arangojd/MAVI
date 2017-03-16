@@ -42,22 +42,11 @@ int maviCalibration(void)
 
 	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
 	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
-<<<<<<< HEAD
 	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > 3 * MAVI_ERROR_MARGIN) calibFailed();
-=======
-	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
-	//~ usLDist = maviUSLFilter.poll(); if (abs(refDistUSL - usLDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
-	//~ usRDist = maviUSRFilter.poll(); if (abs(refDistUSR - usRDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
->>>>>>> origin/master
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;
 	refDistIRL = irLDist;
-<<<<<<< HEAD
-=======
-	//~ refDistUSL = usLDist;
-	//~ refDistUSR = usRDist;
->>>>>>> origin/master
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 
 	cout << "IRS 	= 	" << refDistIRS << endl;
@@ -67,12 +56,9 @@ int maviCalibration(void)
 	cout << endl;
 
 	maviStopAllFilters();
-<<<<<<< HEAD
 
 	cout << "Calibration Sucessful" << endl << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
-=======
->>>>>>> origin/master
 
 	#undef calibFailed
 
