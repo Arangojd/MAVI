@@ -35,14 +35,26 @@ int maviCalibration(void)
 
 	maviStartAllFilters();
 
-	double irSDist, irMDist, irLDist;
+	int i, sample_count = 10;
+	double irSDist = 0, irMDist = 0, irLDist = 0;
 
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
-	irSDist = maviIRSFilter.poll(); if (abs(refDistIRS - irSDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
-	irMDist = maviIRMFilter.poll(); if (abs(refDistIRM - irMDist) > 2 * MAVI_ERROR_MARGIN) calibFailed();
-	irLDist = maviIRLFilter.poll(); if (abs(refDistIRL - irLDist) > 3 * MAVI_ERROR_MARGIN) calibFailed();
+	for (i=0; i < sample_count; i++)
+	{
+		irSDist += maviIRSFilter.poll();
+		irMDist += maviIRMFilter.poll();
+		irLDist += maviIRLFilter.poll();
+	}
+
+	irSDist = irSDist/sample_count;
+	irMDist = irMDist/sample_count;
+	irLDist = irLDist/sample_count;
+
+	if (abs(refDistIRS - irSDist) > 4 * MAVI_ERROR_MARGIN_IRS) calibFailed();
+	if (abs(refDistIRM - irMDist) > 6 * MAVI_ERROR_MARGIN_IRM) calibFailed();
+	if (abs(refDistIRL - irLDist) > 10 * MAVI_ERROR_MARGIN_IRL) calibFailed();
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;

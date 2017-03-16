@@ -33,11 +33,11 @@ MaviNextStepKind maviNextStepScan(void)
 
 	relativeDif_IRS = refDistIRS - irDist;
 
-	if (abs(relativeDif_IRS) <= MAVI_ERROR_MARGIN)
+	if (abs(relativeDif_IRS) < MAVI_ERROR_MARGIN_IRS)
 		return MAVI_NEXTSTEP_NOTHING;
-	else if (relativeDif_IRS > MAVI_ERROR_MARGIN && relativeDif_IRS < (MAVI_REF_STAIR_HEIGHT + MAVI_ERROR_MARGIN))
+	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
 		return MAVI_NEXTSTEP_STEP_UP;
-	else if (relativeDif_IRS < -(MAVI_ERROR_MARGIN) && relativeDif_IRS > -(MAVI_REF_STAIR_HEIGHT + MAVI_ERROR_MARGIN))
+	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
@@ -60,16 +60,16 @@ MaviSlopeKind maviSlopeScan(void)
 	relativeDif_IRM = refDistIRM - irMDist;
 	relativeDif_IRL = refDistIRL - irLDist;
 
-	if (relativeDif_IRM < -(MAVI_ERROR_MARGIN/2) && relativeDif_IRL < -(MAVI_ERROR_MARGIN/2))
+	if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
 		return MAVI_SLOPE_DESCENDING;
 
 	slope = maviGetSlope(irSDist, irMDist, irLDist);
 
 	cout << "Slope: " << slope << endl;
 
-	if (abs(slope) <= (MAVI_ERROR_MARGIN/200))
+	if (abs(slope) < MAVI_ERROR_MARGIN_SLOPE)
 		return MAVI_SLOPE_FLAT;
-	else if (abs(slope) >= MAVI_MIN_STAIR_SLOPE && abs(slope) <= MAVI_MAX_STAIR_SLOPE) {
+	else if (abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX) {
 
 		if (slope > 0)
 			return MAVI_SLOPE_ASCENDING;
@@ -95,8 +95,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
 
-	if (usLDist <= refDistUSL + MAVI_ERROR_MARGIN) scanResult |= 0b01;
-	if (usRDist <= refDistUSR + MAVI_ERROR_MARGIN) scanResult |= 0b10;
+	if (usLDist > MAVI_ERROR_MARGIN_USL && usLDist <= refDistUSL) scanResult |= 0b01;
+	if (usRDist > MAVI_ERROR_MARGIN_USR && usRDist <= refDistUSR) scanResult |= 0b10;
 
 	switch (scanResult)
 	{
@@ -210,6 +210,11 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 	{
 		switch(id)
 		{
+			case MAVI_FEEDBACK_VIBRATE_CENTER:
+				cout << "Vibrate Center" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
+				break;
+
 			case MAVI_FEEDBACK_VIBRATE_LEFT:
 				cout << "Vibrate Left" << endl;
 				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
