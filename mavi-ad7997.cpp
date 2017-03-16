@@ -15,7 +15,8 @@ int adc; // AD7997 file descriptor
 
 inline int decruft_AD7997_result(int outcode)
 {
-	return (outcode >> 2) & ((1 << 10) - 1);
+	//~ return (outcode >> 2) & ((1 << 10) - 1);
+	cout << "this is a test";
 }
 
 void maviAD7997Init(void)
