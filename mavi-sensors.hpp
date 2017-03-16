@@ -34,11 +34,12 @@ void maviStopAllFilters(void);
 
 struct MaviSensorFilter
 {
-	MaviSensorID sensor;
+	int numSensors;
+	MaviSensorID *sensors;
 	unsigned int samplePeriod; // us
 	int bufferSize;
-	double *buffer;
-	double sampleSum;
+	double **buffers;
+	double *sampleSums;
 	bool running;
 	bool bufferFull;
 	pthread_t thread;
@@ -46,27 +47,22 @@ struct MaviSensorFilter
 	pthread_mutex_t  fullBufferLock;
 	pthread_cond_t   fullBufferCond;
 
-	MaviSensorFilter(MaviSensorID s, unsigned int per, int sz);
+	MaviSensorFilter(unsigned int period, int bsize, int n, ...);
 	~MaviSensorFilter(void);
 
-	inline MaviSensorID getSensor(void)       { return this->sensor;       }
 	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }
 	inline          int getBufferSize(void)   { return this->bufferSize;   }
 
-	MaviSensorID setSensor(MaviSensorID newSensor);
 	unsigned int setSamplePeriod(unsigned int newPeriod);
 	int setBufferSize(int newSize);
 
 	void startFiltering(void);
 	void stopFiltering(void);
-	double poll(void);
+	double poll(MaviSensorID sid);
 };
 
 extern MaviSensorFilter
-	maviIRSFilter,
-	maviIRMFilter,
-	maviIRLFilter,
-	maviUSLFilter,
-	maviUSRFilter;
+	maviIRFilter,
+	maviUSFilter;
 
 #endif
