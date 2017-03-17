@@ -222,7 +222,7 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 	this->sensors        = new MaviSensorID[n];
 	this->samplePeriod   = period;
 	this->bufferSize     = bsize;
-	this->buffers        = new double[n][bsize];
+	this->buffers        = new double*[n];
 	this->sampleSums     = new double[n];
 	this->running        = false;
 	this->bufferFull     = false;
@@ -234,6 +234,7 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 	{
 		this->sensors[i] = va_arg(args, MaviSensorID);
 		this->sampleSums[i] = 0.0;
+		this->buffers[i] = new double[bsize];
 
 		for (j = 0; j < bsize; j++)
 			this->buffers[i][j] = 0.0;
@@ -246,6 +247,10 @@ MaviSensorFilter::~MaviSensorFilter(void)
 {
 	this->running = false;
 	pthread_join(this->thread, NULL);
+
+	for (int i = 0; i < this->numSensors; i++)
+		delete[] this->buffers[i];
+
 	delete[] this->buffers;
 	delete[] this->sensors;
 	delete[] this->sampleSums;
