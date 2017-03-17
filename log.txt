@@ -35,16 +35,11 @@ mavi-sensors.cpp:173:12: error: ‘struct MaviSensorFilter’ has no member name
 mavi-sensors.cpp:205:3: note: in expansion of macro ‘takeSamples’
    takeSamples(i);
    ^
-mavi-sensors.cpp: In constructor ‘MaviSensorFilter::MaviSensorFilter(unsigned int, int, int, ...)’:
-mavi-sensors.cpp:225:44: error: array size in new-expression must be constant
-  this->buffers        = new double[n][bsize];
-                                            ^
-mavi-sensors.cpp:225:44: error: ‘bsize’ is not a constant expression
 mavi-sensors.cpp: In member function ‘int MaviSensorFilter::setBufferSize(int)’:
-mavi-sensors.cpp:269:64: error: array size in new-expression must be constant
+mavi-sensors.cpp:274:64: error: array size in new-expression must be constant
    this->buffers = new double[this->numSensors][this->bufferSize];
                                                                 ^
-mavi-sensors.cpp:269:64: error: ‘this’ is not a constant expression
+mavi-sensors.cpp:274:64: error: ‘this’ is not a constant expression
 In file included from /usr/include/c++/4.9/cstdarg:42:0,
                  from mavi-sensors.cpp:14:
 mavi-sensors.cpp: In constructor ‘MaviSensorFilter::MaviSensorFilter(unsigned int, int, int, ...)’:
