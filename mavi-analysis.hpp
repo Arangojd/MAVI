@@ -48,9 +48,9 @@ MaviSlopeKind maviSlopeScan(void);
 
 MaviMidRangeKind maviMidRangeScan(void);
 
-unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart);
+void maviSendFeedback(MaviFeedbackID id);
 
-void maviStairAssistance(void);
+void maviStairAssistance(MaviSlopeKind stair_slope);
 
 void maviMobilityAssistance(void);
 

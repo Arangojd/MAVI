@@ -20,6 +20,8 @@
 
 using namespace std;
 
+unsigned int analysisTimerStart, feedbackTimerStart;
+
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, relativeDif_IRS;
@@ -114,7 +116,7 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 }
 
-unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart)
+void maviSendFeedback(MaviFeedbackID id)
 {
 	// system notifications (always output but never reset timer)
 	switch(id)
@@ -122,17 +124,17 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 		case MAVI_FEEDBACK_SYSTEM_READY:
 			cout << "System Ready" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
-			return feedbackTimerStart;
+			return NULL;
 
 		case MAVI_FEEDBACK_SYSTEM_PAUSED:
 			cout << "System Paused" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
-			return feedbackTimerStart;
+			return NULL;
 
 		case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 			cout << "System Shutting Down" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
-			return feedbackTimerStart;
+			return NULL;
 
 		default:
 			break;
@@ -202,32 +204,27 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 			case MAVI_FEEDBACK_VIBRATE_LR:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-				maviAudioPlay(Mavi_AUDIO_VIBRATE_CENTER);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviAudioPlay(Mavi_AUDIO_VIBRATE_ALL);
 				break;
 
 			default:
 				cout << "No Feedback" << endl;
-				return feedbackTimerStart;
+				return NULL;
 		}
 	}
 	else if (t_elapsed >= MAVI_VIBRATION_OUTPUT_PERIOD)
@@ -251,32 +248,27 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 			case MAVI_FEEDBACK_VIBRATE_LR:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
 							cout << "Vibrate Both" << endl;
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+							maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
 							break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
 							cout << "Vibrate Both" << endl;
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+							maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
 							break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-				maviAudioPlay(Mavi_AUDIO_VIBRATE_CENTER);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviAudioPlay(Mavi_AUDIO_VIBRATE_ALL);
 				break;
 
 			default:
 				cout << "No Feedback" << endl;
-				return feedbackTimerStart;
+				return NULL;
 		}
 	}
 	else
@@ -317,16 +309,18 @@ unsigned int maviSendFeedback(MaviFeedbackID id, unsigned int feedbackTimerStart
 
 			default:
 				cout << "No Feedback" << endl;
-				return feedbackTimerStart;
+				return NULL;
 		}
 	}
 
-	return millis();
+	feedbackTimerStart = millis();
+
+	return NULL;
 }
 
 void maviMobilityAssistance(void)
 {
-	unsigned int analysisTimerStart, feedbackTimerStart, t_elapsed;
+	unsigned int t_elapsed;
 
 	feedbackTimerStart = 0;
 	analysisTimerStart = 0;
@@ -350,17 +344,17 @@ void maviMobilityAssistance(void)
 						{
 						case MAVI_MIDRANGE_BOTH:
 							cout << "Next Step: Nothing		Slope: Flat	Mid Range: Left & Right" << endl;
-							feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LR, feedbackTimerStart);
+							maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LR);
 							break;
 
 						case MAVI_MIDRANGE_LEFT:
 							cout << "Next Step: Nothing		Slope: Flat	Mid Range: Left" << endl;
-							feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT, feedbackTimerStart);
+							maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT);
 							break;
 
 						case MAVI_MIDRANGE_RIGHT:
 							cout << "Next Step: Nothing		Slope: Flat	Mid Range: Right" << endl;
-							feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT, feedbackTimerStart);
+							maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT);
 							break;
 
 						case MAVI_MIDRANGE_NOTHING:
@@ -378,22 +372,22 @@ void maviMobilityAssistance(void)
 						{
 							case MAVI_MIDRANGE_BOTH:
 								cout << "Next Step: Safe 	Slope: Other	Mid Range: Left & Right" << endl;
-								feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL, feedbackTimerStart);
+								maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
 								break;
 
 							case MAVI_MIDRANGE_LEFT:
 								cout << "Next Step: Safe 	Slope: Other	Mid Range: Left" << endl;
-								feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL, feedbackTimerStart);
+								maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
 								break;
 
 							case MAVI_MIDRANGE_RIGHT:
 								cout << "Next Step: Safe 	Slope: Other	Mid Range: Right" << endl;
-								feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR, feedbackTimerStart);
+								maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
 								break;
 
 							case MAVI_MIDRANGE_NOTHING:
 								cout << "Next Step: Safe 	Slope: Other	Mid Range: Nothing" << endl;
-								feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER, feedbackTimerStart);
+								maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 								break;
 
 							default:
@@ -404,12 +398,12 @@ void maviMobilityAssistance(void)
 
 					case MAVI_SLOPE_ASCENDING:
 						cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
 						break;
 
 					case MAVI_SLOPE_DESCENDING:
 						cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
 						break;
 
 					default:
@@ -423,28 +417,28 @@ void maviMobilityAssistance(void)
 				{
 					case MAVI_SLOPE_ASCENDING:
 						cout << "Next Step: Up	Slope: Ascending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTUP, feedbackTimerStart);
-						maviStairAssistance();
+						maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTUP);
+						maviStairAssistance(MAVI_SLOPE_ASCENDING);
 						break;
 
 					case MAVI_SLOPE_FLAT_STEP:
 						cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEUP, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEUP);
 						break;
 
 					case MAVI_SLOPE_DESCENDING:
 						cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					case MAVI_SLOPE_FLAT:
 						cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					case MAVI_SLOPE_OTHER:
 						cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					default:
@@ -458,28 +452,28 @@ void maviMobilityAssistance(void)
 				{
 					case MAVI_SLOPE_DESCENDING:
 						cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN, feedbackTimerStart);
-						maviStairAssistance();
+						maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN);
+						maviStairAssistance(MAVI_SLOPE_DESCENDING);
 						break;
 
 					case MAVI_SLOPE_FLAT_STEP:
 						cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEDOWN, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEDOWN);
 						break;
 
 					case MAVI_SLOPE_ASCENDING:
 						cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					case MAVI_SLOPE_FLAT:
 						cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					case MAVI_SLOPE_OTHER:
 						cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
-						feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 						break;
 
 					default:
@@ -490,7 +484,7 @@ void maviMobilityAssistance(void)
 
 			case MAVI_NEXTSTEP_OBSTACLE:
 				cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
-				feedbackTimerStart = maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD, feedbackTimerStart);
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:
@@ -501,10 +495,146 @@ void maviMobilityAssistance(void)
 		cout << endl;
 	}
 
+	return NULL;
 }
 
-void maviStairAssistance(void)
+void maviStairAssistance(MaviSlopeKind stair_slope)
 {
+	unsigned int t_elapsed;
+
+	while (maviGetState() == MAVI_STATE_RUNNING)
+	{
+		t_elapsed = millis() - analysisTimerStart;
+
+		if (t_elapsed < MAVI_ANALYSIS_SAMPLE_PERIOD)
+			delay(MAVI_ANALYSIS_SAMPLE_PERIOD - t_elapsed);
+
+		analysisTimerStart = millis();
+
+		switch (maviNextStepScan())
+		{
+			case MAVI_NEXTSTEP_NOTHING:
+				switch (maviSlopeScan())
+				{
+					case MAVI_SLOPE_FLAT:
+						cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
+						break;
+
+					case MAVI_SLOPE_OTHER:
+						cout << "Next Step: Safe 	Slope: Other	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
+						break;
+
+					case MAVI_SLOPE_ASCENDING:
+						cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
+						break;
+
+					case MAVI_SLOPE_DESCENDING:
+						cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
+						break;
+
+					default:
+						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+						break;
+				}
+				cout << endl;
+				return NULL;
+
+			case MAVI_NEXTSTEP_STEP_UP:
+				switch (maviSlopeScan())
+				{
+					case MAVI_SLOPE_ASCENDING:
+						if (stair_slope == MAVI_SLOPE_ASCENDING)
+							cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
+						else
+						{
+							cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
+							maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						}
+						break;
+
+					case MAVI_SLOPE_FLAT_STEP:
+						cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+						cout << endl;
+						return NULL;
+
+					case MAVI_SLOPE_DESCENDING:
+						cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					case MAVI_SLOPE_FLAT:
+						cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					case MAVI_SLOPE_OTHER:
+						cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					default:
+						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+						break;
+				}
+				break;
+
+			case MAVI_NEXTSTEP_STEP_DOWN:
+				switch (maviSlopeScan())
+				{
+					case MAVI_SLOPE_DESCENDING:
+						if (stair_slope == MAVI_SLOPE_DESCENDING)
+							cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
+						else
+						{
+							cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
+							maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						}
+						break;
+
+					case MAVI_SLOPE_FLAT_STEP:
+						cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+						cout << endl;
+						return NULL;
+
+					case MAVI_SLOPE_ASCENDING:
+						cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					case MAVI_SLOPE_FLAT:
+						cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					case MAVI_SLOPE_OTHER:
+						cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
+						maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+						break;
+
+					default:
+						cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+						break;
+				}
+				break;
+
+			case MAVI_NEXTSTEP_OBSTACLE:
+				cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid next step data.";
+				break;
+		}
+
+		cout << endl;
+	}
+
 	return NULL;
 }
 
@@ -519,7 +649,7 @@ void *maviSenseAndAnalyze(void* args)
 			if (maviGetState() == MAVI_STATE_PAUSED && pauseFeedbackFlag)
 			{
 				pauseFeedbackFlag = false;
-				maviSendFeedback(MAVI_FEEDBACK_SYSTEM_PAUSED, 0);
+				maviSendFeedback(MAVI_FEEDBACK_SYSTEM_PAUSED);
 			}
 
 			delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
@@ -530,7 +660,7 @@ void *maviSenseAndAnalyze(void* args)
 
 			maviStartAllFilters();
 
-			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY, 0);
+			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY);
 
 			maviMobilityAssistance();
 
@@ -539,7 +669,7 @@ void *maviSenseAndAnalyze(void* args)
 		}
 	}
 
-	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN, 0);
+	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN);
 
 	return NULL;
 }
