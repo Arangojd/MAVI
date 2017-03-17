@@ -1,0 +1,57 @@
+mavi-sensors.cpp: In function ‘void* filterRoutine(void*)’:
+mavi-sensors.cpp:168:57: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->sampleSums[j] += currentReading[j] - filter->buffer[j][k]; \
+                                                         ^
+mavi-sensors.cpp:190:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp:173:12: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->buffer[j][k] = currentReading[j];       \
+            ^
+mavi-sensors.cpp:190:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp:168:57: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->sampleSums[j] += currentReading[j] - filter->buffer[j][k]; \
+                                                         ^
+mavi-sensors.cpp:196:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp:173:12: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->buffer[j][k] = currentReading[j];       \
+            ^
+mavi-sensors.cpp:196:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp:168:57: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->sampleSums[j] += currentReading[j] - filter->buffer[j][k]; \
+                                                         ^
+mavi-sensors.cpp:205:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp:173:12: error: ‘struct MaviSensorFilter’ has no member named ‘buffer’
+    filter->buffer[j][k] = currentReading[j];       \
+            ^
+mavi-sensors.cpp:205:3: note: in expansion of macro ‘takeSamples’
+   takeSamples(i);
+   ^
+mavi-sensors.cpp: In constructor ‘MaviSensorFilter::MaviSensorFilter(unsigned int, int, int, ...)’:
+mavi-sensors.cpp:225:44: error: array size in new-expression must be constant
+  this->buffers        = new double[n][bsize];
+                                            ^
+mavi-sensors.cpp:225:44: error: ‘bsize’ is not a constant expression
+mavi-sensors.cpp: In member function ‘int MaviSensorFilter::setBufferSize(int)’:
+mavi-sensors.cpp:269:64: error: array size in new-expression must be constant
+   this->buffers = new double[this->numSensors][this->bufferSize];
+                                                                ^
+mavi-sensors.cpp:269:64: error: ‘this’ is not a constant expression
+In file included from /usr/include/c++/4.9/cstdarg:42:0,
+                 from mavi-sensors.cpp:14:
+mavi-sensors.cpp: In constructor ‘MaviSensorFilter::MaviSensorFilter(unsigned int, int, int, ...)’:
+mavi-sensors.cpp:235:35: warning: ‘MaviSensorID’ is promoted to ‘int’ when passed through ‘...’
+   this->sensors[i] = va_arg(args, MaviSensorID);
+                                   ^
+mavi-sensors.cpp:235:35: note: (so you should pass ‘int’ not ‘MaviSensorID’ to ‘va_arg’)
+mavi-sensors.cpp:235:35: note: if this code is reached, the program will abort
+make: *** [mavi-sensors.o] Error 1
+make: *** Waiting for unfinished jobs....

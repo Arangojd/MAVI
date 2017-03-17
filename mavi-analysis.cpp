@@ -26,7 +26,7 @@ MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, relativeDif_IRS;
 
-	irDist = maviIRSFilter.poll();
+	irDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
@@ -49,9 +49,9 @@ MaviSlopeKind maviSlopeScan(void)
 {
 	double irSDist, irMDist, irLDist, relativeDif_IRM, relativeDif_IRL, slope;
 
-	irSDist = maviIRSFilter.poll();
-	irMDist = maviIRMFilter.poll();
-	irLDist = maviIRLFilter.poll();
+	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
+	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
+	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
 
 	cout << "IR_M Distance: " << irMDist << endl;
 	cout << "IR_L Distance: " << irLDist << endl;
@@ -93,8 +93,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 	double usLDist, usRDist;
 
-	usLDist = maviUSLFilter.poll();
-	usRDist = maviUSRFilter.poll();
+	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
+	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
 
 	cout << "US_L Distance: " << usLDist << endl;
 	cout << "US_R Distance: " << usRDist << endl;
@@ -124,17 +124,17 @@ void maviSendFeedback(MaviFeedbackID id)
 		case MAVI_FEEDBACK_SYSTEM_READY:
 			cout << "System Ready" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
-			return NULL;
+			return;
 
 		case MAVI_FEEDBACK_SYSTEM_PAUSED:
 			cout << "System Paused" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
-			return NULL;
+			return;
 
 		case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 			cout << "System Shutting Down" << endl << endl;
 			maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
-			return NULL;
+			return;
 
 		default:
 			break;
@@ -219,12 +219,12 @@ void maviSendFeedback(MaviFeedbackID id)
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-				maviAudioPlay(Mavi_AUDIO_VIBRATE_ALL);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
 				break;
 
 			default:
 				cout << "No Feedback" << endl;
-				return NULL;
+				return;
 		}
 	}
 	else if (t_elapsed >= MAVI_VIBRATION_OUTPUT_PERIOD)
@@ -252,23 +252,23 @@ void maviSendFeedback(MaviFeedbackID id)
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
-							cout << "Vibrate Both" << endl;
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
-							break;
+				cout << "Vibrate Both" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
+				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
-							cout << "Vibrate Both" << endl;
-							maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
-							break;
+				cout << "Vibrate Both" << endl;
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
+				break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-				maviAudioPlay(Mavi_AUDIO_VIBRATE_ALL);
+				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
 				break;
 
 			default:
 				cout << "No Feedback" << endl;
-				return NULL;
+				return;
 		}
 	}
 	else
@@ -309,13 +309,13 @@ void maviSendFeedback(MaviFeedbackID id)
 
 			default:
 				cout << "No Feedback" << endl;
-				return NULL;
+				return;
 		}
 	}
 
 	feedbackTimerStart = millis();
 
-	return NULL;
+	return;
 }
 
 void maviMobilityAssistance(void)
@@ -495,7 +495,7 @@ void maviMobilityAssistance(void)
 		cout << endl;
 	}
 
-	return NULL;
+	return;
 }
 
 void maviStairAssistance(MaviSlopeKind stair_slope)
@@ -540,7 +540,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 						break;
 				}
 				cout << endl;
-				return NULL;
+				return;
 
 			case MAVI_NEXTSTEP_STEP_UP:
 				switch (maviSlopeScan())
@@ -559,7 +559,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 						cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
 						maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 						cout << endl;
-						return NULL;
+						return;
 
 					case MAVI_SLOPE_DESCENDING:
 						cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
@@ -599,7 +599,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 						cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
 						maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 						cout << endl;
-						return NULL;
+						return;
 
 					case MAVI_SLOPE_ASCENDING:
 						cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
@@ -635,7 +635,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		cout << endl;
 	}
 
-	return NULL;
+	return;
 }
 
 void *maviSenseAndAnalyze(void* args)

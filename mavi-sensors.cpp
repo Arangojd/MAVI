@@ -302,7 +302,7 @@ double MaviSensorFilter::poll(MaviSensorID sid)
 	double v;
 
 	for (sind = 0; sind < this->numSensors; sind++)
-		if (this->sensors[i] == sid) break;
+		if (this->sensors[sind] == sid) break;
 
 	if (sind == this->numSensors) return MAVI_INVALID_SENSOR_ID;
 

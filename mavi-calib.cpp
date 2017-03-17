@@ -43,9 +43,9 @@ int maviCalibration(void)
 
 	for (i=0; i < sample_count; i++)
 	{
-		irSDist += maviIRSFilter.poll();
-		irMDist += maviIRMFilter.poll();
-		irLDist += maviIRLFilter.poll();
+		irSDist += maviIRFilter.poll(MAVI_SENSOR_IRS);
+		irMDist += maviIRFilter.poll(MAVI_SENSOR_IRM);
+		irLDist += maviIRFilter.poll(MAVI_SENSOR_IRL);
 	}
 
 	irSDist = irSDist/sample_count;
