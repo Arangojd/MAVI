@@ -165,12 +165,12 @@ void *filterRoutine(void *arg)
 		pthread_rwlock_wrlock(&filter->sumLock);								\
 																				\
 		for (j = 0; j < filter->numSensors; j++)								\
-			filter->sampleSums[j] += currentReading[j] - filter->buffer[j][k];	\
+			filter->sampleSums[j] += currentReading[j] - filter->buffers[j][k];	\
 																				\
 		pthread_rwlock_unlock(&filter->sumLock);								\
 																				\
 		for (j = 0; j < filter->numSensors; j++)								\
-			filter->buffer[j][k] = currentReading[j];							\
+			filter->buffers[j][k] = currentReading[j];							\
 	}
 
 	#define waitForNext()									\
@@ -206,7 +206,7 @@ void *filterRoutine(void *arg)
 		waitForNext();
 	}
 
-	#undef takeSample
+	#undef takeSamples
 	#undef waitForNext
 
 	return NULL;
@@ -232,7 +232,7 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 
 	for (i = 0; i < n; i++)
 	{
-		this->sensors[i] = va_arg(args, MaviSensorID);
+		this->sensors[i] = va_arg(args, int);
 		this->sampleSums[i] = 0.0;
 		this->buffers[i] = new double[bsize];
 
@@ -257,24 +257,6 @@ MaviSensorFilter::~MaviSensorFilter(void)
 	pthread_rwlock_destroy(&this->sumLock);
 	pthread_mutex_destroy(&this->fullBufferLock);
 	pthread_cond_destroy(&this->fullBufferCond);
-}
-
-unsigned int MaviSensorFilter::setSamplePeriod(unsigned int newPeriod)
-{
-	if (!this->running) this->samplePeriod = newPeriod;
-	return this->samplePeriod;
-}
-
-int MaviSensorFilter::setBufferSize(int newSize)
-{
-	if (!this->running)
-	{
-		this->bufferSize = newSize;
-		delete[] this->buffers;
-		this->buffers = new double[this->numSensors][this->bufferSize];
-	}
-
-	return this->bufferSize;
 }
 
 void MaviSensorFilter::startFiltering(void)

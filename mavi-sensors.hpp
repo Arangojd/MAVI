@@ -53,9 +53,6 @@ struct MaviSensorFilter
 	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }
 	inline          int getBufferSize(void)   { return this->bufferSize;   }
 
-	unsigned int setSamplePeriod(unsigned int newPeriod);
-	int setBufferSize(int newSize);
-
 	void startFiltering(void);
 	void stopFiltering(void);
 	double poll(MaviSensorID sid);
