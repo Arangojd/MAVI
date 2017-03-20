@@ -219,6 +219,7 @@ void maviMobilityAssistance(void)
 			case MAVI_SLOPE_ASCENDING:
 				cout << "Next Step: Up	Slope: Ascending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTUP);
+				cout << "STARTING STAIR ASSISTANCE" << endl;
 				maviStairAssistance(MAVI_SLOPE_ASCENDING);
 				break;
 
@@ -254,6 +255,7 @@ void maviMobilityAssistance(void)
 			case MAVI_SLOPE_DESCENDING:
 				cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN);
+				cout << "STARTING STAIR ASSISTANCE" << endl;
 				maviStairAssistance(MAVI_SLOPE_DESCENDING);
 				break;
 
