@@ -48,8 +48,6 @@ MaviSlopeKind maviSlopeScan(void);
 
 MaviMidRangeKind maviMidRangeScan(void);
 
-void maviSendFeedback(MaviFeedbackID id);
-
 void maviStairAssistance(MaviSlopeKind stair_slope);
 
 void maviMobilityAssistance(void);

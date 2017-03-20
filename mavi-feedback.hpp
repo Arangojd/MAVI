@@ -8,6 +8,8 @@
 #ifndef MAVI_FEEDBACK_HPP
 #define MAVI_FEEDBACK_HPP
 
+extern unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
+
 enum MaviFeedbackID
 {
 		MAVI_FEEDBACK_BTN_CALIB,
@@ -41,6 +43,6 @@ enum MaviFeedbackID
 		MAVI_FEEDBACK_WARNING_SENSORFAILURE
 };
 
-void *maviProvideFeedback(void*);
+void maviSendFeedback(MaviFeedbackID id);
 
 #endif
