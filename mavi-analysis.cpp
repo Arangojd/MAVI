@@ -62,8 +62,7 @@ MaviSlopeKind maviSlopeScan(void)
 	relativeDif_IRM = refDistIRM - irMDist;
 	relativeDif_IRL = refDistIRL - irLDist;
 
-	//~ if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
-	if (relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
+	if (relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL) // && relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM)
 		return MAVI_SLOPE_DESCENDING;
 
 	slope = maviGetSlope(irSDist, irMDist, irLDist);
