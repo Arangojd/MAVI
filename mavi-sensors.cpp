@@ -232,7 +232,7 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 
 	for (i = 0; i < n; i++)
 	{
-		this->sensors[i] = va_arg(args, int);
+		this->sensors[i] = (MaviSensorFilter)va_arg(args, int);
 		this->sampleSums[i] = 0.0;
 		this->buffers[i] = new double[bsize];
 
