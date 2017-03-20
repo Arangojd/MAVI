@@ -9,13 +9,13 @@
 #ifndef MAVI_VIBRATION_HPP
 #define MAVI_VIBRATION_HPP
 
-enum MaviVibratorID
-{
-	MAVI_VIB_L,
-	MAVI_VIB_C,
-	MAVI_VIB_R
-};
+typedef int MaviVibratorID;
 
-void maviVibrate(MaviVibratorID vibrator, double force, unsigned int duration);
+const MaviVibratorID
+	MAVI_VIB_L = 0b100,
+	MAVI_VIB_C = 0b010,
+	MAVI_VIB_R = 0b001;
+
+void maviVibrate(MaviVibratorID vibrators, double force, unsigned int duration);
 
 #endif
