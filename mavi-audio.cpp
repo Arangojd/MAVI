@@ -5,13 +5,15 @@
  * ...
  */
 
+#include <iostream>
 #include <cstdlib>
-#include <cstring>
 
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include "mavi-audio.hpp"
+
+using namespace std;
 
 const MaviAudioID
 	MAVI_AUDIO_BTN_CALIB = "audio/mavi-button-calibration.wav",
@@ -44,19 +46,22 @@ const MaviAudioID
 	MAVI_AUDIO_WARNING_NONOPERATIONAL = "audio/mavi-warning-nonoperational.wav",
 	MAVI_AUDIO_WARNING_SENSORFAILURE = "audio/mavi-warning-sensor-failure.wav";
 
-int maviAudioPlay(MaviAudioID audioFile)
+void maviAudioPlay(MaviAudioID audioFile)
 {
-	pid_t pid = vfork();
+	static pid_t playerPID;
 
-	if (pid == 0)
+	waitpid(playerPID, NULL, 0);
+	playerPID = vfork();
+
+	if (pid < 0)
 	{
-		execlp("aplay", "aplay", "-q", audioFile, NULL);
+		cerr << "Fork failed in maviAudioPlay" << endl << endl;
 		exit(-1);
 	}
-	else
+	else if (pid == 0)
 	{
-		waitpid(pid, NULL, 0);
+		execlp("aplay", "aplay", "-q", audioFile, NULL);
+		cerr << "Exec failed in maviAudioPlay" << endl << endl;
+		exit(-1);
 	}
-
-	return 0;
 }
