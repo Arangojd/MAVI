@@ -214,7 +214,6 @@ void *filterRoutine(void *arg)
 
 MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 {
-	int i, j;
 	va_list args;
 	va_start(args, n);
 
@@ -230,14 +229,10 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 	this->fullBufferLock = PTHREAD_MUTEX_INITIALIZER;
 	this->fullBufferCond = PTHREAD_COND_INITIALIZER;
 
-	for (i = 0; i < n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		this->sensors[i] = (MaviSensorFilter)va_arg(args, int);
-		this->sampleSums[i] = 0.0;
 		this->buffers[i] = new double[bsize];
-
-		for (j = 0; j < bsize; j++)
-			this->buffers[i][j] = 0.0;
 	}
 
 	va_end(args);
