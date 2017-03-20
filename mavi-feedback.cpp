@@ -44,37 +44,44 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			case MAVI_FEEDBACK_VIBRATE_CENTER:
 				cout << "Vibrate Center" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
+				maviVibrate(MAVI_VIB_C);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LEFT:
 				cout << "Vibrate Left" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
+				maviVibrate(MAVI_VIB_L);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_RIGHT:
 				cout << "Vibrate Right" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
+				maviVibrate(MAVI_VIB_R);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LR:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
+				maviVibrate(MAVI_VIB_L | MAVI_VIB_R);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
 				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_R);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
+//				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R);
 				break;
 
 			default:
@@ -82,7 +89,7 @@ void maviSendFeedback(MaviFeedbackID id)
 				return;
 		}
 		// Uncomment the line below when vibration motors are ready for use
-		//t_lastVibrationOutput = millis();
+		t_lastVibrationOutput = millis();
 	}
 	else if ((t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
 	{
@@ -127,41 +134,6 @@ void maviSendFeedback(MaviFeedbackID id)
 			case MAVI_FEEDBACK_STAIRS_DESC:
 				cout << "Stairs Ahead: Descending" << endl;
 				maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_CENTER:
-				cout << "Vibrate Center" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_LEFT:
-				cout << "Vibrate Left" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_RIGHT:
-				cout << "Vibrate Right" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_LR:
-				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_CL:
-				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_CR:
-				cout << "Vibrate Both" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
-				break;
-
-			case MAVI_FEEDBACK_VIBRATE_ALL:
-				cout << "Vibrate All" << endl;
-				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
 				break;
 
 			default:
@@ -214,6 +186,6 @@ void maviSendFeedback(MaviFeedbackID id)
 		t_lastVerbalOutput = millis();
 	}
 
-	t_lastVibrationOutput = millis(); //delete this when vibration motors are ready for use
+	//t_lastVibrationOutput = millis(); //delete this when vibration motors are ready for use
 }
 
