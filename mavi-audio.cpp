@@ -53,12 +53,12 @@ void maviAudioPlay(MaviAudioID audioFile)
 	waitpid(playerPID, NULL, 0);
 	playerPID = vfork();
 
-	if (pid < 0)
+	if (playerPID < 0)
 	{
 		cerr << "Fork failed in maviAudioPlay" << endl << endl;
 		exit(-1);
 	}
-	else if (pid == 0)
+	else if (playerPID == 0)
 	{
 		execlp("aplay", "aplay", "-q", audioFile, NULL);
 		cerr << "Exec failed in maviAudioPlay" << endl << endl;

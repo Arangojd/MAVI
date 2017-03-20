@@ -6,8 +6,14 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include <wiringPi.h>
 
 #include "mavi-feedback.hpp"
+#include "mavi-audio.hpp"
+#include "mavi-vibration.hpp"
+
+using namespace std;
 
 unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
@@ -45,43 +51,43 @@ void maviSendFeedback(MaviFeedbackID id)
 			case MAVI_FEEDBACK_VIBRATE_CENTER:
 				cout << "Vibrate Center" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				maviVibrate(MAVI_VIB_C);
+				maviVibrate(MAVI_VIB_C, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LEFT:
 				cout << "Vibrate Left" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviVibrate(MAVI_VIB_L);
+				maviVibrate(MAVI_VIB_L, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_RIGHT:
 				cout << "Vibrate Right" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-				maviVibrate(MAVI_VIB_R);
+				maviVibrate(MAVI_VIB_R, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LR:
 				cout << "Vibrate Both" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
-				maviVibrate(MAVI_VIB_L | MAVI_VIB_R);
+				maviVibrate(MAVI_VIB_L | MAVI_VIB_R, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
 				cout << "Vibrate Both" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_L);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
 				cout << "Vibrate Both" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_R);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_R, 1.0, 1000);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
 //				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, 1.0, 1000);
 				break;
 
 			default:

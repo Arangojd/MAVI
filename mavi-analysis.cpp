@@ -12,15 +12,15 @@
 #include <cmath>
 
 #include "mavi-analysis.hpp"
+#include "mavi-feedback.hpp"
 #include "mavi-sensors.hpp"
-#include "mavi-audio.hpp"
 #include "mavi-calib.hpp"
 #include "mavi-state.hpp"
 #include "mavi-math.hpp"
 
 using namespace std;
 
-unsigned int t_analysisStart,
+unsigned int t_analysisStart;
 
 MaviNextStepKind maviNextStepScan(void)
 {
@@ -62,7 +62,8 @@ MaviSlopeKind maviSlopeScan(void)
 	relativeDif_IRM = refDistIRM - irMDist;
 	relativeDif_IRL = refDistIRL - irLDist;
 
-	if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
+	//~ if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
+	if (relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
 		return MAVI_SLOPE_DESCENDING;
 
 	slope = maviGetSlope(irSDist, irMDist, irLDist);

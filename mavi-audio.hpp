@@ -41,6 +41,6 @@ extern const MaviAudioID
 	MAVI_AUDIO_WARNING_NONOPERATIONAL,
 	MAVI_AUDIO_WARNING_SENSORFAILURE;
 
-int maviAudioPlay(MaviAudioID audioFile);
+void maviAudioPlay(MaviAudioID audioFile);
 
 #endif
