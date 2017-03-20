@@ -39,7 +39,7 @@ MaviNextStepKind maviNextStepScan(void)
 		return MAVI_NEXTSTEP_NOTHING;
 	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
 		return MAVI_NEXTSTEP_STEP_UP;
-	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
+	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN) // && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
 		return MAVI_NEXTSTEP_STEP_DOWN;
 	else
 		return MAVI_NEXTSTEP_OBSTACLE;
@@ -71,7 +71,7 @@ MaviSlopeKind maviSlopeScan(void)
 
 	if (abs(slope) < MAVI_ERROR_MARGIN_SLOPE)
 	{
-		if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= MAVI_STAIR_HEIGHT_MAX)
+		if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 1.2 * MAVI_STAIR_HEIGHT_MAX)
 			return MAVI_SLOPE_FLAT_STEP;
 		else
 			return MAVI_SLOPE_FLAT;
