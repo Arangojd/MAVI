@@ -20,7 +20,7 @@
 
 using namespace std;
 
-unsigned int t_analysisStart;
+unsigned int t_analysisStart,
 
 MaviNextStepKind maviNextStepScan(void)
 {
@@ -62,7 +62,7 @@ MaviSlopeKind maviSlopeScan(void)
 	relativeDif_IRM = refDistIRM - irMDist;
 	relativeDif_IRL = refDistIRL - irLDist;
 
-	if (relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL) // && relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM)
+	if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
 		return MAVI_SLOPE_DESCENDING;
 
 	slope = maviGetSlope(irSDist, irMDist, irLDist);
