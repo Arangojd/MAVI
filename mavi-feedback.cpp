@@ -15,6 +15,7 @@
 
 using namespace std;
 
+bool resetTimer;
 unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
 void maviSendFeedback(MaviFeedbackID id)
@@ -50,54 +51,51 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			case MAVI_FEEDBACK_VIBRATE_CENTER:
 				cout << "Vibrate Center" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CENTER);
-				maviVibrate(MAVI_VIB_C, 1.0, 1000);
+				maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LEFT:
 				cout << "Vibrate Left" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_LEFT);
-				maviVibrate(MAVI_VIB_L, 1.0, 1000);
+				maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_RIGHT:
 				cout << "Vibrate Right" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_RIGHT);
-				maviVibrate(MAVI_VIB_R, 1.0, 1000);
+				maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_LR:
 				cout << "Vibrate Both" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_LR);
-				maviVibrate(MAVI_VIB_L | MAVI_VIB_R, 1.0, 1000);
+				maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CL:
 				cout << "Vibrate Both" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CL);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_L, 1.0, 1000);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_CR:
 				cout << "Vibrate Both" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_CR);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_R, 1.0, 1000);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
 				break;
 
 			case MAVI_FEEDBACK_VIBRATE_ALL:
 				cout << "Vibrate All" << endl;
-//				maviAudioPlay(MAVI_AUDIO_VIBRATE_ALL);
-				maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, 1.0, 1000);
+				maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
 				break;
 
 			default:
-				cout << "No Feedback" << endl;
-				return;
+				resetTimer = false;
+				break;
 		}
-		// Uncomment the line below when vibration motors are ready for use
-		t_lastVibrationOutput = millis();
+
+		if (resetFlag)
+			t_lastVibrationOutput = millis();
+		else
+			resetTimer = true;
 	}
-	else if ((t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
+
+	if ((t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
 	{
 		// normal notifications (only output periodically and reset timer)
 		switch(id)
@@ -143,11 +141,14 @@ void maviSendFeedback(MaviFeedbackID id)
 				break;
 
 			default:
-				cout << "No Feedback" << endl;
-				return;
+				resetTimer = false;
+				break;
 		}
 
-		t_lastVerbalOutput = millis();
+		if (resetTimer)
+			t_lastVerbalOutput = millis();
+		else
+			resetTimer = true;
 	}
 	else
 	{
@@ -185,13 +186,14 @@ void maviSendFeedback(MaviFeedbackID id)
 				break;
 
 			default:
-				cout << "No Feedback" << endl;
-				return;
+				resetTimer = false;
+				break;
 		}
 
-		t_lastVerbalOutput = millis();
+		if (resetTimer)
+			t_lastVerbalOutput = millis();
+		else
+			resetTimer = true;
 	}
-
-	//t_lastVibrationOutput = millis(); //delete this when vibration motors are ready for use
 }
 

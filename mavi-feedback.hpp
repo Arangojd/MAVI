@@ -44,7 +44,8 @@ enum MaviFeedbackID
 extern unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
 const unsigned int MAVI_VERBAL_OUTPUT_PERIOD    = 2000; // ms
-const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 1000; // ms
+const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 750; // ms
+const unsigned int MAVI_VIBRATION_DURATION = 500; // ms
 
 void maviSendFeedback(MaviFeedbackID id);
 
