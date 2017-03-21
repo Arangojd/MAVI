@@ -364,7 +364,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
 				break;
 
-			case MAVI_SLOPE_OTHER:
+			case MAVI_SLOPE_FLAT_STEP:
 				cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 				break;
