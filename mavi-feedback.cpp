@@ -89,7 +89,7 @@ void maviSendFeedback(MaviFeedbackID id)
 				break;
 		}
 
-		if (resetFlag)
+		if (resetTimer)
 			t_lastVibrationOutput = millis();
 		else
 			resetTimer = true;
