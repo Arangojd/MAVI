@@ -20,11 +20,12 @@
 
 using namespace std;
 
-unsigned int t_analysisStart,
+unsigned int t_analysisStart;
 
 MaviNextStepKind maviNextStepScan(void)
 {
 	double irDist, relativeDif_IRS;
+	unsigned int t_current = millis();
 
 	irDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
@@ -51,6 +52,7 @@ MaviNextStepKind maviNextStepScan(void)
 MaviSlopeKind maviSlopeScan(void)
 {
 	double irSDist, irMDist, irLDist, relativeDif_IRM, relativeDif_IRL, slope;
+	unsigned int t_current = millis();
 
 	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
@@ -98,8 +100,8 @@ MaviSlopeKind maviSlopeScan(void)
 MaviMidRangeKind maviMidRangeScan(void)
 {
 	int scanResult = 0;
-
 	double usLDist, usRDist;
+	unsigned int t_current = millis();
 
 	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
 	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
