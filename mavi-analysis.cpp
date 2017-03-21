@@ -32,8 +32,6 @@ MaviNextStepKind maviNextStepScan(void)
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
 
-	unsigned int t_current = millis();
-
 	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
 		cout << "IR_S Distance: " << irDist << endl;
 
