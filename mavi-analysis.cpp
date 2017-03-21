@@ -168,6 +168,35 @@ void maviMobilityAssistance(void)
 				}
 				break;
 
+			case MAVI_SLOPE_FLAT_STEP:
+				switch (maviMidRangeScan())
+				{
+				case MAVI_MIDRANGE_BOTH:
+					cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Left & Right" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
+					break;
+
+				case MAVI_MIDRANGE_LEFT:
+					cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Left" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
+					break;
+
+				case MAVI_MIDRANGE_RIGHT:
+					cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Right" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
+					break;
+
+				case MAVI_MIDRANGE_NOTHING:
+					cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Nothing" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
+					break;
+
+				default:
+					cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
+					break;
+				}
+				break;
+
 			case MAVI_SLOPE_OTHER:
 				switch (maviMidRangeScan())
 				{
@@ -321,6 +350,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			{
 			case MAVI_SLOPE_FLAT:
 				cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 				break;
 
 			case MAVI_SLOPE_OTHER:
