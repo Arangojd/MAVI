@@ -31,7 +31,10 @@ MaviNextStepKind maviNextStepScan(void)
 	if (irDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
 
-	cout << "IR_S Distance: " << irDist << endl;
+	unsigned int t_current = millis();
+
+	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
+		cout << "IR_S Distance: " << irDist << endl;
 
 	relativeDif_IRS = refDistIRS - irDist;
 
@@ -53,8 +56,11 @@ MaviSlopeKind maviSlopeScan(void)
 	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
 	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
 
-	cout << "IR_M Distance: " << irMDist << endl;
-	cout << "IR_L Distance: " << irLDist << endl;
+	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
+	{
+		cout << "IR_M Distance: " << irMDist << endl;
+		cout << "IR_L Distance: " << irLDist << endl;
+	}
 
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
@@ -98,8 +104,12 @@ MaviMidRangeKind maviMidRangeScan(void)
 	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
 	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
 
-	cout << "US_L Distance: " << usLDist << endl;
-	cout << "US_R Distance: " << usRDist << endl;
+	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
+	{
+		cout << "US_L Distance: " << usLDist << endl;
+		cout << "US_R Distance: " << usRDist << endl;
+	}
+
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
