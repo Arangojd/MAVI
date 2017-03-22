@@ -76,16 +76,22 @@ int maviCalibration(void)
 
 void maviSaveCalibration(void)
 {
-	fstream calibfile("calib.dat", ios_base::out | ios_base::binary);
-	calibfile << refDistIRS << refDistIRM << refDistIRL;
+	fstream calibfile("calib.dat", ios_base::out);
+	calibfile << refDistIRS << ' ' << refDistIRM << ' ' << refDistIRL;
 	calibfile.close();
 }
 
 void maviLoadCalibration(void)
 {
-	fstream calibfile("calib.dat", ios_base::in | ios_base::binary);
+	fstream calibfile("calib.dat", ios_base::in);
 	if (calibfile.fail()) return;
 	calibfile >> refDistIRS >> refDistIRM >> refDistIRL;
 	calibfile.close();
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
+
+	cout <<
+		"IRS   = " << refDistIRS << endl <<
+		"IRM   = " << refDistIRM << endl <<
+		"IRL   = " << refDistIRL << endl <<
+		"SLOPE = " << refSlope   << endl << endl;
 }
