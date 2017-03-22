@@ -26,7 +26,6 @@ double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, slope = 0, usLDist = -1.0
 MaviNextStepKind maviNextStepScan(void)
 {
 	double relativeDif_IRS;
-	unsigned int t_current = millis();
 
 	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
@@ -48,7 +47,6 @@ MaviNextStepKind maviNextStepScan(void)
 MaviSlopeKind maviSlopeScan(void)
 {
 	double relativeDif_IRM, relativeDif_IRL;
-	unsigned int t_current = millis();
 
 	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
 	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
@@ -87,7 +85,6 @@ MaviSlopeKind maviSlopeScan(void)
 MaviMidRangeKind maviMidRangeScan(void)
 {
 	int scanResult = 0;
-	unsigned int t_current = millis();
 
 	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
 	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
@@ -107,6 +104,156 @@ MaviMidRangeKind maviMidRangeScan(void)
 		default:   return MAVI_MIDRANGE_ERROR;
 	}
 
+}
+void maviStairAssistance(MaviSlopeKind stair_slope)
+{
+	unsigned int t_elapsed;
+
+	while (maviGetState() == MAVI_STATE_RUNNING)
+	{
+		t_elapsed = millis() - t_analysisStart;
+
+		if (t_elapsed < MAVI_ANALYSIS_SAMPLE_PERIOD)
+			delay(MAVI_ANALYSIS_SAMPLE_PERIOD - t_elapsed);
+
+		t_analysisStart = millis();
+
+		switch (maviNextStepScan())
+		{
+		case MAVI_NEXTSTEP_NOTHING:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_FLAT:
+				cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
+				break;
+
+			case MAVI_SLOPE_FLAT_STEP:
+				cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next Step: Safe 	Slope: Other	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
+				break;
+
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
+				break;
+
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			cout << endl;
+			return;
+
+		case MAVI_NEXTSTEP_STEP_UP:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_ASCENDING:
+				if (stair_slope == MAVI_SLOPE_ASCENDING)
+				{
+					cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
+				}
+				else
+				{
+					cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				}
+
+				break;
+
+			case MAVI_SLOPE_FLAT_STEP:
+				cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+				cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+				return;
+
+			case MAVI_SLOPE_DESCENDING:
+				cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			break;
+
+		case MAVI_NEXTSTEP_STEP_DOWN:
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_DESCENDING:
+				if (stair_slope == MAVI_SLOPE_DESCENDING)
+					cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
+				else
+				{
+					cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
+					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				}
+				break;
+
+			case MAVI_SLOPE_FLAT_STEP:
+				cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+				cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+				return;
+
+			case MAVI_SLOPE_ASCENDING:
+				cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			case MAVI_SLOPE_OTHER:
+				cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				break;
+			}
+
+			break;
+
+		case MAVI_NEXTSTEP_OBSTACLE:
+			cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
+			maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+			break;
+
+		default:
+			cout << "Sensing and Analysis Error: Received invalid next step data.";
+			break;
+		}
+
+		cout << endl;
+	}
+
+	return;
 }
 
 void maviMobilityAssistance(void)
@@ -303,157 +450,6 @@ void maviMobilityAssistance(void)
 				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
 				break;
 			}
-			break;
-
-		case MAVI_NEXTSTEP_OBSTACLE:
-			cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
-			maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-			break;
-
-		default:
-			cout << "Sensing and Analysis Error: Received invalid next step data.";
-			break;
-		}
-
-		cout << endl;
-	}
-
-	return;
-}
-
-void maviStairAssistance(MaviSlopeKind stair_slope)
-{
-	unsigned int t_elapsed;
-
-	while (maviGetState() == MAVI_STATE_RUNNING)
-	{
-		t_elapsed = millis() - t_analysisStart;
-
-		if (t_elapsed < MAVI_ANALYSIS_SAMPLE_PERIOD)
-			delay(MAVI_ANALYSIS_SAMPLE_PERIOD - t_elapsed);
-
-		t_analysisStart = millis();
-
-		switch (maviNextStepScan())
-		{
-		case MAVI_NEXTSTEP_NOTHING:
-			switch (maviSlopeScan())
-			{
-			case MAVI_SLOPE_FLAT:
-				cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
-				break;
-
-			case MAVI_SLOPE_FLAT_STEP:
-				cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-				break;
-
-			case MAVI_SLOPE_OTHER:
-				cout << "Next Step: Safe 	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-				break;
-
-			case MAVI_SLOPE_ASCENDING:
-				cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
-				break;
-
-			case MAVI_SLOPE_DESCENDING:
-				cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
-				break;
-
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
-
-			cout << endl;
-			return;
-
-		case MAVI_NEXTSTEP_STEP_UP:
-			switch (maviSlopeScan())
-			{
-			case MAVI_SLOPE_ASCENDING:
-				if (stair_slope == MAVI_SLOPE_ASCENDING)
-				{
-					cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
-				}
-				else
-				{
-					cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
-					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				}
-
-				break;
-
-			case MAVI_SLOPE_FLAT_STEP:
-				cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-				cout << endl;
-				return;
-
-			case MAVI_SLOPE_DESCENDING:
-				cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			case MAVI_SLOPE_FLAT:
-				cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			case MAVI_SLOPE_OTHER:
-				cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
-
-			break;
-
-		case MAVI_NEXTSTEP_STEP_DOWN:
-			switch (maviSlopeScan())
-			{
-			case MAVI_SLOPE_DESCENDING:
-				if (stair_slope == MAVI_SLOPE_DESCENDING)
-					cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
-				else
-				{
-					cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
-					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				}
-				break;
-
-			case MAVI_SLOPE_FLAT_STEP:
-				cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-				cout << endl;
-				return;
-
-			case MAVI_SLOPE_ASCENDING:
-				cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			case MAVI_SLOPE_FLAT:
-				cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			case MAVI_SLOPE_OTHER:
-				cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				break;
-
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
-
 			break;
 
 		case MAVI_NEXTSTEP_OBSTACLE:
