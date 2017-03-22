@@ -68,8 +68,9 @@ MaviSlopeKind maviSlopeScan(void)
 		else
 			return MAVI_SLOPE_FLAT;
 	}
-	else if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL >= MAVI_STAIR_HEIGHT_MIN
-			&& abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
+	else if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 2 * MAVI_STAIR_HEIGHT_MAX &&
+			 relativeDif_IRL >= 2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL <= 4 * MAVI_STAIR_HEIGHT_MAX &&
+			 abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
 	{
 		if (slope > 0)
 			return MAVI_SLOPE_ASCENDING;
