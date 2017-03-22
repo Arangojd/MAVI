@@ -46,17 +46,23 @@ const MaviAudioID
 	MAVI_AUDIO_WARNING_NONOPERATIONAL = "audio/mavi-warning-nonoperational.wav",
 	MAVI_AUDIO_WARNING_SENSORFAILURE = "audio/mavi-warning-sensor-failure.wav";
 
-void maviAudioPlay(MaviAudioID audioFile)
+void maviAudioPlay(MaviAudioID audioFile, bool critical)
 {
-	static pid_t playerPID;
+	static pid_t playerPID = 0;
 
-	waitpid(playerPID, NULL, 0);
+	if (playerPID != 0)
+	{
+		if (critical)
+			kill(playerPID, SIGTERM);
+		else
+			waitpid(playerPID, NULL, 0);
+	}
+
 	playerPID = vfork();
 
 	if (playerPID < 0)
 	{
 		cerr << "Fork failed in maviAudioPlay" << endl << endl;
-		exit(-1);
 	}
 	else if (playerPID == 0)
 	{
