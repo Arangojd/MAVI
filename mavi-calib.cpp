@@ -88,10 +88,4 @@ void maviLoadCalibration(void)
 	calibfile >> refDistIRS >> refDistIRM >> refDistIRL;
 	calibfile.close();
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
-
-	cout <<
-		"IRS   = " << refDistIRS << endl <<
-		"IRM   = " << refDistIRM << endl <<
-		"IRL   = " << refDistIRL << endl <<
-		"SLOPE = " << refSlope   << endl << endl;
 }

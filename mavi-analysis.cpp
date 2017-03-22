@@ -247,9 +247,9 @@ void maviMobilityAssistance(void)
 {
 	unsigned int t_elapsed;
 
-	t_analysisStart = 0;
-	t_lastVerbalOutput = 0;
-	t_lastVibrationOutput = 0;
+	t_analysisStart = millis();
+	t_lastVerbalOutput = millis();
+	t_lastVibrationOutput = millis();
 
 	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY);
 
@@ -479,8 +479,6 @@ void *maviSenseAndAnalyze(void* args)
 			maviStopAllFilters();
 		}
 	}
-
-	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN);
 
 	return NULL;
 }

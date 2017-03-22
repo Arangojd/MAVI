@@ -16,7 +16,7 @@
 
 using namespace std;
 
-bool resetTimer;
+bool resetTimer = true;
 unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
 void maviDebugDataOutput(MaviFeedbackID id)
@@ -151,7 +151,7 @@ void maviSendFeedback(MaviFeedbackID id)
 	{
 	case MAVI_FEEDBACK_SYSTEM_READY:
 		cout << "System Ready" << endl << endl;
-		maviAudioPlay(MAVI_AUDIO_SYSTEM_READY);
+		maviAudioPlay(MAVI_AUDIO_SYSTEM_READY, MAVI_APRI_HI);
 		return;
 
 	case MAVI_FEEDBACK_SYSTEM_PAUSED:
@@ -162,6 +162,7 @@ void maviSendFeedback(MaviFeedbackID id)
 	case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 		cout << "System Shutting Down" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
 		return;
 
 	default:
