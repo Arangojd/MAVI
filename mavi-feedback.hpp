@@ -8,6 +8,10 @@
 #ifndef MAVI_FEEDBACK_HPP
 #define MAVI_FEEDBACK_HPP
 
+const unsigned int MAVI_VERBAL_OUTPUT_PERIOD = 2000; // ms
+const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 750; // ms
+const unsigned int MAVI_VIBRATION_DURATION = 500; // ms
+
 enum MaviFeedbackID
 {
 		MAVI_FEEDBACK_BTN_CALIB,
@@ -41,12 +45,7 @@ enum MaviFeedbackID
 		MAVI_FEEDBACK_WARNING_SENSORFAILURE
 };
 
-extern unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
-
-const unsigned int MAVI_VERBAL_OUTPUT_PERIOD    = 2000; // ms
-const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 750; // ms
-const unsigned int MAVI_VIBRATION_DURATION = 500; // ms
-
+void maviDebugDataOutput(MaviFeedbackID id);
 void maviSendFeedback(MaviFeedbackID id);
 
 #endif

@@ -10,6 +10,8 @@
 
 #include "mavi-sensors.hpp"
 
+extern double irSDist, irMDist, irLDist, slope, usLDist, usRDist;
+
 const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = MAVI_IR_FILTER_PERIOD * MAVI_IR_FILTER_BUFSIZE; // ms
 
 enum MaviNextStepKind

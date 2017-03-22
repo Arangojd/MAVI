@@ -21,21 +21,25 @@
 using namespace std;
 
 unsigned int t_analysisStart;
+double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, slope = 0, usLDist = -1.0, usRDist = -1.0;
 
 MaviNextStepKind maviNextStepScan(void)
 {
-	double irDist, relativeDif_IRS;
+	double relativeDif_IRS;
 	unsigned int t_current = millis();
 
-	irDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
+	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
-	if (irDist == MAVI_BAD_SENSOR_READING)
+	if (irSDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
 
-	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
-		cout << "IR_S Distance: " << irDist << endl;
+	if (debugOutput)
+	{
+		cout << "IR_S Distance: " << irSDist << endl;
+		debugOutput = false;
+	}
 
-	relativeDif_IRS = refDistIRS - irDist;
+	relativeDif_IRS = refDistIRS - irSDist;
 
 	if (abs(relativeDif_IRS) < MAVI_ERROR_MARGIN_IRS)
 		return MAVI_NEXTSTEP_NOTHING;
@@ -49,18 +53,12 @@ MaviNextStepKind maviNextStepScan(void)
 
 MaviSlopeKind maviSlopeScan(void)
 {
-	double irSDist, irMDist, irLDist, relativeDif_IRM, relativeDif_IRL, slope;
+	double relativeDif_IRM, relativeDif_IRL;
 	unsigned int t_current = millis();
 
-	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
 	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
-
-	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD || (t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
-	{
-		cout << "IR_M Distance: " << irMDist << endl;
-		cout << "IR_L Distance: " << irLDist << endl;
-	}
+	slope = maviGetSlope(irSDist, irMDist, irLDist);
 
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
@@ -70,10 +68,6 @@ MaviSlopeKind maviSlopeScan(void)
 
 	if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
 		return MAVI_SLOPE_DESCENDING;
-
-	slope = maviGetSlope(irSDist, irMDist, irLDist);
-
-	cout << "Slope: " << slope << endl;
 
 	if (abs(slope) < MAVI_ERROR_MARGIN_SLOPE)
 	{
@@ -99,7 +93,6 @@ MaviSlopeKind maviSlopeScan(void)
 MaviMidRangeKind maviMidRangeScan(void)
 {
 	int scanResult = 0;
-	double usLDist, usRDist;
 	unsigned int t_current = millis();
 
 	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
