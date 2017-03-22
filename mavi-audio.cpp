@@ -48,18 +48,20 @@ const MaviAudioID
 	MAVI_AUDIO_WARNING_NONOPERATIONAL = "audio/mavi-warning-nonoperational.wav",
 	MAVI_AUDIO_WARNING_SENSORFAILURE = "audio/mavi-warning-sensor-failure.wav";
 
-void maviAudioPlay(MaviAudioID audioFile, bool critical)
+void maviAudioPlay(MaviAudioID audioFile, MaviAudioPriority pri)
 {
 	static pid_t playerPID = 0;
+	static MaviAudioPriority playerPri = MAVI_APRI_LO;
 
 	if (playerPID != 0)
 	{
-		if (critical)
+		if (pri > playerPri)
 			kill(playerPID, SIGTERM);
 		else
 			waitpid(playerPID, NULL, 0);
 	}
 
+	playerPri = pri;
 	playerPID = vfork();
 
 	if (playerPID < 0)
