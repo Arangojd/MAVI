@@ -41,7 +41,14 @@ extern const MaviAudioID
 	MAVI_AUDIO_WARNING_NONOPERATIONAL,
 	MAVI_AUDIO_WARNING_SENSORFAILURE;
 
-void maviAudioPlay(MaviAudioID audioFile, bool critical);
-inline void maviAudioPlay(MaviAudioID audioFile) { maviAudioPlay(audioFile, false); }
+enum MaviAudioPriority
+{
+	MAVI_APRI_LO,
+	MAVI_APRI_MD,
+	MAVI_APRI_HI
+};
+
+void maviAudioPlay(MaviAudioID audioFile, MaviAudioPriority pri);
+inline void maviAudioPlay(MaviAudioID audioFile) { maviAudioPlay(audioFile, MAVI_APRI_LO); }
 
 #endif
