@@ -8,7 +8,7 @@
 #include <wiringPi.h>
 
 #include "mavi-init.hpp"
-
+#include "mavi-calib.hpp"
 #include "mavi-buttons.hpp"
 #include "mavi-pins.hpp"
 #include "mavi-signals.hpp"
@@ -25,6 +25,9 @@ void maviInit(void)
 	#else
 		wiringPiSetup();
 	#endif
+
+	// Load existing calibration data (if present)
+	maviLoadCalibration();
 
 	// MAVI is an HRT system; shift this process to the maximum possible priority.
 	piHiPri(99);

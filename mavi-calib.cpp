@@ -7,7 +7,7 @@
 
 #include <cmath>
 #include <iostream>
-#include <iomanip>
+#include <fstream>
 
 #include "mavi-sensors.hpp"
 #include "mavi-audio.hpp"
@@ -18,8 +18,8 @@
 using namespace std;
 
 double
-	refDistUSL = MAVI_DEFAULT_REF_DIST_USL,
-	refDistUSR = MAVI_DEFAULT_REF_DIST_USR,
+	//~ refDistUSL = MAVI_DEFAULT_REF_DIST_USL,
+	//~ refDistUSR = MAVI_DEFAULT_REF_DIST_USR,
 	refDistIRS = MAVI_DEFAULT_REF_DIST_IRS,
 	refDistIRM = MAVI_DEFAULT_REF_DIST_IRM,
 	refDistIRL = MAVI_DEFAULT_REF_DIST_IRL,
@@ -27,57 +27,65 @@ double
 
 int maviCalibration(void)
 {
-	#define calibFailed()								\
-	{													\
-		cout << "Calibration Failed" << endl << endl;	\
-		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);			\
-		return 1;										\
-	}
-
-	maviStartAllFilters();
-
-	int i, sample_count = 10;
-
 	double
-		irSDist = 0,
-		irMDist = 0,
-		irLDist = 0;
+		irSDist = 0.0,
+		irMDist = 0.0,
+		irLDist = 0.0;
 
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
-	for (i = 0; i < sample_count; i++)
+	for (int i = 0; i < MAVI_CALIB_SAMPLE_COUNT; i++)
 	{
-		irSDist += maviIRFilter.poll(MAVI_SENSOR_IRS);
-		irMDist += maviIRFilter.poll(MAVI_SENSOR_IRM);
-		irLDist += maviIRFilter.poll(MAVI_SENSOR_IRL);
+		irSDist += maviPollSensor(MAVI_SENSOR_IRS);
+		irMDist += maviPollSensor(MAVI_SENSOR_IRM);
+		irLDist += maviPollSensor(MAVI_SENSOR_IRL);
 	}
 
 	irSDist /= sample_count;
 	irMDist /= sample_count;
 	irLDist /= sample_count;
 
-	if (abs(refDistIRS - irSDist) >  4 * MAVI_ERROR_MARGIN_IRS) calibFailed();
-	if (abs(refDistIRM - irMDist) >  6 * MAVI_ERROR_MARGIN_IRM) calibFailed();
-	if (abs(refDistIRL - irLDist) > 10 * MAVI_ERROR_MARGIN_IRL) calibFailed();
+	if (abs(refDistIRS - irSDist) >  4 * MAVI_ERROR_MARGIN_IRS ||
+	    abs(refDistIRM - irMDist) >  6 * MAVI_ERROR_MARGIN_IRM ||
+	    abs(refDistIRL - irLDist) > 10 * MAVI_ERROR_MARGIN_IRL)
+	{
+		cout << "Calibration Failed" << endl << endl;
+		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
+		return 1;
+	}
 
 	refDistIRS = irSDist;
 	refDistIRM = irMDist;
 	refDistIRL = irLDist;
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 
-	cout << "IRS   = " << refDistIRS << endl;
-	cout << "IRM   = " << refDistIRM << endl;
-	cout << "IRL   = " << refDistIRL << endl;
-	cout << "SLOPE = " << refSlope   << endl;
-	cout << endl;
+	cout <<
+		"IRS   = " << refDistIRS << endl <<
+		"IRM   = " << refDistIRM << endl <<
+		"IRL   = " << refDistIRL << endl <<
+		"SLOPE = " << refSlope   << endl << endl <<
+		"Calibration Sucessful"  << endl << endl;
 
-	maviStopAllFilters();
-
-	cout << "Calibration Sucessful" << endl << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
 
-	#undef calibFailed
+	maviSaveCalibration();
 
 	return 0;
+}
+
+void maviSaveCalibration(void)
+{
+	fstream calibfile("calib.dat", ios_base::out | ios_base::binary);
+	calibfile << refDistIRS << refDistIRM << refDistIRL;
+	calibfile.close();
+}
+
+void maviLoadCalibration(void)
+{
+	fstream calibfile("calib.dat", ios_base::in | ios_base::binary);
+	if (calibfile.fail()) return;
+	calibfile >> refDistIRS >> refDistIRM >> refDistIRL;
+	calibfile.close();
+	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 }
