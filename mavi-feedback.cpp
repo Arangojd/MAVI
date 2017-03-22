@@ -219,6 +219,7 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			t_lastVibrationOutput = millis();
 			maviDebugDataOutput(id);
+			cout << endl;
 		}
 		else
 		{
@@ -280,6 +281,7 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			t_lastVerbalOutput = millis();
 			maviDebugDataOutput(id);
+			cout << endl;
 		}
 		else
 		{
@@ -330,6 +332,7 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			t_lastVerbalOutput = millis();
 			maviDebugDataOutput(id);
+			cout << endl;
 		}
 		else
 		{

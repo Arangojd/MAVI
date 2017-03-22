@@ -17,15 +17,11 @@ using namespace std;
 
 void onInterrupt(int s)
 {
-	//cout << endl << "SIGINT received; ";
-
 	switch (maviGetState())
 	{
 	case MAVI_STATE_PREINIT:
-		//cout << "MAVI not yet initialized; ignoring";
 		break;
 	case MAVI_STATE_SHUTDOWN:
-		//cout << "MAVI already shutting down; ignoring";
 		break;
 	default:
 		maviSetState(MAVI_STATE_SHUTDOWN);
@@ -37,8 +33,6 @@ void onInterrupt(int s)
 
 void onUsr1(int s)
 {
-	//cout << endl << "SIGUSR1 received; ";
-
 	switch (maviGetState())
 	{
 	case MAVI_STATE_RUNNING:
@@ -48,7 +42,6 @@ void onUsr1(int s)
 		maviSetState(MAVI_STATE_RUNNING);
 		break;
 	default:
-		//cout << "Invalid current state; ignoring";
 		break;
 	}
 
@@ -57,7 +50,7 @@ void onUsr1(int s)
 
 void onUsr2(int s)
 {
-	//~ cout << endl << "SIGUSR2 received; ";
+	cout << endl;
 
 	switch (maviGetState())
 	{
@@ -67,7 +60,6 @@ void onUsr2(int s)
 		maviSetState(MAVI_STATE_PAUSED);
 		break;
 	default:
-		//cout << "Invalid current state; ignoring";
 		break;
 	}
 
