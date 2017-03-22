@@ -8,7 +8,7 @@
 #ifndef MAVI_FEEDBACK_HPP
 #define MAVI_FEEDBACK_HPP
 
-extern const unsigned int t_lastVerbalOutput, t_lastVibrationOutput;
+extern unsigned int t_lastVerbalOutput, t_lastVibrationOutput;
 
 const unsigned int MAVI_VERBAL_OUTPUT_PERIOD = 2000; // ms
 const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 750; // ms
