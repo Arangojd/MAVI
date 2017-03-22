@@ -8,7 +8,9 @@
 #ifndef MAVI_ANALYSIS_HPP
 #define MAVI_ANALYSIS_HPP
 
-const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = 500; // ms
+#include "mavi-sensors.hpp"
+
+const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = MAVI_IR_FILTER_PERIOD * MAVI_IR_FILTER_BUFSIZE; // ms
 
 enum MaviNextStepKind
 {

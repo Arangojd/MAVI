@@ -102,32 +102,32 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			case MAVI_FEEDBACK_IM_HAZARD:
 				cout << "Immediate Hazard" << endl;
-				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
+				maviAudioPlay(MAVI_AUDIO_IM_HAZARD, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FINAL:
 				cout << "Final Step" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FINAL);
+				maviAudioPlay(MAVI_AUDIO_STEP_FINAL, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FIRSTDOWN:
 				cout << "First Step Down" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FIRSTUP:
 				cout << "First Step Up" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_SINGLEDOWN:
 				cout << "Single Step Down" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN);
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_SINGLEUP:
 				cout << "Single Step Up" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP, true);
 				break;
 
 			case MAVI_FEEDBACK_STAIRS_ASC:
@@ -157,32 +157,32 @@ void maviSendFeedback(MaviFeedbackID id)
 		{
 			case MAVI_FEEDBACK_IM_HAZARD:
 				cout << "Immediate Hazard" << endl;
-				maviAudioPlay(MAVI_AUDIO_IM_HAZARD);
+				maviAudioPlay(MAVI_AUDIO_IM_HAZARD, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FINAL:
 				cout << "Final Step" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FINAL);
+				maviAudioPlay(MAVI_AUDIO_STEP_FINAL, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FIRSTDOWN:
 				cout << "First Step Down" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN);
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_FIRSTUP:
 				cout << "First Step Up" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP);
+				maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_SINGLEDOWN:
 				cout << "Single Step Down" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN);
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN, true);
 				break;
 
 			case MAVI_FEEDBACK_STEP_SINGLEUP:
 				cout << "Single Step Up" << endl;
-				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP);
+				maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP, true);
 				break;
 
 			default:

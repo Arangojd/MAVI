@@ -27,8 +27,8 @@ enum MaviSensorID
 
 const unsigned int MAVI_IR_FILTER_PERIOD = 35000;
 const unsigned int MAVI_US_FILTER_PERIOD = 200000;
-const int MAVI_IR_FILTER_BUFSIZE = 20;
-const int MAVI_US_FILTER_BUFSIZE = 4;
+const int MAVI_IR_FILTER_BUFSIZE = 10;
+const int MAVI_US_FILTER_BUFSIZE = 2;
 
 const unsigned int MAVI_US_TRIG_TIMEOUT = 5000;  // us
 const unsigned int MAVI_US_ECHO_TIMEOUT = 200000; // us
