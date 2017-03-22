@@ -60,6 +60,8 @@ int maviCalibration(void)
 	refDistIRL = irLDist;
 	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 
+	maviSaveCalibration();
+
 	cout <<
 		"IRS   = " << refDistIRS << endl <<
 		"IRM   = " << refDistIRM << endl <<
@@ -68,8 +70,6 @@ int maviCalibration(void)
 		"Calibration Sucessful"  << endl << endl;
 
 	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
-
-	maviSaveCalibration();
 
 	return 0;
 }
