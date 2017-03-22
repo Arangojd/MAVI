@@ -5,8 +5,10 @@
  * ...
  */
 
-#include <iostream>
 #include <cstdlib>
+#include <csignal>
+
+#include <iostream>
 
 #include <sys/wait.h>
 #include <unistd.h>
