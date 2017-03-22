@@ -18,8 +18,8 @@
 using namespace std;
 
 double
-	//~ refDistUSL = MAVI_DEFAULT_REF_DIST_USL,
-	//~ refDistUSR = MAVI_DEFAULT_REF_DIST_USR,
+	refDistUSL = MAVI_DEFAULT_REF_DIST_USL,
+	refDistUSR = MAVI_DEFAULT_REF_DIST_USR,
 	refDistIRS = MAVI_DEFAULT_REF_DIST_IRS,
 	refDistIRM = MAVI_DEFAULT_REF_DIST_IRM,
 	refDistIRL = MAVI_DEFAULT_REF_DIST_IRL,
@@ -42,9 +42,9 @@ int maviCalibration(void)
 		irLDist += maviPollSensor(MAVI_SENSOR_IRL);
 	}
 
-	irSDist /= sample_count;
-	irMDist /= sample_count;
-	irLDist /= sample_count;
+	irSDist /= MAVI_CALIB_SAMPLE_COUNT;
+	irMDist /= MAVI_CALIB_SAMPLE_COUNT;
+	irLDist /= MAVI_CALIB_SAMPLE_COUNT;
 
 	if (abs(refDistIRS - irSDist) >  4 * MAVI_ERROR_MARGIN_IRS ||
 	    abs(refDistIRM - irMDist) >  6 * MAVI_ERROR_MARGIN_IRM ||
