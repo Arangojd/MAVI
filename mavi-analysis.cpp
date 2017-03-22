@@ -257,6 +257,8 @@ void maviMobilityAssistance(void)
 	t_lastVerbalOutput = 0;
 	t_lastVibrationOutput = 0;
 
+	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY);
+
 	while (maviGetState() == MAVI_STATE_RUNNING)
 	{
 		t_elapsed = millis() - t_analysisStart;
@@ -481,7 +483,6 @@ void *maviSenseAndAnalyze(void* args)
 		{
 			pauseFeedbackFlag = true;
 			maviStartAllFilters();
-			maviSendFeedback(MAVI_FEEDBACK_SYSTEM_READY);
 			maviMobilityAssistance();
 			maviStopAllFilters();
 		}
