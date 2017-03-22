@@ -67,7 +67,7 @@ int maviCalibration(void)
 		"IRM   = " << refDistIRM << endl <<
 		"IRL   = " << refDistIRL << endl <<
 		"SLOPE = " << refSlope   << endl << endl <<
-		"Calibration Sucessful"  << endl << endl;
+		"Calibration Successful"  << endl << endl;
 
 	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
 
