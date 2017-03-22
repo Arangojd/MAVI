@@ -33,14 +33,14 @@ enum MaviSlopeKind
 	MAVI_SLOPE_OTHER
 };
 
-enum MaviMidRangeKind
-{
-	MAVI_MIDRANGE_ERROR = -1,
-	MAVI_MIDRANGE_NOTHING,
-	MAVI_MIDRANGE_RIGHT,
-	MAVI_MIDRANGE_LEFT,
-	MAVI_MIDRANGE_BOTH
-};
+typedef int MaviMidRangeKind;
+
+const MaviMidRangeKind
+	MAVI_MIDRANGE_ERROR   = -1,
+	MAVI_MIDRANGE_NOTHING = 0b00,
+	MAVI_MIDRANGE_RIGHT   = 0b01,
+	MAVI_MIDRANGE_LEFT    = 0b10,
+	MAVI_MIDRANGE_BOTH    = 0b11;
 
 MaviNextStepKind maviNextStepScan(void);
 

@@ -84,27 +84,20 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	int scanResult = 0;
-
 	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
 	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
 
-	if (usLDist > MAVI_ERROR_MARGIN_USL && usLDist <= refDistUSL) scanResult |= 0b01;
-	if (usRDist > MAVI_ERROR_MARGIN_USR && usRDist <= refDistUSR) scanResult |= 0b10;
+	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
-	switch (scanResult)
-	{
-		case 0b00: return MAVI_MIDRANGE_NOTHING;
-		case 0b01: return MAVI_MIDRANGE_LEFT;
-		case 0b10: return MAVI_MIDRANGE_RIGHT;
-		case 0b11: return MAVI_MIDRANGE_BOTH;
-		default:   return MAVI_MIDRANGE_ERROR;
-	}
+	if (usLDist > MAVI_ERROR_MARGIN_USL && usLDist <= refDistUSL) scanResult |= MAVI_MIDRANGE_LEFT;
+	if (usRDist > MAVI_ERROR_MARGIN_USR && usRDist <= refDistUSR) scanResult |= MAVI_MIDRANGE_RIGHT;
 
+	return scanResult;
 }
+
 void maviStairAssistance(MaviSlopeKind stair_slope)
 {
 	unsigned int t_elapsed;
