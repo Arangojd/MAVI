@@ -94,7 +94,7 @@ MaviMidRangeKind maviMidRangeScan(void)
 	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
 	if (usLDist > MAVI_MIN_DIST_USL && usLDist <= MAVI_MAX_DIST_USL) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (usRDist > MAVI_MIN_DIST_USR && usRDist <= MAVI_MAX_SIDT_USR) scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (usRDist > MAVI_MIN_DIST_USR && usRDist <= MAVI_MAX_DIST_USR) scanResult |= MAVI_MIDRANGE_RIGHT;
 
 	return scanResult;
 }

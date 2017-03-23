@@ -24,6 +24,7 @@ const double
 	MAVI_STAIR_SLOPE_MIN    = 0.5,		// rad
 	MAVI_STAIR_SLOPE_MAX    = 0.7,		// rad
 	MAVI_STAIR_HEIGHT_MIN   = 25.0, 	// cm
+	MAVI_STAIR_HEIGHT_MIN   = 45.0, 	// cm
 	MAVI_MAX_DIST_USL 		= 150.0, 	// cm
 	MAVI_MAX_DIST_USR 		= 150.0, 	// cm
 	MAVI_MIN_DIST_USL   	= 30.0, 	// cm
