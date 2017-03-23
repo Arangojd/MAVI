@@ -11,11 +11,12 @@
 extern unsigned int t_lastVerbalOutput, t_lastVibrationOutput;
 
 const unsigned int MAVI_VERBAL_OUTPUT_PERIOD = 2000; // ms
-const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 750; // ms
-const unsigned int MAVI_VIBRATION_DURATION = 500; // ms
+const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 1000; // ms
+const unsigned int MAVI_VIBRATION_DURATION = 1000; // ms
 
 enum MaviFeedbackID
 {
+		MAVI_FEEDBACK_NULL,
 		MAVI_FEEDBACK_BTN_CALIB,
 		MAVI_FEEDBACK_BTN_POWER,
 		MAVI_FEEDBACK_BTN_SLEEP,
@@ -47,7 +48,10 @@ enum MaviFeedbackID
 		MAVI_FEEDBACK_WARNING_SENSORFAILURE
 };
 
-void maviDebugDataOutput(MaviFeedbackID id);
+void maviOutputVibrationFeedback(MaviFeedbackID id);
+void maviOutputSystemFeedback(MaviFeedbackID id);
+void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt);
+void maviOutputDebugData(MaviFeedbackID id);
 void maviSendFeedback(MaviFeedbackID id);
 
 #endif

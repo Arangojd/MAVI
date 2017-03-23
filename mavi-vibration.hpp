@@ -16,6 +16,12 @@ const MaviVibratorID
 	MAVI_VIB_C = 0b010,
 	MAVI_VIB_R = 0b001;
 
-void maviVibrate(MaviVibratorID vibrators, unsigned int duration);
+const double
+	MAVI_V_COUNT = 2,
+	MAVI_VSPEED_HI = 0.90,
+	MAVI_VSPEED_MD = 0.75,
+	MAVI_VSPEED_LO = 0.60;
+
+void maviVibrate(MaviVibratorID vibrators, unsigned int duration, double speed);
 
 #endif
