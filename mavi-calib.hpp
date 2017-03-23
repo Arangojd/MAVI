@@ -20,6 +20,10 @@ const double
 
 	MAVI_REF_ANGLE_IRM      = 0.42, // rad, angle between IRS and IRM
 	MAVI_REF_ANGLE_IRL      = 0.60, // rad, angle between IRS and IRL
+	MAVI_MIN_DIST_USL 		= 30.0, // cm
+	MAVI_MIN_DIST_USR 		= 30.0, // cm
+	MAVI_MAX_DIST_USL	 	= 200.0, // cm
+	MAVI_MAX_DIST_USR 		= 200.0, // cm
 	MAVI_STAIR_SLOPE_MIN    = 0.5,
 	MAVI_STAIR_SLOPE_MAX    = 0.7,
 	MAVI_STAIR_HEIGHT_MIN   = 25.0, // cm
@@ -27,17 +31,13 @@ const double
 	MAVI_ERROR_MARGIN_IRS   = 25.0, // cm
 	MAVI_ERROR_MARGIN_IRM   = 30.0, // cm
 	MAVI_ERROR_MARGIN_IRL   = 40.0, // cm
-	MAVI_ERROR_MARGIN_USL   = 30.0, // cm
-	MAVI_ERROR_MARGIN_USR   = 30.0, // cm
 	MAVI_ERROR_MARGIN_SLOPE = 0.2;
 
 extern double
-	refDistUSL, // cm
-	refDistUSR, // cm
-	refDistIRS, // cm
-	refDistIRM, // cm
-	refDistIRL, // cm
-	refSlope;
+	MAVI_REF_DIST_IRS, // cm
+	MAVI_REF_DIST_IRM, // cm
+	MAVI_REF_DIST_IRL, // cm
+	MAVI_REF_SLOPE;
 
 int maviCalibration(void);
 void maviSaveCalibration(void);
