@@ -47,9 +47,9 @@ int maviCalibration(void)
 	irMDist /= MAVI_CALIB_SAMPLE_COUNT;
 	irLDist /= MAVI_CALIB_SAMPLE_COUNT;
 
-	if (abs(refDistIRS - irSDist) >  4 * errorIRS ||
-	    abs(refDistIRM - irMDist) >  6 * errorIRM ||
-	    abs(refDistIRL - irLDist) > 10 * errorIRL )
+	if (abs(MAVI_REF_DIST_IRS - irSDist) >  4 * MAVI_ERROR_IRS ||
+	    abs(MAVI_REF_DIST_IRM - irMDist) >  6 * MAVI_ERROR_IRM ||
+	    abs(MAVI_REF_DIST_IRL - irLDist) > 10 * MAVI_ERROR_IRL )
 	{
 		cout << "Calibration Failed" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);

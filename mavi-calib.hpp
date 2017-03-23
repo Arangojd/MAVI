@@ -37,8 +37,8 @@ extern double
 	MAVI_REF_DIST_IRL,	// cm
 	MAVI_REF_SLOPE,		// rad
 	MAVI_ERROR_IRS,		// cm
-	MAVI_ERROR_IRS,		// cm
-	MAVI_ERROR_IRS;		// cm
+	MAVI_ERROR_IRM,		// cm
+	MAVI_ERROR_IRL;		// cm
 
 int maviCalibration(void);
 void maviSaveCalibration(void);
