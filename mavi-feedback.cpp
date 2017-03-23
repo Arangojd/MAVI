@@ -18,10 +18,10 @@
 using namespace std;
 
 bool resetTimer = true;
-MaviFeedbackID last_interrupt_id;
+MaviFeedbackID lastInterrupt_id;
 unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
-void maviDebugDataOutput(MaviFeedbackID id)
+void maviOutputDebugData(MaviFeedbackID id)
 {
 	switch(id)
 	{
@@ -187,7 +187,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		cout << "Vibrate Both" << endl;
 		if (usLDist <= refDistUSL * 0.33 || usRDist <= refDistUSR * 0.33)
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usList <= refDistUSL * 0.66 || usRDist <= refDistUSR * 0.66)
+		else if (usLDist <= refDistUSL * 0.66 || usRDist <= refDistUSR * 0.66)
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
 		else
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
@@ -247,14 +247,14 @@ void maviOutputSystemFeedback(MaviFeedbackID id)
 	case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 		cout << "System Shutting Down" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
-		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_SY);
 		return;
 
 	default:
 		break;
-	}	
-}	
-	
+	}
+}
+
 void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 {
 	// normal notifications (only output periodically and reset timer)
@@ -309,14 +309,14 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 	default:
 		resetTimer = false;
 		break;
-	}	
+	}
 }
 
 void maviSendFeedback(MaviFeedbackID id)
 {
 
 	maviOutputSystemFeedback(id);
-	
+
 	unsigned int t_current = millis();
 
 	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD)
@@ -325,8 +325,8 @@ void maviSendFeedback(MaviFeedbackID id)
 
 		if (resetTimer)
 		{
-			maviDebugDataOutput(id);
-			t_lastVibrationOutput = millis();	
+			maviOutputDebugData(id);
+			t_lastVibrationOutput = millis();
 		}
 		else
 		{
@@ -340,7 +340,7 @@ void maviSendFeedback(MaviFeedbackID id)
 
 		if (resetTimer)
 		{
-			maviDebugDataOutput(id);
+			maviOutputDebugData(id);
 			t_lastVerbalOutput = millis();
 			lastInterrupt_id = MAVI_FEEDBACK_NULL;
 		}
@@ -352,7 +352,7 @@ void maviSendFeedback(MaviFeedbackID id)
 	else if (lastInterrupt_id != id)
 	{
 		maviOutputVerbalFeedback(id, true);
-		
+
 		if (resetTimer)
 		{
 			maviOutputDebugData(id);
