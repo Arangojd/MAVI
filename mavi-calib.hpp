@@ -8,7 +8,7 @@
 #ifndef MAVI_CALIB_HPP
 #define MAVI_CALIB_HPP
 
-const int MAVI_CALIB_SAMPLE_COUNT = 500;
+const int MAVI_CALIB_SAMPLE_COUNT = 40;
 
 const double
 	MAVI_DEFAULT_REF_DIST_IRS 	= 110.0, 	// cm
