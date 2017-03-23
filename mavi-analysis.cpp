@@ -58,18 +58,15 @@ MaviSlopeKind maviSlopeScan(void)
 	relativeDif_IRM = MAVI_REF_DIST_IRM - irMDist;
 	relativeDif_IRL = MAVI_REF_DIST_IRL - irLDist;
 
-	if (relativeDif_IRM < -MAVI_ERROR_IRM && relativeDif_IRL < -MAVI_ERROR_IRL)
-		return MAVI_SLOPE_DESCENDING;
-
 	if (abs(slope) < MAVI_ERROR_SLOPE)
 	{
-		if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 1.2 * MAVI_STAIR_HEIGHT_MAX)
+		if (relativeDif_IRM >= 1.5 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 3 * MAVI_STAIR_HEIGHT_MAX)
 			return MAVI_SLOPE_FLAT_STEP;
 		else
 			return MAVI_SLOPE_FLAT;
 	}
-	else if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 2 * MAVI_STAIR_HEIGHT_MAX &&
-			 relativeDif_IRL >= 2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL <= 4 * MAVI_STAIR_HEIGHT_MAX &&
+	else if (relativeDif_IRM >= 1.5 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 3 * MAVI_STAIR_HEIGHT_MAX &&
+			 relativeDif_IRL >= 2.5 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL <= 5 * MAVI_STAIR_HEIGHT_MAX &&
 			 abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
 	{
 		if (slope > 0)
@@ -77,6 +74,8 @@ MaviSlopeKind maviSlopeScan(void)
 		else
 			return MAVI_SLOPE_DESCENDING;
 	}
+	else if (relativeDif_IRM < -MAVI_ERROR_IRM && relativeDif_IRL < -MAVI_ERROR_IRL)
+			return MAVI_SLOPE_DESCENDING;
 	else
 	{
 		return MAVI_SLOPE_OTHER;
@@ -115,75 +114,32 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		switch (maviNextStepScan())
 		{
 		case MAVI_NEXTSTEP_NOTHING:
-			switch (maviSlopeScan())
-			{
-			case MAVI_SLOPE_FLAT:
-				//~ cout << "Next Step: Safe 	Slope: Flat		Mid Range: NULL" << endl;
-				break;
-
-			case MAVI_SLOPE_FLAT_STEP:
-				//~ cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-				break;
-
-			case MAVI_SLOPE_OTHER:
-				//~ cout << "Next Step: Safe 	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-				break;
-
-			case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
-				break;
-
-			case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
-				break;
-
-			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
-				break;
-			}
-
-			cout << endl;
 			return;
 
 		case MAVI_NEXTSTEP_STEP_UP:
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_ASCENDING:
-				if (stair_slope == MAVI_SLOPE_ASCENDING)
-				{
-					//~ cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
-				}
-				else
-				{
-					//~ cout << "Next Step: Up		Slope: Ascending	Mid Range: NULL" << endl;
+				if (stair_slope != MAVI_SLOPE_ASCENDING)
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-				}
-
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				//~ cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 				cout << endl << "ENDING STAIR ASSISTANCE" << endl << endl;
+				delay(500);
 				return;
 
 			case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				//~ cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				//~ cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:
@@ -199,28 +155,24 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_DESCENDING:
 				if (stair_slope != MAVI_SLOPE_DESCENDING)
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
-					//~ cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				//~ cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 				cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+				delay(500);
 				return;
 
 			case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				//~ cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				//~ cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:
@@ -231,12 +183,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			break;
 
 		case MAVI_NEXTSTEP_OBSTACLE:
-			//~ cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
-			maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+//			maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 			break;
 
 		default:
-			//~ cout << "Sensing and Analysis Error: Received invalid next step data.";
+			cout << "Sensing and Analysis Error: Received invalid next step data.";
 			break;
 		}
 	}
@@ -272,22 +223,18 @@ void maviMobilityAssistance(void)
 				switch (maviMidRangeScan())
 				{
 				case MAVI_MIDRANGE_BOTH:
-					//~ cout << "Next Step: Nothing		Slope: Flat	Mid Range: Left & Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LR);
 					break;
 
 				case MAVI_MIDRANGE_LEFT:
-					//~ cout << "Next Step: Nothing		Slope: Flat	Mid Range: Left" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT);
 					break;
 
 				case MAVI_MIDRANGE_RIGHT:
-					//~ cout << "Next Step: Nothing		Slope: Flat	Mid Range: Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT);
 					break;
 
 				case MAVI_MIDRANGE_NOTHING:
-					//~ cout << "Next Step: Nothing		Slope: Flat	Mid Range: Nothing" << endl;
 					break;
 
 				default:
@@ -300,22 +247,18 @@ void maviMobilityAssistance(void)
 				switch (maviMidRangeScan())
 				{
 				case MAVI_MIDRANGE_BOTH:
-					//~ cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Left & Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
 					break;
 
 				case MAVI_MIDRANGE_LEFT:
-					//~ cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Left" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
 					break;
 
 				case MAVI_MIDRANGE_RIGHT:
-					//~ cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
 					break;
 
 				case MAVI_MIDRANGE_NOTHING:
-					//~ cout << "Next Step: Safe 	Slope: Flat Step	Mid Range: Nothing" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 					break;
 
@@ -329,22 +272,18 @@ void maviMobilityAssistance(void)
 				switch (maviMidRangeScan())
 				{
 				case MAVI_MIDRANGE_BOTH:
-					//~ cout << "Next Step: Safe 	Slope: Other	Mid Range: Left & Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
 					break;
 
 				case MAVI_MIDRANGE_LEFT:
-					//~ cout << "Next Step: Safe 	Slope: Other	Mid Range: Left" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
 					break;
 
 				case MAVI_MIDRANGE_RIGHT:
-					//~ cout << "Next Step: Safe 	Slope: Other	Mid Range: Right" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
 					break;
 
 				case MAVI_MIDRANGE_NOTHING:
-					//~ cout << "Next Step: Safe 	Slope: Other	Mid Range: Nothing" << endl;
 					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 					break;
 
@@ -355,12 +294,10 @@ void maviMobilityAssistance(void)
 				break;
 
 			case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Next Step: Nothing		Slope: Ascending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STAIRS_ASC);
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Next Step: Nothing		Slope: Descending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STAIRS_DESC);
 				break;
 
@@ -374,29 +311,24 @@ void maviMobilityAssistance(void)
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Next Step: Up	Slope: Ascending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTUP);
 				cout << "STARTING STAIR ASSISTANCE" << endl;
 				maviStairAssistance(MAVI_SLOPE_ASCENDING);
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				//~ cout << "Next Step: Up	Slope: Flat Step	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEUP);
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Next Step: Up	Slope: Descending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				//~ cout << "Next Step: Up 	Slope: Flat		Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				//~ cout << "Next Step: Up	Slope: Other	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -410,29 +342,24 @@ void maviMobilityAssistance(void)
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_DESCENDING:
-				//~ cout << "Next Step: Down 	Slope: Descending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN);
 				cout << "STARTING STAIR ASSISTANCE" << endl;
 				maviStairAssistance(MAVI_SLOPE_DESCENDING);
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				//~ cout << "Next Step: Down 	Slope: Flat Step	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEDOWN);
 				break;
 
 			case MAVI_SLOPE_ASCENDING:
-				//~ cout << "Next Step: Down 	Slope: Ascending	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				//~ cout << "Next Step: Down 	Slope: Flat		Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				//~ cout << "Next Step: Down 	Slope: Other	Mid Range: NULL" << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -443,7 +370,6 @@ void maviMobilityAssistance(void)
 			break;
 
 		case MAVI_NEXTSTEP_OBSTACLE:
-			//~ cout << "Next step: Obstacle	Slope: NULL		Mid Range: NULL" << endl;
 			maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 			break;
 

@@ -16,10 +16,10 @@
 
 using namespace std;
 
-bool resetTimer = true;
+bool resetTimer = true, interruptable = true;
 unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
-void maviDebugDataOutput(MaviFeedbackID id)
+void maviOutputDebugData(MaviFeedbackID id)
 {
 	switch(id)
 	{
@@ -142,9 +142,57 @@ void maviDebugDataOutput(MaviFeedbackID id)
 	default:
 		break;
 	}
+
+	cout << endl;
 }
 
-void maviSendFeedback(MaviFeedbackID id)
+void maviOutputVibrationFeedback(MaviFeedbackID id)
+{
+	// Vibration notifications (output periodically)
+	switch(id)
+	{
+	case MAVI_FEEDBACK_VIBRATE_CENTER:
+		cout << "Vibrate Center" << endl;
+		maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_LEFT:
+		cout << "Vibrate Left" << endl;
+		maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_RIGHT:
+		cout << "Vibrate Right" << endl;
+		maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_LR:
+		cout << "Vibrate Both" << endl;
+		maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_CL:
+		cout << "Vibrate Both" << endl;
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_CR:
+		cout << "Vibrate Both" << endl;
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		break;
+
+	case MAVI_FEEDBACK_VIBRATE_ALL:
+		cout << "Vibrate All" << endl;
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		break;
+
+	default:
+		resetTimer = false;
+		break;
+	}
+}
+
+void maviOutputSystemFeedback(MaviFeedbackID id)
 {
 	// system notifications (always output but never reset timer)
 	switch(id)
@@ -152,75 +200,108 @@ void maviSendFeedback(MaviFeedbackID id)
 	case MAVI_FEEDBACK_SYSTEM_READY:
 		cout << "System Ready" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_READY, MAVI_APRI_HI);
-		return;
+		break;
 
 	case MAVI_FEEDBACK_SYSTEM_PAUSED:
 		cout << "System Paused" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_PAUSED);
-		return;
+		break;
 
 	case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 		cout << "System Shutting Down" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
 		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
-		return;
+		break;
+
+	case MAVI_FEEDBACK_CALIB_STARTED:
+		cout << "Calibration Started" << endl;
+		maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
+		break;
+
+	case MAVI_FEEDBACK_CALIB_SUCCESS:
+		cout << "Calibration Successful" << endl << endl;
+		maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
+		break;
+
+	case MAVI_FEEDBACK_CALIB_FAILED:
+		cout << "Calibration Failed" << endl << endl;
+		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
+		break;
 
 	default:
 		break;
 	}
+}
 
+void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
+{
+	// normal notifications (only output periodically and reset timer)
+	switch(id)
+	{
+	case MAVI_FEEDBACK_IM_HAZARD:
+		cout << "Immediate Hazard" << endl;
+		maviAudioPlay(MAVI_AUDIO_IM_HAZARD, MAVI_APRI_HI);
+		break;
+
+	case MAVI_FEEDBACK_STEP_FINAL:
+		cout << "Final Step" << endl;
+		maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_MD);
+		break;
+
+	case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+		cout << "First Step Down" << endl;
+		maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN, MAVI_APRI_HI);
+		break;
+
+	case MAVI_FEEDBACK_STEP_FIRSTUP:
+		cout << "First Step Up" << endl;
+		maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP, MAVI_APRI_HI);
+		break;
+
+	case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+		cout << "Single Step Down" << endl;
+		maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN, MAVI_APRI_MD);
+		break;
+
+	case MAVI_FEEDBACK_STEP_SINGLEUP:
+		cout << "Single Step Up" << endl;
+		maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP, MAVI_APRI_MD);
+		break;
+
+	case MAVI_FEEDBACK_STAIRS_ASC:
+		if(!interrupt)
+		{
+			cout << "Stairs Ahead: Ascending" << endl;
+			maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
+		}
+		break;
+
+	case MAVI_FEEDBACK_STAIRS_DESC:
+		if(!interrupt)
+		{
+			cout << "Stairs Ahead: Descending" << endl;
+			maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
+		}
+		break;
+
+	default:
+		resetTimer = false;
+		break;
+	}
+}
+
+void maviSendFeedback(MaviFeedbackID id)
+{
 	unsigned int t_current = millis();
 
 	if ((t_current - t_lastVibrationOutput) >= MAVI_VIBRATION_OUTPUT_PERIOD)
 	{
-		// Vibration notifications (output periodically)
-		switch(id)
-		{
-		case MAVI_FEEDBACK_VIBRATE_CENTER:
-			cout << "Vibrate Center" << endl;
-			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_LEFT:
-			cout << "Vibrate Left" << endl;
-			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_RIGHT:
-			cout << "Vibrate Right" << endl;
-			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_LR:
-			cout << "Vibrate Both" << endl;
-			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_CL:
-			cout << "Vibrate Both" << endl;
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_CR:
-			cout << "Vibrate Both" << endl;
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
-			break;
-
-		case MAVI_FEEDBACK_VIBRATE_ALL:
-			cout << "Vibrate All" << endl;
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
-			break;
-
-		default:
-			resetTimer = false;
-			break;
-		}
+		maviOutputVibrationFeedback(id);
 
 		if (resetTimer)
 		{
+			maviOutputDebugData(id);
 			t_lastVibrationOutput = millis();
-			maviDebugDataOutput(id);
-			cout << endl;
 		}
 		else
 		{
@@ -230,115 +311,37 @@ void maviSendFeedback(MaviFeedbackID id)
 
 	if ((t_current - t_lastVerbalOutput) >= MAVI_VERBAL_OUTPUT_PERIOD)
 	{
-		// normal notifications (only output periodically and reset timer)
-		switch(id)
-		{
-		case MAVI_FEEDBACK_IM_HAZARD:
-			cout << "Immediate Hazard" << endl;
-			maviAudioPlay(MAVI_AUDIO_IM_HAZARD, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FINAL:
-			cout << "Final Step" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_MD);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FIRSTDOWN:
-			cout << "First Step Down" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FIRSTUP:
-			cout << "First Step Up" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_SINGLEDOWN:
-			cout << "Single Step Down" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN, MAVI_APRI_MD);
-			break;
-
-		case MAVI_FEEDBACK_STEP_SINGLEUP:
-			cout << "Single Step Up" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP, MAVI_APRI_MD);
-			break;
-
-		case MAVI_FEEDBACK_STAIRS_ASC:
-			cout << "Stairs Ahead: Ascending" << endl;
-			maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
-			break;
-
-		case MAVI_FEEDBACK_STAIRS_DESC:
-			cout << "Stairs Ahead: Descending" << endl;
-			maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
-			break;
-
-		default:
-			resetTimer = false;
-			break;
-		}
+		maviOutputVerbalFeedback(id, false);
 
 		if (resetTimer)
 		{
+			maviOutputDebugData(id);
+
+			interruptable = true;
 			t_lastVerbalOutput = millis();
-			maviDebugDataOutput(id);
-			cout << endl;
 		}
 		else
 		{
 			resetTimer = true;
 		}
 	}
-	else
+	else if (interruptable)
 	{
-		// priority notifications (always output and reset timer)
-		switch(id)
-		{
-		case MAVI_FEEDBACK_IM_HAZARD:
-			cout << "Immediate Hazard" << endl;
-			maviAudioPlay(MAVI_AUDIO_IM_HAZARD, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FINAL:
-			cout << "Final Step" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_MD);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FIRSTDOWN:
-			cout << "First Step Down" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FIRSTDOWN, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_FIRSTUP:
-			cout << "First Step Up" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_FIRSTUP, MAVI_APRI_HI);
-			break;
-
-		case MAVI_FEEDBACK_STEP_SINGLEDOWN:
-			cout << "Single Step Down" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_SINGLEDOWN, MAVI_APRI_MD);
-			break;
-
-		case MAVI_FEEDBACK_STEP_SINGLEUP:
-			cout << "Single Step Up" << endl;
-			maviAudioPlay(MAVI_AUDIO_STEP_SINGLEUP, MAVI_APRI_MD);
-			break;
-
-		default:
-			resetTimer = false;
-			break;
-		}
+		maviOutputVerbalFeedback(id, true);
 
 		if (resetTimer)
 		{
+			maviOutputDebugData(id);
+
+			interruptable = false;
 			t_lastVerbalOutput = millis();
-			maviDebugDataOutput(id);
-			cout << endl;
 		}
 		else
 		{
 			resetTimer = true;
 		}
 	}
+
+	maviOutputSystemFeedback(id);
 }
 
