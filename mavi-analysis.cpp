@@ -32,9 +32,9 @@ MaviNextStepKind maviNextStepScan(void)
 	if (irSDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_NEXTSTEP_ERROR;
 
-	relativeDif_IRS = refDistIRS - irSDist;
+	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
 
-	if (abs(relativeDif_IRS) < MAVI_ERROR_MARGIN_IRS)
+	if (abs(relativeDif_IRS) < MAVI_ERROR_IRS)
 		return MAVI_NEXTSTEP_NOTHING;
 	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
 		return MAVI_NEXTSTEP_STEP_UP;
@@ -55,13 +55,13 @@ MaviSlopeKind maviSlopeScan(void)
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
 
-	relativeDif_IRM = refDistIRM - irMDist;
-	relativeDif_IRL = refDistIRL - irLDist;
+	relativeDif_IRM = MAVI_REF_DIST_IRM - irMDist;
+	relativeDif_IRL = MAVI_REF_DIST_IRL - irLDist;
 
-	if (relativeDif_IRM < -MAVI_ERROR_MARGIN_IRM && relativeDif_IRL < -MAVI_ERROR_MARGIN_IRL)
+	if (relativeDif_IRM < -MAVI_ERROR_IRM && relativeDif_IRL < -MAVI_ERROR_IRL)
 		return MAVI_SLOPE_DESCENDING;
 
-	if (abs(slope) < MAVI_ERROR_MARGIN_SLOPE)
+	if (abs(slope) < MAVI_ERROR_SLOPE)
 	{
 		if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 1.2 * MAVI_STAIR_HEIGHT_MAX)
 			return MAVI_SLOPE_FLAT_STEP;
@@ -93,8 +93,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
-	if (usLDist > MAVI_ERROR_MARGIN_USL && usLDist <= refDistUSL) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (usRDist > MAVI_ERROR_MARGIN_USR && usRDist <= refDistUSR) scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (usLDist > MAVI_MIN_DIST_USL && usLDist <= MAVI_MAX_DIST_USL) scanResult |= MAVI_MIDRANGE_LEFT;
+	if (usRDist > MAVI_MIN_DIST_USR && usRDist <= MAVI_MAX_SIDT_USR) scanResult |= MAVI_MIDRANGE_RIGHT;
 
 	return scanResult;
 }
