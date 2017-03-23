@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <wiringPi.h>
 
 #include "mavi-sensors.hpp"
 #include "mavi-audio.hpp"
@@ -35,12 +36,18 @@ int maviCalibration(void)
 	cout << "Calibration Started" << endl;
 	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
+	maviStartAllFilters();
+
 	for (int i = 0; i < MAVI_CALIB_SAMPLE_COUNT; i++)
 	{
-		irSDist += maviPollSensor(MAVI_SENSOR_IRS);
-		irMDist += maviPollSensor(MAVI_SENSOR_IRM);
-		irLDist += maviPollSensor(MAVI_SENSOR_IRL);
+		irSDist += maviIRFilter.poll(MAVI_SENSOR_IRS);
+		irMDist += maviIRFilter.poll(MAVI_SENSOR_IRM);
+		irLDist += maviIRFilter.poll(MAVI_SENSOR_IRL);
+
+		delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 	}
+
+	maviStopAllFilters();
 
 	irSDist /= MAVI_CALIB_SAMPLE_COUNT;
 	irMDist /= MAVI_CALIB_SAMPLE_COUNT;
