@@ -25,8 +25,8 @@ const double
 	MAVI_REF_ANGLE_IRL      = 0.60, 	// rad, angle between IRS and IRL
 	MAVI_MIN_DIST_USL 		= 30.0, 	// cm
 	MAVI_MIN_DIST_USR 		= 30.0, 	// cm
-	MAVI_MAX_DIST_USL	 	= 200.0, 	// cm
-	MAVI_MAX_DIST_USR 		= 200.0, 	// cm
+	MAVI_MAX_DIST_USL	 	= 250.0, 	// cm
+	MAVI_MAX_DIST_USR 		= 250.0, 	// cm
 	MAVI_STAIR_SLOPE_MIN    = 0.5,
 	MAVI_STAIR_SLOPE_MAX    = 0.7,
 	MAVI_STAIR_HEIGHT_MIN   = 25.0, 	// cm
