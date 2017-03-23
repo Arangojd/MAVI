@@ -13,6 +13,7 @@
 #include "mavi-feedback.hpp"
 #include "mavi-audio.hpp"
 #include "mavi-vibration.hpp"
+#include "mavi-calib.hpp"
 
 using namespace std;
 
@@ -153,37 +154,72 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 	{
 	case MAVI_FEEDBACK_VIBRATE_CENTER:
 		cout << "Vibrate Center" << endl;
-		maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION);
+		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
+			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
+			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LEFT:
 		cout << "Vibrate Left" << endl;
-		maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION);
+		if (usLDist <= MAVI_MAX_DIST_USL * 0.33)
+			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (usLDist <= MAVI_MAX_DIST_USL * 0.66)
+			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_RIGHT:
 		cout << "Vibrate Right" << endl;
-		maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		if (usRDist <= MAVI_MAX_DIST_USR * 0.33)
+			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (usRDist <= MAVI_MAX_DIST_USR * 0.66)
+			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LR:
 		cout << "Vibrate Both" << endl;
-		maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		if (usLDist <= MAVI_MAX_DIST_USL * 0.33 || usRDist <= MAVI_MAX_DIST_USR * 0.33)
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (usList <= MAVI_MAX_DIST_USL * 0.66 || usRDist <= MAVI_MAX_DIST_USR * 0.66)
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CL:
 		cout << "Vibrate Both" << endl;
-		maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION);
+		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CR:
 		cout << "Vibrate Both" << endl;
-		maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_ALL:
 		cout << "Vibrate All" << endl;
-		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION);
+		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		else
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
 		break;
 
 	default:
@@ -245,7 +281,7 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 
 	case MAVI_FEEDBACK_STEP_FINAL:
 		cout << "Final Step" << endl;
-		maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_MD);
+		maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_HI);
 		break;
 
 	case MAVI_FEEDBACK_STEP_FIRSTDOWN:
@@ -332,9 +368,7 @@ void maviSendFeedback(MaviFeedbackID id)
 		if (resetTimer)
 		{
 			maviOutputDebugData(id);
-
 			interruptable = false;
-			t_lastVerbalOutput = millis();
 		}
 		else
 		{

@@ -14,6 +14,7 @@
 #include "mavi-calib.hpp"
 #include "mavi-math.hpp"
 #include "mavi-analysis.hpp"
+#include "mavi-feedback.hpp"
 
 using namespace std;
 
@@ -59,18 +60,18 @@ int maviCalibration(void)
 	MAVI_REF_DIST_IRL = irLDist;
 	MAVI_REF_SLOPE = maviGetRefSlope(MAVI_REF_DIST_IRS, MAVI_REF_DIST_IRM, MAVI_REF_DIST_IRL);
 	MAVI_ERROR_IRS = MAVI_REF_DIST_IRS * 0.20;
-	MAVI_ERROR_IRM = MAVI_REF_DIST_IRM * 0.25;
-	MAVI_ERROR_IRL = MAVI_REF_DIST_IRL * 0.25;
+	MAVI_ERROR_IRM = MAVI_REF_DIST_IRM * 0.20;
+	MAVI_ERROR_IRL = MAVI_REF_DIST_IRL * 0.20;
 
 	maviSaveCalibration();
 
 	cout <<
 		"IRS   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRS << endl <<
-		"IRM   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRM << endl <<
-		"IRL   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRL << endl <<
+		"IRM   = " << MAVI_REF_DIST_IRM << " +/- " << MAVI_ERROR_IRM << endl <<
+		"IRL   = " << MAVI_REF_DIST_IRL << " +/- " << MAVI_ERROR_IRL << endl <<
 		"SLOPE = " << MAVI_REF_SLOPE   << " +/- " << MAVI_ERROR_SLOPE << endl;
 
-	maviSendFeedback(MAVI_AUDIO_CALIB_SUCCESS);
+	maviSendFeedback(MAVI_FEEDBACK_CALIB_SUCCESS);
 
 	return 0;
 }
