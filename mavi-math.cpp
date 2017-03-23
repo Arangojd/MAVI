@@ -16,7 +16,7 @@ double maviGetSlope(double s_measured, double m_measured, double l_measured)
 	net_length = l_length - m_length;
 
 	measured_slope = net_height/net_length;
-	actual_slope = measured_slope - refSlope;
+	actual_slope = measured_slope - MAVI_REF_SLOPE;
 
 	return actual_slope;
 }

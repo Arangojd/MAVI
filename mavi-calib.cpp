@@ -15,6 +15,7 @@
 #include "mavi-calib.hpp"
 #include "mavi-math.hpp"
 #include "mavi-analysis.hpp"
+#include "mavi-feedback.hpp"
 
 using namespace std;
 
