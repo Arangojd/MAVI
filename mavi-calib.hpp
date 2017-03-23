@@ -19,17 +19,18 @@ const double
 	MAVI_DEFAULT_ERROR_IRM		= 35.0,		// cm
 	MAVI_DEFAULT_ERROR_IRL		= 45.0,		// cm
 
-	MAVI_REF_ANGLE_IRM      = 0.42, 	// rad, angle between IRS and IRM
-	MAVI_REF_ANGLE_IRL      = 0.66, 	// rad, angle between IRS and IRL
-	MAVI_STAIR_SLOPE_MIN    = 0.5,		// rad
-	MAVI_STAIR_SLOPE_MAX    = 0.7,		// rad
-	MAVI_STAIR_HEIGHT_MIN   = 25.0, 	// cm
-	MAVI_STAIR_HEIGHT_MAX   = 45.0, 	// cm
-	MAVI_MAX_DIST_USL 		= 150.0, 	// cm
-	MAVI_MAX_DIST_USR 		= 150.0, 	// cm
-	MAVI_MIN_DIST_USL   	= 30.0, 	// cm
-	MAVI_MIN_DIST_USR   	= 30.0, 	// cm
-	MAVI_ERROR_SLOPE 		= 0.2;		// rad
+	MAVI_REF_ANGLE_IRM      = 0.419, // rad, angle between IRS and IRM
+	MAVI_REF_ANGLE_IRL      = 0.663, // rad, angle between IRS and IRL
+	MAVI_STAIR_SLOPE_MIN    = 0.5,
+	MAVI_STAIR_SLOPE_MAX    = 0.7,
+	MAVI_STAIR_HEIGHT_MIN   = 25.0, // cm
+	MAVI_STAIR_HEIGHT_MAX   = 45.0, // cm
+	MAVI_ERROR_MARGIN_IRS   = 20.0, // cm
+	MAVI_ERROR_MARGIN_IRM   = 20.0, // cm
+	MAVI_ERROR_MARGIN_IRL   = 40.0, // cm
+	MAVI_ERROR_MARGIN_USL   = 30.0, // cm
+	MAVI_ERROR_MARGIN_USR   = 30.0, // cm
+	MAVI_ERROR_MARGIN_SLOPE = 0.2;
 
 extern double
 	MAVI_REF_DIST_IRS,	// cm
