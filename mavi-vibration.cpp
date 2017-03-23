@@ -13,35 +13,29 @@
 
 const MaviDigitalPin pins[3] = {MAVI_DPIN_VR, MAVI_DPIN_VC, MAVI_DPIN_VL};
 unsigned int durations[3];
-double speeds[3];
 
 void *vibrateFunc(void *v)
 {
-	int vi = (int)v;
+	int i = (int)v;
 
-	for (int i = 0; i < 3; i++)
-	{
-		digitalWrite(pins[vi], 1);
-		delay((unsigned int)(durations[vi] * speeds[vi]));
-		digitalWrite(pins[vi], 0);
-		delay((unsigned int)(durations[vi] * (1.0 - speeds[vi])));
-	}
+	digitalWrite(pins[i], 1);
+	delay(durations[i]);
+	digitalWrite(pins[i], 0);
 
 	return NULL;
 }
 
-void maviVibrate(MaviVibratorID vibrators, unsigned int duration, double speed)
+void maviVibrate(MaviVibratorID vibrators, unsigned int duration)
 {
 	static pthread_t vibThreads[3];
 
-	for (int vi = 0; id < 3; id++)
+	for (int i = 0; i < 3; i++)
 	{
-		if (vibrators & (1 << vi))
+		if (vibrators & (1 << i))
 		{
-			pthread_cancel(vibThreads[vi]);
-			durations[vi] = duration;
-			speeds[vi] = speed;
-			pthread_create(&vibThreads[vi], NULL, vibrateFunc, (void*)vi);
+			pthread_cancel(vibThreads[i]);
+			durations[i] = duration;
+			pthread_create(&vibThreads[i], NULL, vibrateFunc, (void*)i);
 		}
 	}
 }

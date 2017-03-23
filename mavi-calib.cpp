@@ -14,18 +14,16 @@
 #include "mavi-calib.hpp"
 #include "mavi-math.hpp"
 #include "mavi-analysis.hpp"
-#include "mavi-feedback.hpp"
 
 using namespace std;
 
 double
-	MAVI_REF_DIST_IRS = MAVI_DEFAULT_REF_DIST_IRS,
-	MAVI_REF_DIST_IRM = MAVI_DEFAULT_REF_DIST_IRM,
-	MAVI_REF_DIST_IRL = MAVI_DEFAULT_REF_DIST_IRL,
-	MAVI_REF_SLOPE = MAVI_DEFAULT_REF_SLOPE,
-	MAVI_ERROR_IRS = MAVI_DEFAULT_ERROR_IRS,
-	MAVI_ERROR_IRM = MAVI_DEFAULT_ERROR_IRM,
-	MAVI_ERROR_IRL = MAVI_DEFAULT_ERROR_IRL;
+	refDistUSL = MAVI_DEFAULT_REF_DIST_USL,
+	refDistUSR = MAVI_DEFAULT_REF_DIST_USR,
+	refDistIRS = MAVI_DEFAULT_REF_DIST_IRS,
+	refDistIRM = MAVI_DEFAULT_REF_DIST_IRM,
+	refDistIRL = MAVI_DEFAULT_REF_DIST_IRL,
+	refSlope   = MAVI_DEFAULT_REF_SLOPE;
 
 int maviCalibration(void)
 {
@@ -34,7 +32,8 @@ int maviCalibration(void)
 		irMDist = 0.0,
 		irLDist = 0.0;
 
-	maviSendFeedback(MAVI_FEEDBACK_CALIB_STARTED);
+	cout << "Calibration Started" << endl;
+	maviAudioPlay(MAVI_AUDIO_CALIB_STARTED);
 
 	for (int i = 0; i < MAVI_CALIB_SAMPLE_COUNT; i++)
 	{
@@ -47,31 +46,30 @@ int maviCalibration(void)
 	irMDist /= MAVI_CALIB_SAMPLE_COUNT;
 	irLDist /= MAVI_CALIB_SAMPLE_COUNT;
 
-	if (abs(MAVI_REF_DIST_IRS - irSDist) >  4 * MAVI_ERROR_IRS ||
-	    abs(MAVI_REF_DIST_IRM - irMDist) >  6 * MAVI_ERROR_IRM ||
-	    abs(MAVI_REF_DIST_IRL - irLDist) > 10 * MAVI_ERROR_IRL )
+	if (abs(refDistIRS - irSDist) >  4 * MAVI_ERROR_MARGIN_IRS ||
+	    abs(refDistIRM - irMDist) >  6 * MAVI_ERROR_MARGIN_IRM ||
+	    abs(refDistIRL - irLDist) > 10 * MAVI_ERROR_MARGIN_IRL)
 	{
-		maviSendFeedback(MAVI_FEEDBACK_CALIB_FAILED);
+		cout << "Calibration Failed" << endl << endl;
+		maviAudioPlay(MAVI_AUDIO_CALIB_FAILED);
 		return 1;
 	}
 
-	MAVI_REF_DIST_IRS = irSDist;
-	MAVI_REF_DIST_IRM = irMDist;
-	MAVI_REF_DIST_IRL = irLDist;
-	MAVI_REF_SLOPE = maviGetRefSlope(MAVI_REF_DIST_IRS, MAVI_REF_DIST_IRM, MAVI_REF_DIST_IRL);
-	MAVI_ERROR_IRS = MAVI_REF_DIST_IRS * 0.20;
-	MAVI_ERROR_IRM = MAVI_REF_DIST_IRM * 0.20;
-	MAVI_ERROR_IRL = MAVI_REF_DIST_IRL * 0.20;
+	refDistIRS = irSDist;
+	refDistIRM = irMDist;
+	refDistIRL = irLDist;
+	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 
 	maviSaveCalibration();
 
 	cout <<
-		"IRS   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRS << endl <<
-		"IRM   = " << MAVI_REF_DIST_IRM << " +/- " << MAVI_ERROR_IRM << endl <<
-		"IRL   = " << MAVI_REF_DIST_IRL << " +/- " << MAVI_ERROR_IRL << endl <<
-		"SLOPE = " << MAVI_REF_SLOPE   << " +/- " << MAVI_ERROR_SLOPE << endl;
+		"IRS   = " << refDistIRS << endl <<
+		"IRM   = " << refDistIRM << endl <<
+		"IRL   = " << refDistIRL << endl <<
+		"SLOPE = " << refSlope   << endl << endl <<
+		"Calibration Successful"  << endl;
 
-	maviSendFeedback(MAVI_FEEDBACK_CALIB_SUCCESS);
+	maviAudioPlay(MAVI_AUDIO_CALIB_SUCCESS);
 
 	return 0;
 }
@@ -79,7 +77,7 @@ int maviCalibration(void)
 void maviSaveCalibration(void)
 {
 	fstream calibfile("calib.dat", ios_base::out);
-	calibfile << MAVI_REF_DIST_IRS << ' ' << MAVI_REF_DIST_IRM << ' ' << MAVI_REF_DIST_IRL;
+	calibfile << refDistIRS << ' ' << refDistIRM << ' ' << refDistIRL;
 	calibfile.close();
 }
 
@@ -87,13 +85,7 @@ void maviLoadCalibration(void)
 {
 	fstream calibfile("calib.dat", ios_base::in);
 	if (calibfile.fail()) return;
-
-	calibfile >> MAVI_REF_DIST_IRS >> MAVI_REF_DIST_IRM >> MAVI_REF_DIST_IRL;
+	calibfile >> refDistIRS >> refDistIRM >> refDistIRL;
 	calibfile.close();
-
-	MAVI_REF_SLOPE = maviGetRefSlope(MAVI_REF_DIST_IRS, MAVI_REF_DIST_IRM, MAVI_REF_DIST_IRL);
-
-	MAVI_ERROR_IRS = MAVI_REF_DIST_IRS * 0.2;
-	MAVI_ERROR_IRM = MAVI_REF_DIST_IRM * 0.2;
-	MAVI_ERROR_IRL = MAVI_REF_DIST_IRL * 0.2;
+	refSlope = maviGetRefSlope(refDistIRS, refDistIRM, refDistIRL);
 }
