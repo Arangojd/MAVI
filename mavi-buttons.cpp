@@ -21,9 +21,9 @@ void maviPowerButtonPressed(void)
 {
 //	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp >= 1000)
+	if (millis() - timestamp_s >= 1000)
 	{
-		timestamp = millis();
+		timestamp_s = millis();
 		cout << "Power button pressed; raising SIGINT" << endl;
 		raise(SIGINT);
 	}
@@ -33,9 +33,9 @@ void maviPauseButtonPressed(void)
 {
 //	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp >= 1000)
+	if (millis() - timestamp_p >= 1000)
 	{
-		timestamp = millis();
+		timestamp_p = millis();
 		cout << "Pause button pressed; raising SIGUSR1" << endl;
 		raise(SIGUSR1);
 	}
@@ -45,9 +45,9 @@ void maviCalibButtonPressed(void)
 {
 //	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp >= 5000)
+	if (millis() - timestamp_c >= 5000)
 	{
-		timestamp = millis();
+		timestamp_c = millis();
 		cout << "Calibration button pressed; raising SIGUSR2" << endl;
 		raise(SIGUSR2);
 	}
