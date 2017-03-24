@@ -90,6 +90,9 @@ void maviOutputDebugData(MaviFeedbackID id)
 
 	case MAVI_FEEDBACK_IM_HAZARD:
 		cout << "IRS: " << irSDist << endl;
+		cout << "IRM: " << irMDist << endl;
+		cout << "IRL: " << irLDist << endl;
+		cout << "Slope: " << slope << endl;
 		break;
 
 	case MAVI_FEEDBACK_STEP_FINAL:
