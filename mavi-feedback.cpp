@@ -314,7 +314,10 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 			cout << "Stairs Ahead: Ascending" << endl;
 			maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
 		}
-		resetTimer = false;
+		else
+		{
+			resetTimer = false;
+		}
 		break;
 
 	case MAVI_FEEDBACK_STAIRS_DESC:
@@ -323,7 +326,10 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 			cout << "Stairs Ahead: Descending" << endl;
 			maviAudioPlay(MAVI_AUDIO_STAIRS_DESC);
 		}
-		resetTimer = false;
+		else
+		{
+			resetTimer = false;
+		}
 		break;
 
 	default:
