@@ -230,6 +230,8 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 
 		default:
 			cout << "Sensing and Analysis Error: Received invalid next step data.";
+			if (irSDist == MAVI_BAD_SENSOR_READING)
+				cout << endl << "Bad IRS sensor reading.";
 			break;
 		}
 	}
