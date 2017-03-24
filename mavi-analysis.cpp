@@ -154,7 +154,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (221): Received invalid slope scan data.";
 				break;
 			}
 
@@ -190,7 +190,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (222): Received invalid slope scan data.";
 				break;
 			}
 
@@ -227,14 +227,14 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (223): Received invalid slope scan data.";
 				break;
 			}
 
+			break;
+
 		default:
-			cout << "Sensing and Analysis Error: Received invalid next step data. (100)";
-			if (irSDist == MAVI_BAD_SENSOR_READING)
-				cout << endl << "Bad IRS sensor reading.";
+			cout << "Sensing and Analysis Error (211): Received invalid next step data.";
 			break;
 		}
 	}
@@ -287,7 +287,7 @@ void maviMobilityAssistance(void)
 					break;
 
 				default:
-					cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
+					cout << "Sensing and Analysis Error (131): Received invalid mid range scan data.";
 					break;
 				}
 				stairVerification = MAVI_SLOPE_NULL;
@@ -313,7 +313,7 @@ void maviMobilityAssistance(void)
 					break;
 
 				default:
-					cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
+					cout << "Sensing and Analysis Error (132): Received invalid mid range scan data.";
 					break;
 				}
 				stairVerification = MAVI_SLOPE_NULL;
@@ -339,7 +339,7 @@ void maviMobilityAssistance(void)
 					break;
 
 				default:
-					cout << "Sensing and Analysis Error: Received invalid mid range scan data.";
+					cout << "Sensing and Analysis Error (133): Received invalid mid range scan data.";
 					break;
 				}
 				stairVerification = MAVI_SLOPE_NULL;
@@ -360,7 +360,7 @@ void maviMobilityAssistance(void)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (121): Received invalid slope scan data.";
 				break;
 			}
 			break;
@@ -394,7 +394,7 @@ void maviMobilityAssistance(void)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (122): Received invalid slope scan data.";
 				break;
 			}
 
@@ -430,7 +430,7 @@ void maviMobilityAssistance(void)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (123): Received invalid slope scan data.";
 				break;
 			}
 
@@ -467,7 +467,7 @@ void maviMobilityAssistance(void)
 				break;
 
 			default:
-				cout << "Sensing and Analysis Error: Received invalid slope scan data.";
+				cout << "Sensing and Analysis Error (124): Received invalid slope scan data.";
 				break;
 			}
 
@@ -475,7 +475,7 @@ void maviMobilityAssistance(void)
 			break;
 
 		default:
-			cout << "Sensing and Analysis Error: Received invalid next step data. (101)";
+			cout << "Sensing and Analysis Error (111): Received invalid next step data. (101)";
 			break;
 		}
 	}
