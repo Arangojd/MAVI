@@ -30,7 +30,10 @@ MaviNextStepKind maviNextStepScan(void)
 	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
 	if (irSDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "IRS: Bad sensor reading" << endl;
 		return MAVI_NEXTSTEP_ERROR;
+	}
 
 	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
 
@@ -229,13 +232,14 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			}
 
 		default:
-			cout << "Sensing and Analysis Error: Received invalid next step data.";
+			cout << "Sensing and Analysis Error: Received invalid next step data. (100)";
 			if (irSDist == MAVI_BAD_SENSOR_READING)
 				cout << endl << "Bad IRS sensor reading.";
 			break;
 		}
 	}
 
+	cout << "ENDING STAIR ASSISTANCE" << endl << endl;
 	return;
 }
 
@@ -471,7 +475,7 @@ void maviMobilityAssistance(void)
 			break;
 
 		default:
-			cout << "Sensing and Analysis Error: Received invalid next step data.";
+			cout << "Sensing and Analysis Error: Received invalid next step data. (101)";
 			break;
 		}
 	}
