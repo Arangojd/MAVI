@@ -15,9 +15,11 @@
 
 using namespace std;
 
+static unsigned int timestamp_s = 0, timestamp_p = 0, timestamp_c = 0;
+
 void maviPowerButtonPressed(void)
 {
-	static unsigned int timestamp = 0;
+//	static unsigned int timestamp = 0;
 
 	if (millis() - timestamp >= 1000)
 	{
@@ -29,7 +31,7 @@ void maviPowerButtonPressed(void)
 
 void maviPauseButtonPressed(void)
 {
-	static unsigned int timestamp = 0;
+//	static unsigned int timestamp = 0;
 
 	if (millis() - timestamp >= 1000)
 	{
@@ -41,7 +43,7 @@ void maviPauseButtonPressed(void)
 
 void maviCalibButtonPressed(void)
 {
-	static unsigned int timestamp = 0;
+//	static unsigned int timestamp = 0;
 
 	if (millis() - timestamp >= 5000)
 	{
