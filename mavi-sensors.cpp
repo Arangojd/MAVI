@@ -162,12 +162,24 @@ void *filterRoutine(void *arg)
 		for (j = 0; j < filter->numSensors; j++)								\
 			currentReading[j] = maviPollSensor(filter->sensors[j]);				\
 																				\
-		pthread_rwlock_wrlock(&filter->sumLock);								\
+		pthread_rwlock_wrlock(&filter->lock);									\
 																				\
 		for (j = 0; j < filter->numSensors; j++)								\
 			filter->sampleSums[j] += currentReading[j] - filter->buffers[j][k];	\
 																				\
-		pthread_rwlock_unlock(&filter->sumLock);								\
+		pthread_rwlock_unlock(&filter->lock);									\
+																				\
+		for (j = 0; j < filter->numSensors; j++)								\
+			filter->buffers[j][k] = currentReading[j];							\
+	}
+
+	#define takeSamplesNoLock(k)												\
+	{																			\
+		for (j = 0; j < filter->numSensors; j++)								\
+			currentReading[j] = maviPollSensor(filter->sensors[j]);				\
+																				\
+		for (j = 0; j < filter->numSensors; j++)								\
+			filter->sampleSums[j] += currentReading[j] - filter->buffers[j][k];	\
 																				\
 		for (j = 0; j < filter->numSensors; j++)								\
 			filter->buffers[j][k] = currentReading[j];							\
@@ -185,19 +197,21 @@ void *filterRoutine(void *arg)
 	unsigned int nextSample = micros();
 	double currentReading[filter->numSensors];
 
+	pthread_rwlock_wrlock(&filter->lock);
+
 	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
 	{
-		takeSamples(i);
+		takeSamplesNoLock(i);
 		waitForNext();
 	}
 
 	if (filter->running)
 	{
-		takeSamples(i);
+		takeSamplesNoLock(i);
 		filter->bufferFull = true;
 	}
 
-	pthread_cond_broadcast(&filter->fullBufferCond);
+	pthread_rwlock_unlock(&filter->lock);
 	waitForNext();
 
 	for (i = 0; filter->running; i = (i+1) % filter->bufferSize)
@@ -207,6 +221,7 @@ void *filterRoutine(void *arg)
 	}
 
 	#undef takeSamples
+	#undef takeSamplesNoLock
 	#undef waitForNext
 
 	return NULL;
@@ -217,17 +232,15 @@ MaviSensorFilter::MaviSensorFilter(unsigned int period, int bsize, int n, ...)
 	va_list args;
 	va_start(args, n);
 
-	this->numSensors     = n;
-	this->sensors        = new MaviSensorID[n];
-	this->samplePeriod   = period;
-	this->bufferSize     = bsize;
-	this->buffers        = new double*[n];
-	this->sampleSums     = new double[n];
-	this->running        = false;
-	this->bufferFull     = false;
-	this->sumLock        = PTHREAD_RWLOCK_INITIALIZER;
-	this->fullBufferLock = PTHREAD_MUTEX_INITIALIZER;
-	this->fullBufferCond = PTHREAD_COND_INITIALIZER;
+	this->numSensors   = n;
+	this->sensors      = new MaviSensorID[n];
+	this->samplePeriod = period;
+	this->bufferSize   = bsize;
+	this->buffers      = new double*[n];
+	this->sampleSums   = new double[n];
+	this->running      = false;
+	this->bufferFull   = false;
+	this->lock         = PTHREAD_RWLOCK_INITIALIZER;
 
 	for (int i = 0; i < n; i++)
 	{
@@ -249,14 +262,14 @@ MaviSensorFilter::~MaviSensorFilter(void)
 	delete[] this->buffers;
 	delete[] this->sensors;
 	delete[] this->sampleSums;
-	pthread_rwlock_destroy(&this->sumLock);
-	pthread_mutex_destroy(&this->fullBufferLock);
-	pthread_cond_destroy(&this->fullBufferCond);
+	pthread_rwlock_destroy(&this->lock);
 }
 
 void MaviSensorFilter::startFiltering(void)
 {
 	int i, j;
+
+	pthread_join(this->thread, NULL);
 
 	for (i = 0; i < this->numSensors; i++)
 	{
@@ -275,7 +288,6 @@ void MaviSensorFilter::startFiltering(void)
 void MaviSensorFilter::stopFiltering(void)
 {
 	this->running = false;
-	//~ pthread_join(this->thread, NULL);
 }
 
 double MaviSensorFilter::poll(MaviSensorID sid)
@@ -288,16 +300,9 @@ double MaviSensorFilter::poll(MaviSensorID sid)
 
 	if (sind == this->numSensors) return MAVI_INVALID_SENSOR_ID;
 
-	if (this->running && !this->bufferFull)
-	{
-		pthread_mutex_lock(&this->fullBufferLock);
-		pthread_cond_wait(&this->fullBufferCond, &this->fullBufferLock);
-		pthread_mutex_unlock(&this->fullBufferLock);
-	}
-
-	pthread_rwlock_rdlock(&this->sumLock);
+	pthread_rwlock_rdlock(&this->lock);
 	v = this->sampleSums[sind];
-	pthread_rwlock_unlock(&this->sumLock);
+	pthread_rwlock_unlock(&this->lock);
 
 	return v / this->bufferSize;
 }
