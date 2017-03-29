@@ -22,15 +22,21 @@ SOURCES = \
 	mavi-vibration.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
+DEPENDS = $(SOURCES:%.cpp=%.d)
 
-.PHONY: all objects final clean
+.PHONY: all objects depends final clean
 
 all: $(DEXEC)
-
 objects: $(OBJECTS)
+depends: $(DEPENDS)
+
+include $(DEPENDS)
 
 $(DEXEC): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+%.d: %.cpp
+	$(CXX) $(CXXFLAGS) -MM -MT '$@ $(@:%.d=%.o)' $< > $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -39,4 +45,4 @@ final:
 	$(CXX) $(CXXFLAGS) -O2 $(SOURCES) $(LDFLAGS) -o $(FEXEC)
 
 clean:
-	rm -f $(OBJECTS) $(DEXEC)
+	rm -f $(OBJECTS) $(DEPENDS) $(DEXEC)
