@@ -15,11 +15,18 @@ const MaviDigitalPin pins[3] = {MAVI_DPIN_VR, MAVI_DPIN_VC, MAVI_DPIN_VL};
 unsigned int durations[3];
 double speeds[3];
 
+void *vibCleanupFunc(void *v)
+{
+	digitalWrite((int)v, 0);
+	return NULL;
+}
+
 void *vibrateFunc(void *v)
 {
-	int vi = (int)v;
+	int i, vi = (int)v;
+	pthread_cleanup_push(vibCleanupFunc, (void*)pins[vi]);
 
-	for (int i = 0; i < MAVI_V_COUNT; i++)
+	for (i = 0; i < MAVI_V_COUNT; i++)
 	{
 		digitalWrite(pins[vi], 1);
 		delay((unsigned int)(durations[vi] * speeds[vi] / MAVI_V_COUNT));
