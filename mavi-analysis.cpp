@@ -67,20 +67,19 @@ MaviSlopeKind maviSlopeScan(void)
 			return MAVI_SLOPE_FLAT_STEP;
 		else if (relativeDif_IRM <= MAVI_ERROR_IRM && relativeDif_IRL <= MAVI_ERROR_IRL)
 			return MAVI_SLOPE_FLAT;
-		else
-			cout << "Error: Slope flat but odd height" << endl;
-			return MAVI_SLOPE_OTHER;
+
+		cout << "Error: Slope flat but odd height" << endl;
+		return MAVI_SLOPE_OTHER;
 	}
 	else if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL >= MAVI_STAIR_HEIGHT_MIN
 			&& abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
 	{
-		if (slope > 0)
-			return MAVI_SLOPE_ASCENDING;
-		else
-			return MAVI_SLOPE_DESCENDING;
+		return slope > 0 ? MAVI_SLOPE_ASCENDING : MAVI_SLOPE_DESCENDING;
 	}
 	else if (relativeDif_IRM < -MAVI_ERROR_IRM && relativeDif_IRL < -MAVI_ERROR_IRL)
-			return MAVI_SLOPE_DESCENDING;
+	{
+		return MAVI_SLOPE_DESCENDING;
+	}
 	else
 	{
 		return MAVI_SLOPE_OTHER;
@@ -150,7 +149,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			case MAVI_SLOPE_OTHER:
-//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:
@@ -164,9 +163,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_DESCENDING:
-				if (stair_slope != MAVI_SLOPE_DESCENDING){
+				if (stair_slope != MAVI_SLOPE_DESCENDING)
+				{
 					cout << " D " << endl;
-					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);}
+					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				}
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
@@ -186,7 +187,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			case MAVI_SLOPE_OTHER:
-//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:
@@ -200,9 +201,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_DESCENDING:
-				if (stair_slope != MAVI_SLOPE_DESCENDING){
+				if (stair_slope != MAVI_SLOPE_DESCENDING)
+				{
 					cout << " G " << endl;
-					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);}
+					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				}
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
@@ -212,9 +215,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				return;
 
 			case MAVI_SLOPE_ASCENDING:
-				if (stair_slope != MAVI_SLOPE_ASCENDING){
+				if (stair_slope != MAVI_SLOPE_ASCENDING)
+				{
 					cout << " H " << endl;
-					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);}
+					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				}
 				break;
 
 			case MAVI_SLOPE_FLAT:
@@ -223,7 +228,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			case MAVI_SLOPE_OTHER:
-//				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			default:

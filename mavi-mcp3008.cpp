@@ -44,8 +44,3 @@ int maviMCP3008ReadRaw(MaviAnalogPin apin)
 
 	return decruft_MCP3008_result(buffer);
 }
-
-double maviMCP3008Read(MaviAnalogPin apin)
-{
-	return maviMCP3008ReadRaw(apin) * MCP3008_VREF / 1024.0;
-}

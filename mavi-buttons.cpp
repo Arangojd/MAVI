@@ -15,15 +15,13 @@
 
 using namespace std;
 
-static unsigned int timestamp_s = 0, timestamp_p = 0, timestamp_c = 0;
-
 void maviPowerButtonPressed(void)
 {
-//	static unsigned int timestamp = 0;
+	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp_s >= 1000)
+	if (millis() - timestamp >= 1000)
 	{
-		timestamp_s = millis();
+		timestamp = millis();
 		cout << "Power button pressed; raising SIGINT" << endl;
 		raise(SIGINT);
 	}
@@ -31,11 +29,11 @@ void maviPowerButtonPressed(void)
 
 void maviPauseButtonPressed(void)
 {
-//	static unsigned int timestamp = 0;
+	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp_p >= 1000)
+	if (millis() - timestamp >= 1000)
 	{
-		timestamp_p = millis();
+		timestamp = millis();
 		cout << "Pause button pressed; raising SIGUSR1" << endl;
 		raise(SIGUSR1);
 	}
@@ -43,11 +41,11 @@ void maviPauseButtonPressed(void)
 
 void maviCalibButtonPressed(void)
 {
-//	static unsigned int timestamp = 0;
+	static unsigned int timestamp = 0;
 
-	if (millis() - timestamp_c >= 5000)
+	if (millis() - timestamp >= 5000)
 	{
-		timestamp_c = millis();
+		timestamp = millis();
 		cout << "Calibration button pressed; raising SIGUSR2" << endl;
 		raise(SIGUSR2);
 	}

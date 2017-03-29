@@ -23,11 +23,10 @@ double
 	MAVI_REF_DIST_IRS = MAVI_DEFAULT_REF_DIST_IRS,
 	MAVI_REF_DIST_IRM = MAVI_DEFAULT_REF_DIST_IRM,
 	MAVI_REF_DIST_IRL = MAVI_DEFAULT_REF_DIST_IRL,
-	MAVI_REF_SLOPE = MAVI_DEFAULT_REF_SLOPE,
-	MAVI_ERROR_IRS = MAVI_DEFAULT_ERROR_IRS,
-	MAVI_ERROR_IRM = MAVI_DEFAULT_ERROR_IRM,
-	MAVI_ERROR_IRL = MAVI_DEFAULT_ERROR_IRL;
-
+	MAVI_REF_SLOPE    = MAVI_DEFAULT_REF_SLOPE,
+	MAVI_ERROR_IRS    = MAVI_DEFAULT_ERROR_IRS,
+	MAVI_ERROR_IRM    = MAVI_DEFAULT_ERROR_IRM,
+	MAVI_ERROR_IRL    = MAVI_DEFAULT_ERROR_IRL;
 
 int maviCalibration(void)
 {
@@ -71,14 +70,13 @@ int maviCalibration(void)
 	MAVI_ERROR_IRM = MAVI_ERROR_PERC * MAVI_REF_DIST_IRM;
 	MAVI_ERROR_IRL = MAVI_ERROR_PERC * MAVI_REF_DIST_IRL;
 
-
 	maviSaveCalibration();
 
 	cout <<
-		"IRS   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRS << endl <<
-		"IRM   = " << MAVI_REF_DIST_IRM << " +/- " << MAVI_ERROR_IRM << endl <<
-		"IRL   = " << MAVI_REF_DIST_IRL << " +/- " << MAVI_ERROR_IRL << endl <<
-		"SLOPE = " << MAVI_REF_SLOPE   << " +/- " << MAVI_ERROR_SLOPE << endl;
+		"IRS   = " << MAVI_REF_DIST_IRS << " +/- " << MAVI_ERROR_IRS   << endl <<
+		"IRM   = " << MAVI_REF_DIST_IRM << " +/- " << MAVI_ERROR_IRM   << endl <<
+		"IRL   = " << MAVI_REF_DIST_IRL << " +/- " << MAVI_ERROR_IRL   << endl <<
+		"SLOPE = " << MAVI_REF_SLOPE    << " +/- " << MAVI_ERROR_SLOPE << endl;
 
 	maviSendFeedback(MAVI_FEEDBACK_CALIB_SUCCESS);
 
@@ -88,7 +86,7 @@ int maviCalibration(void)
 void maviSaveCalibration(void)
 {
 	fstream calibfile("calib.dat", ios_base::out);
-	calibfile << MAVI_REF_DIST_IRS << ' ' << MAVI_REF_DIST_IRM << ' ' << MAVI_REF_DIST_IRL;
+	calibfile << MAVI_REF_DIST_IRS << ' ' << MAVI_REF_DIST_IRM << ' ' << MAVI_REF_DIST_IRL << endl;
 	calibfile.close();
 }
 

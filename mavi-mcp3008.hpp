@@ -17,6 +17,9 @@ void maviMCP3008Init(void);
 
 int maviMCP3008ReadRaw(MaviAnalogPin apin);
 
-double maviMCP3008Read(MaviAnalogPin apin);
+inline double maviMCP3008Read(MaviAnalogPin apin)
+{
+	return maviMCP3008ReadRaw(apin) * MCP3008_VREF / 1024.0;
+}
 
 #endif
