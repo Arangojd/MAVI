@@ -173,16 +173,12 @@ void *filterRoutine(void *arg)
 			filter->buffers[j][k] = currentReading[j];							\
 	}
 
-	#define takeSamplesNoLock(k)												\
-	{																			\
-		for (j = 0; j < filter->numSensors; j++)								\
-			currentReading[j] = maviPollSensor(filter->sensors[j]);				\
-																				\
-		for (j = 0; j < filter->numSensors; j++)								\
-			filter->sampleSums[j] += currentReading[j] - filter->buffers[j][k];	\
-																				\
-		for (j = 0; j < filter->numSensors; j++)								\
-			filter->buffers[j][k] = currentReading[j];							\
+	#define takeInitialSamples(k)								\
+	for (j = 0; j < filter->numSensors; j++)					\
+	{															\
+		currentReading[j] = maviPollSensor(filter->sensors[j]);	\
+		filter->sampleSums[j] += currentReading[j];				\
+		filter->buffers[j][k] = currentReading[j];				\
 	}
 
 	#define waitForNext()									\
@@ -201,13 +197,13 @@ void *filterRoutine(void *arg)
 
 	for (i = 0; i < filter->bufferSize - 1 && filter->running; i++)
 	{
-		takeSamplesNoLock(i);
+		takeInitialSamples(i);
 		waitForNext();
 	}
 
 	if (filter->running)
 	{
-		takeSamplesNoLock(i);
+		takeInitialSamples(i);
 		filter->bufferFull = true;
 	}
 
@@ -221,7 +217,7 @@ void *filterRoutine(void *arg)
 	}
 
 	#undef takeSamples
-	#undef takeSamplesNoLock
+	#undef takeInitialSamples
 	#undef waitForNext
 
 	return NULL;
