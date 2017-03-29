@@ -16,8 +16,9 @@ const MaviVibratorID
 	MAVI_VIB_C = 0b010,
 	MAVI_VIB_R = 0b001;
 
+const int MAVI_V_COUNT = 2;
+
 const double
-	MAVI_V_COUNT = 2,
 	MAVI_VSPEED_SY = 1.0,
 	MAVI_VSPEED_HI = 0.90,
 	MAVI_VSPEED_MD = 0.75,
