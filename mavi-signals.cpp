@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <csignal>
+#include <wiringPi.h>
 
 #include "mavi-signals.hpp"
 #include "mavi-state.hpp"

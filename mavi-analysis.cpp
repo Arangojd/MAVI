@@ -127,7 +127,6 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_ASCENDING:
 				if (stair_slope != MAVI_SLOPE_ASCENDING)
 				{
-					cout << " A " << endl;
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				}
 				break;
@@ -139,12 +138,10 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				return;
 
 			case MAVI_SLOPE_DESCENDING:
-				cout << " B " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " C " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -165,7 +162,6 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_DESCENDING:
 				if (stair_slope != MAVI_SLOPE_DESCENDING)
 				{
-					cout << " D " << endl;
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				}
 				break;
@@ -177,13 +173,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				return;
 
 			case MAVI_SLOPE_ASCENDING:
-				cout << " E " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " F " << endl;
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
@@ -203,7 +197,6 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_DESCENDING:
 				if (stair_slope != MAVI_SLOPE_DESCENDING)
 				{
-					cout << " G " << endl;
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				}
 				break;
@@ -217,13 +210,11 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_ASCENDING:
 				if (stair_slope != MAVI_SLOPE_ASCENDING)
 				{
-					cout << " H " << endl;
 					maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				}
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " I " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -384,17 +375,14 @@ void maviMobilityAssistance(void)
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
-				cout << " K " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " L " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				cout << " M " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -420,17 +408,14 @@ void maviMobilityAssistance(void)
 				break;
 
 			case MAVI_SLOPE_ASCENDING:
-				cout << " N " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " O " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				cout << " P " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
@@ -462,12 +447,10 @@ void maviMobilityAssistance(void)
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				cout << " Q " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				cout << " R " << endl;
 				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 

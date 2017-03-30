@@ -30,13 +30,13 @@ all: $(DEXEC)
 objects: $(OBJECTS)
 depends: $(DEPENDS)
 
-include $(DEPENDS)
-
 $(DEXEC): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 %.d: %.cpp
 	$(CXX) $(CXXFLAGS) -MM -MT '$@ $(@:%.d=%.o)' $< > $@
+
+include $(DEPENDS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@

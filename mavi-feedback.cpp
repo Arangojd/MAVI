@@ -23,130 +23,130 @@ unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
 void maviOutputDebugData(MaviFeedbackID id)
 {
-	switch(id)
-	{
-	case MAVI_FEEDBACK_VIBRATE_CENTER:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_LEFT:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_RIGHT:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_LR:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_CL:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_CR:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_VIBRATE_ALL:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "USL: " << usLDist << endl;
-		cout << "USR: " << usRDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_IM_HAZARD:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STEP_FINAL:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STEP_FIRSTDOWN:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STEP_FIRSTUP:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STEP_SINGLEDOWN:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STEP_SINGLEUP:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STAIRS_ASC:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	case MAVI_FEEDBACK_STAIRS_DESC:
-		cout << "IRS: " << irSDist << endl;
-		cout << "IRM: " << irMDist << endl;
-		cout << "IRL: " << irLDist << endl;
-		cout << "Slope: " << slope << endl;
-		break;
-
-	default:
-		break;
-	}
+	//~ switch(id)
+	//~ {
+	//~ case MAVI_FEEDBACK_VIBRATE_CENTER:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_LEFT:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_RIGHT:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_LR:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_CL:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_CR:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_VIBRATE_ALL:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "USL: " << usLDist << endl;
+		//~ cout << "USR: " << usRDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_IM_HAZARD:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STEP_FINAL:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STEP_FIRSTUP:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STEP_SINGLEUP:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STAIRS_ASC:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ case MAVI_FEEDBACK_STAIRS_DESC:
+		//~ cout << "IRS: " << irSDist << endl;
+		//~ cout << "IRM: " << irMDist << endl;
+		//~ cout << "IRL: " << irLDist << endl;
+		//~ cout << "Slope: " << slope << endl;
+		//~ break;
+//~
+	//~ default:
+		//~ break;
+	//~ }
 
 	cout << endl;
 }
