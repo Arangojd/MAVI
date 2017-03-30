@@ -187,7 +187,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LR:
-		cout << "Vibrate Both" << endl;
+		cout << "Vibrate Left & Right" << endl;
 		if (usLDist <= MAVI_MAX_DIST_USL * 0.33 || usRDist <= MAVI_MAX_DIST_USR * 0.33)
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
 		else if (usLDist <= MAVI_MAX_DIST_USL * 0.66 || usRDist <= MAVI_MAX_DIST_USR * 0.66)
@@ -197,7 +197,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CL:
-		cout << "Vibrate Both" << endl;
+		cout << "Vibrate Left & Centre" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
@@ -207,7 +207,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CR:
-		cout << "Vibrate Both" << endl;
+		cout << "Vibrate Right & Centre" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.33)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
@@ -340,7 +340,6 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 
 void maviSendFeedback(MaviFeedbackID id)
 {
-
 	maviOutputSystemFeedback(id);
 
 	unsigned int t_current = millis();
