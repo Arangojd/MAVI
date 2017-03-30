@@ -19,7 +19,7 @@ const MaviVibratorID
 const int MAVI_V_COUNT = 2;
 
 const double
-	MAVI_VSPEED_SY = 1.0,
+	MAVI_VSPEED_SY = 1.00,
 	MAVI_VSPEED_HI = 0.90,
 	MAVI_VSPEED_MD = 0.75,
 	MAVI_VSPEED_LO = 0.60;

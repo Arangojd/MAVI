@@ -20,15 +20,12 @@ void onInterrupt(int s)
 	switch (maviGetState())
 	{
 	case MAVI_STATE_PREINIT:
-		break;
 	case MAVI_STATE_SHUTDOWN:
 		break;
 	default:
 		maviSetState(MAVI_STATE_SHUTDOWN);
 		break;
 	}
-
-	cout << endl;
 }
 
 void onUsr1(int s)
@@ -44,14 +41,10 @@ void onUsr1(int s)
 	default:
 		break;
 	}
-
-	cout << endl;
 }
 
 void onUsr2(int s)
 {
-	cout << endl;
-
 	switch (maviGetState())
 	{
 	case MAVI_STATE_PAUSED:
@@ -62,8 +55,6 @@ void onUsr2(int s)
 	default:
 		break;
 	}
-
-	cout << endl;
 }
 
 void maviRegisterSignalHandlers(void)
