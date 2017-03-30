@@ -17,43 +17,64 @@ using namespace std;
 
 void onInterrupt(int s)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 500)
 	{
-	case MAVI_STATE_PREINIT:
-	case MAVI_STATE_SHUTDOWN:
-		break;
-	default:
-		maviSetState(MAVI_STATE_SHUTDOWN);
-		break;
+		switch (maviGetState())
+		{
+		case MAVI_STATE_PREINIT:
+		case MAVI_STATE_SHUTDOWN:
+			break;
+		default:
+			maviSetState(MAVI_STATE_SHUTDOWN);
+			break;
+		}
+
+		timestamp = millis();
 	}
 }
 
 void onUsr1(int s)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 500)
 	{
-	case MAVI_STATE_RUNNING:
-		maviSetState(MAVI_STATE_PAUSED);
-		break;
-	case MAVI_STATE_PAUSED:
-		maviSetState(MAVI_STATE_RUNNING);
-		break;
-	default:
-		break;
+		switch (maviGetState())
+		{
+		case MAVI_STATE_RUNNING:
+			maviSetState(MAVI_STATE_PAUSED);
+			break;
+		case MAVI_STATE_PAUSED:
+			maviSetState(MAVI_STATE_RUNNING);
+			break;
+		default:
+			break;
+		}
+
+		timestamp = millis();
 	}
 }
 
 void onUsr2(int s)
 {
-	switch (maviGetState())
+	static unsigned int timestamp = 0;
+
+	if (millis() - timestamp >= 500)
 	{
-	case MAVI_STATE_PAUSED:
-		maviSetState(MAVI_STATE_CALIB);
-		maviCalibration();
-		maviSetState(MAVI_STATE_PAUSED);
-		break;
-	default:
-		break;
+		switch (maviGetState())
+		{
+		case MAVI_STATE_PAUSED:
+			maviSetState(MAVI_STATE_CALIB);
+			maviCalibration();
+			maviSetState(MAVI_STATE_PAUSED);
+			break;
+		default:
+			break;
+		}
+
+		timestamp = millis();
 	}
 }
 

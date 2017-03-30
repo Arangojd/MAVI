@@ -15,41 +15,9 @@
 
 using namespace std;
 
-void maviPowerButtonPressed(void)
-{
-	static unsigned int timestamp = 0;
-
-	if (millis() - timestamp >= 1000)
-	{
-		timestamp = millis();
-		cout << "Power button pressed; raising SIGINT" << endl;
-		raise(SIGINT);
-	}
-}
-
-void maviPauseButtonPressed(void)
-{
-	static unsigned int timestamp = 0;
-
-	if (millis() - timestamp >= 1000)
-	{
-		timestamp = millis();
-		cout << "Pause button pressed; raising SIGUSR1" << endl;
-		raise(SIGUSR1);
-	}
-}
-
-void maviCalibButtonPressed(void)
-{
-	static unsigned int timestamp = 0;
-
-	if (millis() - timestamp >= 5000)
-	{
-		timestamp = millis();
-		cout << "Calibration button pressed; raising SIGUSR2" << endl;
-		raise(SIGUSR2);
-	}
-}
+void maviPowerButtonPressed(void) { raise(SIGINT);  }
+void maviPauseButtonPressed(void) { raise(SIGUSR1); }
+void maviCalibButtonPressed(void) { raise(SIGUSR2); }
 
 void maviRegisterButtonISRs(void)
 {
