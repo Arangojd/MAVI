@@ -68,7 +68,6 @@ MaviSlopeKind maviSlopeScan(void)
 		else if (relativeDif_IRM <= MAVI_ERROR_IRM && relativeDif_IRL <= MAVI_ERROR_IRL)
 			return MAVI_SLOPE_FLAT;
 
-		cout << "Error: Slope flat but odd height" << endl;
 		return MAVI_SLOPE_OTHER;
 	}
 	else if (relativeDif_IRM >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL >= MAVI_STAIR_HEIGHT_MIN
@@ -118,7 +117,9 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		switch (maviNextStepScan())
 		{
 		case MAVI_NEXTSTEP_NOTHING:
-			cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+			maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+			cout << endl << "ENDING STAIR ASSISTANCE (301)" << endl << endl;
+			delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 			return;
 
 		case MAVI_NEXTSTEP_STEP_UP:
@@ -133,7 +134,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-				cout << endl << "ENDING STAIR ASSISTANCE" << endl << endl;
+				cout << endl << "ENDING STAIR ASSISTANCE (302)" << endl << endl;
 				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
@@ -142,7 +143,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
@@ -168,7 +169,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-				cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+				cout << "ENDING STAIR ASSISTANCE (303)" << endl << endl;
 				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
@@ -203,7 +204,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-				cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+				cout << "ENDING STAIR ASSISTANCE (304)" << endl << endl;
 				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
@@ -215,7 +216,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 				break;
 
 			case MAVI_SLOPE_FLAT:
-				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_OTHER:
@@ -235,7 +236,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		}
 	}
 
-	cout << "ENDING STAIR ASSISTANCE" << endl << endl;
+	cout << "ENDING STAIR ASSISTANCE (300)" << endl << endl;
 	return;
 }
 
@@ -463,7 +464,7 @@ void maviMobilityAssistance(void)
 			break;
 
 		default:
-			cout << "Sensing and Analysis Error (111): Received invalid next step data. (101)";
+			cout << "Sensing and Analysis Error (111): Received invalid next step data.";
 			break;
 		}
 	}
