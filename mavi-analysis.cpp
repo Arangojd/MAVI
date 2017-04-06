@@ -87,8 +87,8 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	usLDist = maviUSFilter.poll(MAVI_SENSOR_USLL);
-	usRDist = maviUSFilter.poll(MAVI_SENSOR_USLR);
+	usLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
+	usRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
@@ -103,8 +103,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 MaviLowHangKind maviLowHangScan(void)
 {
-	usLDist = maviUSFilter.poll(MAVI_SENSOR_USUL);
-	usRDist = maviUSFilter.poll(MAVI_SENSOR_USUR);
+	usLDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
+	usRDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_LOWHANG_ERROR;
