@@ -19,8 +19,28 @@ using namespace std;
 #include "interpolate.hpp"
 
 MaviSensorFilter
-	maviIRFilter(MAVI_IR_FILTER_PERIOD, MAVI_IR_FILTER_BUFSIZE, 3, MAVI_SENSOR_IRS, MAVI_SENSOR_IRM, MAVI_SENSOR_IRL),
-	maviUSFilter(MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 2, MAVI_SENSOR_USL, MAVI_SENSOR_USR);
+	maviIRFilter(
+		MAVI_IR_FILTER_PERIOD, MAVI_IR_FILTER_BUFSIZE, 3,
+		MAVI_SENSOR_IRS, MAVI_SENSOR_IRM, MAVI_SENSOR_IRL),
+	maviUSFilter(
+		MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 4,
+		MAVI_SENSOR_USLL, MAVI_SENSOR_USLR, MAVI_SENSOR_USUL, MAVI_SENSOR_USUR);
+
+void maviSetSensorPinModes(void)
+{
+	pinMode(MAVI_DPIN_VL, OUTPUT);
+	pinMode(MAVI_DPIN_VC, OUTPUT);
+	pinMode(MAVI_DPIN_VR, OUTPUT);
+
+	pinMode(MAVI_DPIN_USLL_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USLR_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USUL_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USUR_TRIG, OUTPUT);
+	pinMode(MAVI_DPIN_USLL_ECHO,  INPUT);
+	pinMode(MAVI_DPIN_USLR_ECHO,  INPUT);
+	pinMode(MAVI_DPIN_USUL_ECHO,  INPUT);
+	pinMode(MAVI_DPIN_USUR_ECHO,  INPUT);
+}
 
 void maviStartAllFilters(void)
 {
@@ -49,9 +69,11 @@ MaviDigitalPin maviUSTrigPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_TRIG;
-		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_TRIG;
-		default:              return MAVI_DPIN_INVALID;
+		case MAVI_SENSOR_USLL: return MAVI_DPIN_USLL_TRIG;
+		case MAVI_SENSOR_USLR: return MAVI_DPIN_USLR_TRIG;
+		case MAVI_SENSOR_USUL: return MAVI_DPIN_USUL_TRIG;
+		case MAVI_SENSOR_USUR: return MAVI_DPIN_USUR_TRIG;
+		default:               return MAVI_DPIN_INVALID;
 	}
 }
 
@@ -59,9 +81,11 @@ MaviDigitalPin maviUSEchoPinMapping(MaviSensorID sensor)
 {
 	switch (sensor)
 	{
-		case MAVI_SENSOR_USL: return MAVI_DPIN_USL_ECHO;
-		case MAVI_SENSOR_USR: return MAVI_DPIN_USR_ECHO;
-		default:              return MAVI_DPIN_INVALID;
+		case MAVI_SENSOR_USLL: return MAVI_DPIN_USLL_ECHO;
+		case MAVI_SENSOR_USLR: return MAVI_DPIN_USLR_ECHO;
+		case MAVI_SENSOR_USUL: return MAVI_DPIN_USUL_ECHO;
+		case MAVI_SENSOR_USUR: return MAVI_DPIN_USUR_ECHO;
+		default:               return MAVI_DPIN_INVALID;
 	}
 }
 
@@ -84,15 +108,7 @@ double maviPollSensorIR(MaviSensorID sensor)
 
 double maviPollSensorUS(MaviSensorID sensor)
 {
-	#ifdef MAVI_SIMULTANEOUS_US
-		static pthread_mutex_t
-			mut_usl = PTHREAD_MUTEX_INITIALIZER,
-			mut_usr = PTHREAD_MUTEX_INITIALIZER;
-		pthread_mutex_t *mut = (sensor == MAVI_SENSOR_USL ? &mut_usl : &mut_usr);
-	#else
-		static pthread_mutex_t mut_us = PTHREAD_MUTEX_INITIALIZER;
-		pthread_mutex_t *mut = &mut_us;
-	#endif
+	static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 
 	MaviDigitalPin
 		trigPin = maviUSTrigPinMapping(sensor),
@@ -106,7 +122,7 @@ double maviPollSensorUS(MaviSensorID sensor)
 
 	unsigned int st, et;
 
-	pthread_mutex_lock(mut);
+	pthread_mutex_lock(&mut);
 
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
@@ -120,21 +136,21 @@ double maviPollSensorUS(MaviSensorID sensor)
 
 	if (st - et >= MAVI_US_TRIG_TIMEOUT)
 	{
-		pthread_mutex_unlock(mut);
+		pthread_mutex_unlock(&mut);
 		return MAVI_BAD_SENSOR_READING;
 	}
 
 	// Wait for sensor to receive echo
 	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
-	pthread_mutex_unlock(mut);
+	pthread_mutex_unlock(&mut);
 
 	if (et - st >= MAVI_US_ECHO_TIMEOUT)
 		return MAVI_BAD_SENSOR_READING;
-	else
-		// Speed of sound varies based on temperature, air pressure, and
-		// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
-		return (et - st) * 0.01715;
+
+	// Speed of sound varies based on temperature, air pressure, and
+	// humidity, but we'll assume it's 343 m/s, or 0.0343 cm/us
+	return (et - st) * 0.01715;
 }
 
 double maviPollSensor(MaviSensorID sensor)
@@ -146,8 +162,10 @@ double maviPollSensor(MaviSensorID sensor)
 	case MAVI_SENSOR_IRS:
 		return maviPollSensorIR(sensor);
 
-	case MAVI_SENSOR_USL:
-	case MAVI_SENSOR_USR:
+	case MAVI_SENSOR_USLL:
+	case MAVI_SENSOR_USLR:
+	case MAVI_SENSOR_USUL:
+	case MAVI_SENSOR_USUR:
 		return maviPollSensorUS(sensor);
 
 	default:
@@ -182,6 +200,7 @@ void *filterRoutine(void *arg)
 	}
 
 	#define waitForNext()									\
+	if (filter->running)									\
 	{														\
 		nextSample += filter->samplePeriod;					\
 		if (nextSample - micros() <= filter->samplePeriod)	\
@@ -263,6 +282,8 @@ MaviSensorFilter::~MaviSensorFilter(void)
 
 void MaviSensorFilter::startFiltering(void)
 {
+	if (this->running) return;
+
 	int i, j;
 
 	pthread_join(this->thread, NULL);
@@ -284,6 +305,12 @@ void MaviSensorFilter::startFiltering(void)
 void MaviSensorFilter::stopFiltering(void)
 {
 	this->running = false;
+}
+
+void MaviSensorFilter::restartFiltering(void)
+{
+	this->stopFiltering();
+	this->startFiltering();
 }
 
 double MaviSensorFilter::poll(MaviSensorID sid)

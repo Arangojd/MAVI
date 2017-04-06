@@ -87,16 +87,16 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	usLDist = maviUSFilter.poll(MAVI_SENSOR_USL);
-	usRDist = maviUSFilter.poll(MAVI_SENSOR_USR);
+	usLDist = maviUSFilter.poll(MAVI_SENSOR_USLL);
+	usRDist = maviUSFilter.poll(MAVI_SENSOR_USLR);
 
 	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
 
 	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
-	if (usLDist > MAVI_MIN_DIST_USL && usLDist <= MAVI_MAX_DIST_USL) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (usRDist > MAVI_MIN_DIST_USR && usRDist <= MAVI_MAX_DIST_USR) scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (usLDist > MAVI_MIN_DIST_USLL && usLDist <= MAVI_MAX_DIST_USLL) scanResult |= MAVI_MIDRANGE_LEFT;
+	if (usRDist > MAVI_MIN_DIST_USLR && usRDist <= MAVI_MAX_DIST_USLR) scanResult |= MAVI_MIDRANGE_RIGHT;
 
 	return scanResult;
 }

@@ -21,8 +21,10 @@ enum MaviSensorID
 	MAVI_SENSOR_IRS,
 	MAVI_SENSOR_IRM,
 	MAVI_SENSOR_IRL,
-	MAVI_SENSOR_USL,
-	MAVI_SENSOR_USR
+	MAVI_SENSOR_USLL,
+	MAVI_SENSOR_USLR,
+	MAVI_SENSOR_USUL,
+	MAVI_SENSOR_USUR
 };
 
 const unsigned int MAVI_IR_FILTER_PERIOD =  35000;
@@ -33,6 +35,7 @@ const int MAVI_US_FILTER_BUFSIZE =  2;
 const unsigned int MAVI_US_TRIG_TIMEOUT =   5000; // us
 const unsigned int MAVI_US_ECHO_TIMEOUT = 200000; // us
 
+void maviSetSensorPinModes(void);
 double maviPollSensor(MaviSensorID sensor);
 void maviStartAllFilters(void);
 void maviStopAllFilters(void);
@@ -58,6 +61,7 @@ struct MaviSensorFilter
 
 	void startFiltering(void);
 	void stopFiltering(void);
+	void restartFiltering(void);
 	double poll(MaviSensorID sid);
 };
 

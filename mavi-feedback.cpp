@@ -23,138 +23,48 @@ unsigned int t_lastVibrationOutput, t_lastVerbalOutput;
 
 void maviOutputDebugData(MaviFeedbackID id)
 {
-	//~ switch(id)
-	//~ {
-	//~ case MAVI_FEEDBACK_VIBRATE_CENTER:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_LEFT:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_RIGHT:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_LR:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_CL:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_CR:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_VIBRATE_ALL:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "USL: " << usLDist << endl;
-		//~ cout << "USR: " << usRDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_IM_HAZARD:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STEP_FINAL:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STEP_FIRSTDOWN:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STEP_FIRSTUP:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STEP_SINGLEDOWN:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STEP_SINGLEUP:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STAIRS_ASC:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ case MAVI_FEEDBACK_STAIRS_DESC:
-		//~ cout << "IRS: " << irSDist << endl;
-		//~ cout << "IRM: " << irMDist << endl;
-		//~ cout << "IRL: " << irLDist << endl;
-		//~ cout << "Slope: " << slope << endl;
-		//~ break;
-//~
-	//~ default:
-		//~ break;
-	//~ }
+	switch(id)
+	{
+	case MAVI_FEEDBACK_VIBRATE_CENTER:
+	case MAVI_FEEDBACK_VIBRATE_LEFT:
+	case MAVI_FEEDBACK_VIBRATE_RIGHT:
+	case MAVI_FEEDBACK_VIBRATE_LR:
+	case MAVI_FEEDBACK_VIBRATE_CL:
+	case MAVI_FEEDBACK_VIBRATE_CR:
+	case MAVI_FEEDBACK_VIBRATE_ALL:
+		cout <<
+			"IRS: " << irSDist << endl <<
+			"IRM: " << irMDist << endl <<
+			"IRL: " << irLDist << endl <<
+			"USL: " << usLDist << endl <<
+			"USR: " << usRDist << endl <<
+			"Slope: " << slope << endl << endl;
+		break;
 
-	cout << endl;
+	case MAVI_FEEDBACK_IM_HAZARD:
+	case MAVI_FEEDBACK_STEP_FINAL:
+	case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+	case MAVI_FEEDBACK_STEP_FIRSTUP:
+	case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+	case MAVI_FEEDBACK_STEP_SINGLEUP:
+	case MAVI_FEEDBACK_STAIRS_ASC:
+	case MAVI_FEEDBACK_STAIRS_DESC:
+		cout <<
+			"IRS: " << irSDist << endl <<
+			"IRM: " << irMDist << endl <<
+			"IRL: " << irLDist << endl <<
+			"Slope: " << slope << endl << endl;
+		break;
+
+	default:
+		break;
+	}
 }
 
 void maviOutputVibrationFeedback(MaviFeedbackID id)
 {
 	// Vibration notifications (output periodically)
-	switch(id)
+	switch (id)
 	{
 	case MAVI_FEEDBACK_VIBRATE_CENTER:
 		cout << "Vibrate Center" << endl;
@@ -168,9 +78,9 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 
 	case MAVI_FEEDBACK_VIBRATE_LEFT:
 		cout << "Vibrate Left" << endl;
-		if (usLDist <= MAVI_MAX_DIST_USL * 0.33)
+		if (usLDist <= MAVI_MAX_DIST_USLL * 0.33)
 			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usLDist <= MAVI_MAX_DIST_USL * 0.66)
+		else if (usLDist <= MAVI_MAX_DIST_USLL * 0.66)
 			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
 		else
 			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
@@ -178,9 +88,9 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 
 	case MAVI_FEEDBACK_VIBRATE_RIGHT:
 		cout << "Vibrate Right" << endl;
-		if (usRDist <= MAVI_MAX_DIST_USR * 0.33)
+		if (usRDist <= MAVI_MAX_DIST_USLR * 0.33)
 			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usRDist <= MAVI_MAX_DIST_USR * 0.66)
+		else if (usRDist <= MAVI_MAX_DIST_USLR * 0.66)
 			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
 		else
 			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
@@ -188,9 +98,9 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 
 	case MAVI_FEEDBACK_VIBRATE_LR:
 		cout << "Vibrate Left & Right" << endl;
-		if (usLDist <= MAVI_MAX_DIST_USL * 0.33 || usRDist <= MAVI_MAX_DIST_USR * 0.33)
+		if (usLDist <= MAVI_MAX_DIST_USLL * 0.33 || usRDist <= MAVI_MAX_DIST_USLR * 0.33)
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usLDist <= MAVI_MAX_DIST_USL * 0.66 || usRDist <= MAVI_MAX_DIST_USR * 0.66)
+		else if (usLDist <= MAVI_MAX_DIST_USLL * 0.66 || usRDist <= MAVI_MAX_DIST_USLR * 0.66)
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
 		else
 			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
@@ -235,7 +145,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 void maviOutputSystemFeedback(MaviFeedbackID id)
 {
 	// system notifications (always output but never reset timer)
-	switch(id)
+	switch (id)
 	{
 	case MAVI_FEEDBACK_SYSTEM_READY:
 		cout << "System Ready" << endl << endl;
@@ -276,7 +186,7 @@ void maviOutputSystemFeedback(MaviFeedbackID id)
 void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 {
 	// normal notifications (only output periodically and reset timer)
-	switch(id)
+	switch (id)
 	{
 	case MAVI_FEEDBACK_IM_HAZARD:
 		cout << "Immediate Hazard" << endl;
@@ -309,7 +219,7 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 		break;
 
 	case MAVI_FEEDBACK_STAIRS_ASC:
-		if(!interrupt)
+		if (!interrupt)
 		{
 			cout << "Stairs Ahead: Ascending" << endl;
 			maviAudioPlay(MAVI_AUDIO_STAIRS_ASC);
@@ -389,4 +299,3 @@ void maviSendFeedback(MaviFeedbackID id)
 		}
 	}
 }
-

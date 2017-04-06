@@ -34,7 +34,7 @@ enum MaviSlopeKind
 	MAVI_SLOPE_OTHER
 };
 
-typedef int MaviMidRangeKind;
+typedef signed char MaviMidRangeKind;
 
 const MaviMidRangeKind
 	MAVI_MIDRANGE_ERROR   = -1,
