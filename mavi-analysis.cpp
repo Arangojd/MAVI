@@ -101,6 +101,22 @@ MaviMidRangeKind maviMidRangeScan(void)
 	return scanResult;
 }
 
+MaviLowHangKind maviLowHangScan(void)
+{
+	usLDist = maviUSFilter.poll(MAVI_SENSOR_USUL);
+	usRDist = maviUSFilter.poll(MAVI_SENSOR_USUR);
+
+	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_LOWHANG_ERROR;
+
+	MaviMidRangeKind scanResult = MAVI_LOWHANG_NOTHING;
+
+	if (usLDist > MAVI_MIN_DIST_USUL && usLDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
+	if (usRDist > MAVI_MIN_DIST_USUR && usRDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
+
+	return scanResult;
+}
+
 void maviStairAssistance(MaviSlopeKind stair_slope)
 {
 	unsigned int t_elapsed;

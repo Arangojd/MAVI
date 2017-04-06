@@ -43,16 +43,22 @@ const MaviMidRangeKind
 	MAVI_MIDRANGE_LEFT    = 0b10,
 	MAVI_MIDRANGE_BOTH    = 0b11;
 
+typedef signed char MaviLowHangKind;
+
+const MaviLowHangKind
+	MAVI_LOWHANG_ERROR   = -1,
+	MAVI_LOWHANG_NOTHING = 0b00,
+	MAVI_LOWHANG_RIGHT   = 0b01,
+	MAVI_LOWHANG_LEFT    = 0b10,
+	MAVI_LOWHANG_BOTH    = 0b11;
+
 MaviNextStepKind maviNextStepScan(void);
-
-MaviSlopeKind maviSlopeScan(void);
-
+MaviSlopeKind    maviSlopeScan(void);
 MaviMidRangeKind maviMidRangeScan(void);
+MaviLowHangKind  maviLowHangScan(void);
 
 void maviStairAssistance(MaviSlopeKind stair_slope);
-
 void maviMobilityAssistance(void);
-
 void *maviSenseAndAnalyze(void*);
 
 #endif
