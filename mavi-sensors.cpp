@@ -22,9 +22,12 @@ MaviSensorFilter
 	maviIRFilter(
 		MAVI_IR_FILTER_PERIOD, MAVI_IR_FILTER_BUFSIZE, 3,
 		MAVI_SENSOR_IRS, MAVI_SENSOR_IRM, MAVI_SENSOR_IRL),
-	maviUSFilter(
-		MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 4,
-		MAVI_SENSOR_USLL, MAVI_SENSOR_USLR, MAVI_SENSOR_USUL, MAVI_SENSOR_USUR);
+	maviUSLFilter(
+		MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 2,
+		MAVI_SENSOR_USLL, MAVI_SENSOR_USLR),
+	maviUSUFilter(
+		MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 2,
+		MAVI_SENSOR_USUL, MAVI_SENSOR_USUR);
 
 void maviSetSensorPinModes(void)
 {
@@ -45,13 +48,15 @@ void maviSetSensorPinModes(void)
 void maviStartAllFilters(void)
 {
 	maviIRFilter.startFiltering();
-	maviUSFilter.startFiltering();
+	maviUSLFilter.startFiltering();
+	maviUSUFilter.startFiltering();
 }
 
 void maviStopAllFilters(void)
 {
 	maviIRFilter.stopFiltering();
-	maviUSFilter.stopFiltering();
+	maviUSLFilter.stopFiltering();
+	maviUSUFilter.stopFiltering();
 }
 
 MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)

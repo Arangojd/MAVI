@@ -17,13 +17,8 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-	pthread_t saThread;
-
 	maviInit();
-
-	pthread_create(&saThread, NULL, maviSenseAndAnalyze, NULL);
-	pthread_join(saThread, NULL);
-
+	maviSenseAndAnalyze(NULL);
 	maviSendFeedback(MAVI_FEEDBACK_SYSTEM_SHUTDOWN);
 	delay(MAVI_VIBRATION_DURATION);
 	return 0;

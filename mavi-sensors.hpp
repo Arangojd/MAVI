@@ -67,6 +67,7 @@ struct MaviSensorFilter
 
 extern MaviSensorFilter
 	maviIRFilter,
-	maviUSFilter;
+	maviUSLFilter,
+	maviUSUFilter;
 
 #endif
