@@ -18,10 +18,10 @@ const double
 	MAVI_DEFAULT_REF_DIST_USLR = 200.0, // cm
 	MAVI_DEFAULT_REF_DIST_USUL = 200.0, // cm
 	MAVI_DEFAULT_REF_DIST_USUR = 200.0, // cm
-	MAVI_DEFAULT_REF_SLOPE     =  -0.55,
+	MAVI_DEFAULT_REF_ANGLE_IRS = 0.51,  // rad, angle between normal and IRS
 
-	MAVI_REF_ANGLE_IRM = 0.42, // rad, angle between IRS and IRM
-	MAVI_REF_ANGLE_IRL = 0.60, // rad, angle between IRS and IRL
+	MAVI_REL_ANGLE_IRM = 0.42, // rad, angle between IRS and IRM
+	MAVI_REL_ANGLE_IRL = 0.60, // rad, angle between IRS and IRL
 
 	MAVI_MIN_DIST_USLL    =  30.0, // cm
 	MAVI_MIN_DIST_USLR    =  30.0, // cm
@@ -44,7 +44,8 @@ extern double
 	MAVI_REF_DIST_IRS, // cm
 	MAVI_REF_DIST_IRM, // cm
 	MAVI_REF_DIST_IRL, // cm
-	MAVI_REF_SLOPE,    // rad
+	MAVI_REF_ANGLE_IRM,    // rad
+	MAVI_REF_ANGLE_IRL,    // rad
 	MAVI_ERROR_IRS,    // cm
 	MAVI_ERROR_IRM,    // cm
 	MAVI_ERROR_IRL;    // cm

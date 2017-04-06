@@ -3,37 +3,31 @@
 #include "mavi-math.hpp"
 #include "mavi-calib.hpp"
 
-double maviGetSlope(double s_measured, double m_measured, double l_measured)
+double maviGetSlope(double m_measured, double l_measured)
 {
-	double m_height, l_height, m_length, l_length, net_height, net_length, measured_slope, actual_slope;
+	double m_height, l_height, m_length, l_length, net_height, net_length, measured_slope;
 
-	m_height = (m_measured * cos(3.14/2 - MAVI_REF_ANGLE_IRM));
-	l_height = (l_measured * cos(3.14/2 - MAVI_REF_ANGLE_IRL));
+	m_height = m_measured * cos(MAVI_REF_ANGLE_IRM);
+	l_height = l_measured * cos(MAVI_REF_ANGLE_IRL);
 	net_height = m_height - l_height;
 
-	m_length = m_measured * sin(3.14/2 - MAVI_REF_ANGLE_IRM);
-	l_length = l_measured * sin(3.14/2 - MAVI_REF_ANGLE_IRL);
+	m_length = m_measured * sin(MAVI_REF_ANGLE_IRM);
+	l_length = l_measured * sin(MAVI_REF_ANGLE_IRL);
 	net_length = l_length - m_length;
 
 	measured_slope = net_height/net_length;
-	actual_slope = measured_slope - MAVI_REF_SLOPE;
 
-	return actual_slope;
+	return measured_slope;
 }
 
-double maviGetRefSlope(double s_measured, double m_measured, double l_measured)
+double maviGetRefAngle(double dist_measured, double sensor_angle)
 {
-	double m_height, l_height, m_length, l_length, net_height, net_length, ref_slope;
+	double m_height, m_length, ref_angle;
 
-	m_height = (m_measured * cos(3.14/2 - MAVI_REF_ANGLE_IRM));
-	l_height = (l_measured * cos(3.14/2 - MAVI_REF_ANGLE_IRL));
-	net_height = m_height - l_height;
+	m_height = (dist_measured * cos(sensor_angle)) - MAVI_REF_DIST_IRS;
+	m_length = dist_measured * sin(sensor_angle);
 
-	m_length = m_measured * sin(3.14/2 - MAVI_REF_ANGLE_IRM);
-	l_length = l_measured * sin(3.14/2 - MAVI_REF_ANGLE_IRL);
-	net_length = l_length - m_length;
+	ref_angle = atan(m_height/m_length) + sensor_angle;
 
-	ref_slope = net_height/net_length;
-
-	return ref_slope;
+	return ref_angle;
 }

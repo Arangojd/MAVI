@@ -53,7 +53,7 @@ MaviSlopeKind maviSlopeScan(void)
 
 	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
 	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
-	slope = maviGetSlope(irSDist, irMDist, irLDist);
+	slope = maviGetSlope(irMDist, irLDist);
 
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_SLOPE_ERROR;
