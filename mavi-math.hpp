@@ -1,8 +1,10 @@
 #ifndef MAVI_MATH_HPP
 #define MAVI_MATH_HPP
 
-double maviGetSlope(double m_measured, double l_measured);
+#include <cfloat>
 
-double maviGetRefAngle(double dist_measured, double sensor_angle);
+#define MAVI_SLOPE_INF DBL_MAX
+
+double maviGetSlope(double m_measured, double l_measured);
 
 #endif

@@ -23,8 +23,6 @@ double
 	MAVI_REF_DIST_IRS = MAVI_DEFAULT_REF_DIST_IRS,
 	MAVI_REF_DIST_IRM = MAVI_DEFAULT_REF_DIST_IRM,
 	MAVI_REF_DIST_IRL = MAVI_DEFAULT_REF_DIST_IRL,
-	MAVI_REF_ANGLE_IRM = MAVI_DEFAULT_REF_ANGLE_IRS + MAVI_REL_ANGLE_IRM,
-	MAVI_REF_ANGLE_IRL = MAVI_DEFAULT_REF_ANGLE_IRS + MAVI_REL_ANGLE_IRL,
 	MAVI_ERROR_IRS 	  = MAVI_ERROR_PERC * MAVI_REF_DIST_IRS,
 	MAVI_ERROR_IRM 	  = MAVI_ERROR_PERC * MAVI_REF_DIST_IRM,
 	MAVI_ERROR_IRL 	  = MAVI_ERROR_PERC * MAVI_REF_DIST_IRL;
@@ -60,28 +58,25 @@ int maviCalibration(void)
 	    abs(MAVI_REF_DIST_IRL - irLDist) > MAVI_ERROR_IRL)
 	{
 		maviSendFeedback(MAVI_FEEDBACK_CALIB_FAILED);
-		return 1;
+
+	}
+	else
+	{
+		MAVI_REF_DIST_IRS = irSDist;
+		MAVI_REF_DIST_IRM = irMDist;
+		MAVI_REF_DIST_IRL = irLDist;
+		MAVI_ERROR_IRS = MAVI_ERROR_PERC * MAVI_REF_DIST_IRS;
+		MAVI_ERROR_IRM = MAVI_ERROR_PERC * MAVI_REF_DIST_IRM;
+		MAVI_ERROR_IRL = MAVI_ERROR_PERC * MAVI_REF_DIST_IRL;
+
+		maviSaveCalibration();
+		maviSendFeedback(MAVI_FEEDBACK_CALIB_SUCCESS);
 	}
 
-	MAVI_REF_DIST_IRS = irSDist;
-	MAVI_REF_DIST_IRM = irMDist;
-	MAVI_REF_DIST_IRL = irLDist;
-	MAVI_REF_ANGLE_IRM = maviGetRefAngle(MAVI_REF_DIST_IRM, MAVI_REL_ANGLE_IRM);
-	MAVI_REF_ANGLE_IRL = maviGetRefAngle(MAVI_REF_DIST_IRL, MAVI_REL_ANGLE_IRL);
-	MAVI_ERROR_IRS = MAVI_ERROR_PERC * MAVI_REF_DIST_IRS;
-	MAVI_ERROR_IRM = MAVI_ERROR_PERC * MAVI_REF_DIST_IRM;
-	MAVI_ERROR_IRL = MAVI_ERROR_PERC * MAVI_REF_DIST_IRL;
-
-	maviSaveCalibration();
-
 	cout <<
-		"IRS   = " << MAVI_REF_DIST_IRS    << " +/- " << MAVI_ERROR_IRS   << endl <<
-		"IRM   = " << MAVI_REF_DIST_IRM    << " +/- " << MAVI_ERROR_IRM   << endl <<
-		"IRL   = " << MAVI_REF_DIST_IRL    << " +/- " << MAVI_ERROR_IRL   << endl <<
-		"IRM ANGLE  = " << MAVI_REF_ANGLE_IRM << endl <<
-		"IRL ANGLE  = " << MAVI_REF_ANGLE_IRL << endl;
-
-	maviSendFeedback(MAVI_FEEDBACK_CALIB_SUCCESS);
+		"IRS   = " << irSDist    << " +/- " << MAVI_ERROR_IRS   << endl <<
+		"IRM   = " << irMDist    << " +/- " << MAVI_ERROR_IRM   << endl <<
+		"IRL   = " << irLDist    << " +/- " << MAVI_ERROR_IRL   << endl << endl;
 
 	return 0;
 }
@@ -99,9 +94,6 @@ void maviLoadCalibration(void)
 	if (calibfile.fail()) return;
 	calibfile >> MAVI_REF_DIST_IRS >> MAVI_REF_DIST_IRM >> MAVI_REF_DIST_IRL;
 	calibfile.close();
-
-	MAVI_REF_ANGLE_IRM = maviGetRefAngle(MAVI_REF_DIST_IRM, MAVI_REL_ANGLE_IRM);
-	MAVI_REF_ANGLE_IRL = maviGetRefAngle(MAVI_REF_DIST_IRL, MAVI_REL_ANGLE_IRL);
 
 	MAVI_ERROR_IRS = MAVI_ERROR_PERC * MAVI_REF_DIST_IRS;
 	MAVI_ERROR_IRM = MAVI_ERROR_PERC * MAVI_REF_DIST_IRM;

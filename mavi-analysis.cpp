@@ -21,7 +21,7 @@
 using namespace std;
 
 unsigned int t_analysisStart;
-double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, slope = 0, usLDist = -1.0, usRDist = -1.0;
+double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, srDist = -1.0, usLDist = -1.0, usRDist = -1.0, slope = 0;
 
 MaviNextStepKind maviNextStepScan(void)
 {
@@ -75,7 +75,7 @@ MaviSlopeKind maviSlopeScan(void)
 	{
 		return slope > 0 ? MAVI_SLOPE_ASCENDING : MAVI_SLOPE_DESCENDING;
 	}
-	else if (relativeDif_IRM < -MAVI_ERROR_IRM && relativeDif_IRL < -MAVI_ERROR_IRL)
+	else if (relativeDif_IRL < -MAVI_ERROR_IRL)
 	{
 		return MAVI_SLOPE_DESCENDING;
 	}
@@ -83,6 +83,19 @@ MaviSlopeKind maviSlopeScan(void)
 	{
 		return MAVI_SLOPE_OTHER;
 	}
+}
+
+MaviLongRangeKind maviLongRangeScan(void)
+{
+	srDist = maviSRFilter.poll(MAVI_SENSOR_SR);
+
+	if (srDist == MAVI_BAD_SENSOR_READING)
+		return MAVI_LONGRANGE_ERROR;
+
+	if (srDist >= MAVI_MIN_DIST_SR && srDist <= MAVI_MAX_DIST_SR)
+		return MAVI_LONGRANGE_OBSTACLE;
+	else
+		return MAVI_LONGRANGE_NOTHING;
 }
 
 MaviMidRangeKind maviMidRangeScan(void)
@@ -135,7 +148,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		case MAVI_NEXTSTEP_NOTHING:
 			maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 			cout << endl << "ENDING STAIR ASSISTANCE (301)" << endl << endl;
-			delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
+			delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
 			return;
 
 		case MAVI_NEXTSTEP_STEP_UP:
@@ -151,7 +164,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 				cout << endl << "ENDING STAIR ASSISTANCE (302)" << endl << endl;
-				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
+				delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
 			case MAVI_SLOPE_DESCENDING:
@@ -186,7 +199,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 				cout << "ENDING STAIR ASSISTANCE (303)" << endl << endl;
-				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
+				delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
 			case MAVI_SLOPE_ASCENDING:
@@ -221,7 +234,7 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 			case MAVI_SLOPE_FLAT_STEP:
 				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
 				cout << "ENDING STAIR ASSISTANCE (304)" << endl << endl;
-				delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
+				delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
 				return;
 
 			case MAVI_SLOPE_ASCENDING:
@@ -282,79 +295,72 @@ void maviMobilityAssistance(void)
 			switch (maviSlopeScan())
 			{
 			case MAVI_SLOPE_FLAT:
-				switch (maviMidRangeScan())
+				switch (maviLongRangeScan())
 				{
-				case MAVI_MIDRANGE_BOTH:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LR);
+				case MAVI_LONGRANGE_NOTHING:
+					switch (maviMidRangeScan())
+					{
+					case MAVI_MIDRANGE_BOTH:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LR);
+						break;
+
+					case MAVI_MIDRANGE_LEFT:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT);
+						break;
+
+					case MAVI_MIDRANGE_RIGHT:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT);
+						break;
+
+					case MAVI_MIDRANGE_NOTHING:
+						break;
+
+					default:
+						cout << "Sensing and Analysis Error (131): Received invalid mid range scan data.";
+						break;
+					}
 					break;
 
-				case MAVI_MIDRANGE_LEFT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_LEFT);
-					break;
+				case MAVI_LONGRANGE_OBSTACLE:
+					switch (maviMidRangeScan())
+					{
+					case MAVI_MIDRANGE_BOTH:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
+						break;
 
-				case MAVI_MIDRANGE_RIGHT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_RIGHT);
-					break;
+					case MAVI_MIDRANGE_LEFT:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
+						break;
 
-				case MAVI_MIDRANGE_NOTHING:
+					case MAVI_MIDRANGE_RIGHT:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
+						break;
+
+					case MAVI_MIDRANGE_NOTHING:
+						maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
+						break;
+
+					default:
+						cout << "Sensing and Analysis Error (132): Received invalid mid range scan data.";
+						break;
+					}
 					break;
 
 				default:
-					cout << "Sensing and Analysis Error (131): Received invalid mid range scan data.";
+					cout << "Sensing and Analysis Error (141): Received invalid long range scan data.";
 					break;
 				}
+
 				stairVerification = MAVI_SLOPE_NULL;
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				switch (maviMidRangeScan())
-				{
-				case MAVI_MIDRANGE_BOTH:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
-					break;
-
-				case MAVI_MIDRANGE_LEFT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
-					break;
-
-				case MAVI_MIDRANGE_RIGHT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
-					break;
-
-				case MAVI_MIDRANGE_NOTHING:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-					break;
-
-				default:
-					cout << "Sensing and Analysis Error (132): Received invalid mid range scan data.";
-					break;
-				}
+				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 				stairVerification = MAVI_SLOPE_NULL;
 				break;
 
 			case MAVI_SLOPE_OTHER:
-				switch (maviMidRangeScan())
-				{
-				case MAVI_MIDRANGE_BOTH:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_ALL);
-					break;
-
-				case MAVI_MIDRANGE_LEFT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CL);
-					break;
-
-				case MAVI_MIDRANGE_RIGHT:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CR);
-					break;
-
-				case MAVI_MIDRANGE_NOTHING:
-					maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
-					break;
-
-				default:
-					cout << "Sensing and Analysis Error (133): Received invalid mid range scan data.";
-					break;
-				}
+				maviSendFeedback(MAVI_FEEDBACK_VIBRATE_CENTER);
 				stairVerification = MAVI_SLOPE_NULL;
 				break;
 
@@ -454,13 +460,12 @@ void maviMobilityAssistance(void)
 				break;
 
 			case MAVI_SLOPE_FLAT_STEP:
-				maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEUP);
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
+				//~ maviSendFeedback(MAVI_FEEDBACK_STEP_SINGLEUP);
 				break;
 
 			case MAVI_SLOPE_DESCENDING:
-				maviSendFeedback(MAVI_FEEDBACK_STEP_FIRSTDOWN);
-				cout << "STARTING STAIR ASSISTANCE" << endl;
-				maviStairAssistance(MAVI_SLOPE_DESCENDING);
+				maviSendFeedback(MAVI_FEEDBACK_IM_HAZARD);
 				break;
 
 			case MAVI_SLOPE_FLAT:

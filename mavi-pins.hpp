@@ -46,9 +46,10 @@ enum MaviDigitalPin : int
 enum MaviAnalogPin : int
 {
 	MAVI_APIN_INVALID = -1,
-	MAVI_APIN_IRS = 0,
-	MAVI_APIN_IRM = 1,
-	MAVI_APIN_IRL = 2
+	MAVI_APIN_IRS   = 0,
+	MAVI_APIN_IRM   = 1,
+	MAVI_APIN_IRL   = 2,
+	MAVI_APIN_SR	= 3
 };
 
 #endif

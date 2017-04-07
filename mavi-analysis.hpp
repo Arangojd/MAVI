@@ -10,7 +10,7 @@
 
 #include "mavi-sensors.hpp"
 
-extern double irSDist, irMDist, irLDist, slope, usLDist, usRDist;
+extern double irSDist, irMDist, irLDist, srDist, usLDist, usRDist, slope;
 
 const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = 250; //MAVI_IR_FILTER_PERIOD * MAVI_IR_FILTER_BUFSIZE; // ms
 
@@ -34,6 +34,14 @@ enum MaviSlopeKind
 	MAVI_SLOPE_OTHER
 };
 
+
+enum MaviLongRangeKind
+{
+	MAVI_LONGRANGE_ERROR = -1,
+	MAVI_LONGRANGE_NOTHING,
+	MAVI_LONGRANGE_OBSTACLE
+};
+
 typedef signed char MaviMidRangeKind;
 
 const MaviMidRangeKind
@@ -54,6 +62,7 @@ const MaviLowHangKind
 
 MaviNextStepKind maviNextStepScan(void);
 MaviSlopeKind    maviSlopeScan(void);
+MaviLongRangeKind maviLongRangeScan(void);
 MaviMidRangeKind maviMidRangeScan(void);
 MaviLowHangKind  maviLowHangScan(void);
 

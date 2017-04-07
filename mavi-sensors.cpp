@@ -22,6 +22,9 @@ MaviSensorFilter
 	maviIRFilter(
 		MAVI_IR_FILTER_PERIOD, MAVI_IR_FILTER_BUFSIZE, 3,
 		MAVI_SENSOR_IRS, MAVI_SENSOR_IRM, MAVI_SENSOR_IRL),
+	maviSRFilter(
+		MAVI_SR_FILTER_PERIOD, MAVI_SR_FILTER_BUFSIZE, 1,
+		MAVI_SENSOR_SR),
 	maviUSLFilter(
 		MAVI_US_FILTER_PERIOD, MAVI_US_FILTER_BUFSIZE, 2,
 		MAVI_SENSOR_USLL, MAVI_SENSOR_USLR),
@@ -48,6 +51,7 @@ void maviSetSensorPinModes(void)
 void maviStartAllFilters(void)
 {
 	maviIRFilter.startFiltering();
+	maviSRFilter.startFiltering();
 	maviUSLFilter.startFiltering();
 	maviUSUFilter.startFiltering();
 }
@@ -55,6 +59,7 @@ void maviStartAllFilters(void)
 void maviStopAllFilters(void)
 {
 	maviIRFilter.stopFiltering();
+	maviSRFilter.stopFiltering();
 	maviUSLFilter.stopFiltering();
 	maviUSUFilter.stopFiltering();
 }
@@ -66,6 +71,15 @@ MaviAnalogPin maviIRSensorPinMapping(MaviSensorID sensor)
 		case MAVI_SENSOR_IRS: return MAVI_APIN_IRS;
 		case MAVI_SENSOR_IRM: return MAVI_APIN_IRM;
 		case MAVI_SENSOR_IRL: return MAVI_APIN_IRL;
+		default:              return MAVI_APIN_INVALID;
+	}
+}
+
+MaviAnalogPin maviSRSensorPinMapping(MaviSensorID sensor)
+{
+	switch (sensor)
+	{
+		case MAVI_SENSOR_SR: return MAVI_APIN_SR;
 		default:              return MAVI_APIN_INVALID;
 	}
 }
@@ -109,6 +123,19 @@ double maviPollSensorIR(MaviSensorID sensor)
 	else
 		return 495542705.42 * 2.54 * pow(maviMCP3008ReadRaw(pin), -2.620);
 
+}
+
+double maviPollSensorSR(MaviSensorID sensor)
+{
+	MaviAnalogPin pin = maviSRSensorPinMapping(sensor);
+
+	if (pin == MAVI_APIN_INVALID)
+	{
+		// This function was called with the wrong sensor type!
+		return MAVI_INVALID_SENSOR_ID;
+	}
+
+	return 2.54 / 2 * maviMCP3008ReadRaw(pin);
 }
 
 double maviPollSensorUS(MaviSensorID sensor)
@@ -166,6 +193,9 @@ double maviPollSensor(MaviSensorID sensor)
 	case MAVI_SENSOR_IRM:
 	case MAVI_SENSOR_IRS:
 		return maviPollSensorIR(sensor);
+
+	case MAVI_SENSOR_SR:
+		return maviPollSensorSR(sensor);
 
 	case MAVI_SENSOR_USLL:
 	case MAVI_SENSOR_USLR:
