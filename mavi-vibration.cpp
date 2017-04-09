@@ -9,11 +9,11 @@
 #include <pthread.h>
 
 #include "mavi-vibration.hpp"
+#include "mavi-feedback.hpp"
 #include "mavi-pins.hpp"
 
 const MaviDigitalPin pins[3] = {MAVI_DPIN_VR, MAVI_DPIN_VC, MAVI_DPIN_VL};
-unsigned int durations[3];
-double speeds[3];
+int v_counts[3];
 
 void vibCleanupFunc(void *v)
 {
@@ -25,19 +25,23 @@ void *vibrateFunc(void *v)
 	int i, vi = (int)v;
 	pthread_cleanup_push(vibCleanupFunc, (void*)(pins[vi]));
 
-	for (i = 0; i < MAVI_V_COUNT; i++)
+	for (i = 0; i < (v_counts[vi] - 1); i++)
 	{
 		digitalWrite(pins[vi], 1);
-		delay((unsigned int)(durations[vi] * speeds[vi] / MAVI_V_COUNT));
+		delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]);
 		digitalWrite(pins[vi], 0);
-		delay((unsigned int)(durations[vi] * (1.0 - speeds[vi]) / MAVI_V_COUNT));
+		delay(MAVI_V_DELAY);
 	}
+
+	digitalWrite(pins[vi], 1);
+	delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]);
+	digitalWrite(pins[vi], 0);
 
 	pthread_cleanup_pop(0);
 	return NULL;
 }
 
-void maviVibrate(MaviVibratorID vibrators, unsigned int duration, double speed)
+void maviVibrate(MaviVibratorID vibrators, int v_count)
 {
 	static pthread_t vibThreads[3];
 
@@ -46,8 +50,7 @@ void maviVibrate(MaviVibratorID vibrators, unsigned int duration, double speed)
 		if (vibrators & (1 << vi))
 		{
 			pthread_cancel(vibThreads[vi]);
-			durations[vi] = duration;
-			speeds[vi] = speed;
+			v_counts[vi] = v_count;
 			pthread_create(&vibThreads[vi], NULL, vibrateFunc, (void*)vi);
 		}
 	}

@@ -10,7 +10,7 @@
 
 #include "mavi-sensors.hpp"
 
-extern double irSDist, irMDist, irLDist, srDist, usLDist, usRDist, slope;
+extern double irSDist, irMDist, irLDist, srDist, usLLDist, usLRDist, usULDist, usURDist, slope;
 
 const unsigned int MAVI_ANALYSIS_SAMPLE_PERIOD = 250; //MAVI_IR_FILTER_PERIOD * MAVI_IR_FILTER_BUFSIZE; // ms
 

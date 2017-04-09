@@ -37,8 +37,8 @@ void maviOutputDebugData(MaviFeedbackID id)
 			"IRM: " << irMDist << endl <<
 			"IRL: " << irLDist << endl <<
 			"SNR: " << srDist  << endl <<
-			"USL: " << usLDist << endl <<
-			"USR: " << usRDist << endl <<
+			"USLL: " << usLLDist << endl <<
+			"USLR: " << usLRDist << endl <<
 			"Slope: " << slope << endl << endl;
 		break;
 
@@ -70,71 +70,71 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 	case MAVI_FEEDBACK_VIBRATE_CENTER:
 		cout << "Vibrate Center" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
-			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM)
-			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_C, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LEFT:
 		cout << "Vibrate Left" << endl;
-		if (usLDist <= MAVI_MAX_DIST_USLL * 0.33)
-			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usLDist <= MAVI_MAX_DIST_USLL * 0.66)
-			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		if (usLLDist <= MAVI_MAX_DIST_USLL * 0.33)
+			maviVibrate(MAVI_VIB_L, MAVI_VCOUNT_HI);
+		else if (usLLDist <= MAVI_MAX_DIST_USLL * 0.66)
+			maviVibrate(MAVI_VIB_L, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_L, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_RIGHT:
 		cout << "Vibrate Right" << endl;
-		if (usRDist <= MAVI_MAX_DIST_USLR * 0.33)
-			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usRDist <= MAVI_MAX_DIST_USLR * 0.66)
-			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		if (usLRDist <= MAVI_MAX_DIST_USLR * 0.33)
+			maviVibrate(MAVI_VIB_R, MAVI_VCOUNT_HI);
+		else if (usLRDist <= MAVI_MAX_DIST_USLR * 0.66)
+			maviVibrate(MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_R, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LR:
 		cout << "Vibrate Left & Right" << endl;
-		if (usLDist <= MAVI_MAX_DIST_USLL * 0.33 || usRDist <= MAVI_MAX_DIST_USLR * 0.33)
-			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
-		else if (usLDist <= MAVI_MAX_DIST_USLL * 0.66 || usRDist <= MAVI_MAX_DIST_USLR * 0.66)
-			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+		if (usLLDist <= MAVI_MAX_DIST_USLL * 0.33 || usLRDist <= MAVI_MAX_DIST_USLR * 0.33)
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_HI);
+		else if (usLLDist <= MAVI_MAX_DIST_USLL * 0.66 || usLRDist <= MAVI_MAX_DIST_USLR * 0.66)
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CL:
 		cout << "Vibrate Left & Centre" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_CR:
 		cout << "Vibrate Right & Centre" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_LO);
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_ALL:
 		cout << "Vibrate All" << endl;
 		if (irMDist <= MAVI_REF_DIST_IRM * 0.66)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_HI);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_HI);
 		else if (irMDist <= MAVI_REF_DIST_IRM)
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_MD);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
-			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_LO);
+			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_LO);
 		break;
 
 	default:
@@ -161,7 +161,7 @@ void maviOutputSystemFeedback(MaviFeedbackID id)
 	case MAVI_FEEDBACK_SYSTEM_SHUTDOWN:
 		cout << "System Shutting Down" << endl << endl;
 		maviAudioPlay(MAVI_AUDIO_SYSTEM_SHUTDOWN);
-		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VIBRATION_DURATION, MAVI_VSPEED_SY);
+		maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_SY);
 		return;
 
 	case MAVI_FEEDBACK_CALIB_STARTED:

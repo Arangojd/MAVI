@@ -14,6 +14,12 @@ const unsigned int MAVI_VERBAL_OUTPUT_PERIOD    = 2000; // ms
 const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 2000; // ms
 const unsigned int MAVI_VIBRATION_DURATION      = 1000; // ms
 
+const int
+	MAVI_VCOUNT_SY = 1,
+	MAVI_VCOUNT_HI = 1,
+	MAVI_VCOUNT_MD = 2,
+	MAVI_VCOUNT_LO = 3;
+
 enum MaviFeedbackID
 {
 	MAVI_FEEDBACK_NULL,

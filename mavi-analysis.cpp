@@ -21,7 +21,7 @@
 using namespace std;
 
 unsigned int t_analysisStart;
-double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, srDist = -1.0, usLDist = -1.0, usRDist = -1.0, slope = 0;
+double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, srDist = -1.0, usLLDist = -1.0, usLRDist = -1.0, usULDist = -1.0, usURDist = -1.0, slope = 0;
 
 MaviNextStepKind maviNextStepScan(void)
 {
@@ -100,32 +100,32 @@ MaviLongRangeKind maviLongRangeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	usLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
-	usRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
+	usLLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
+	usLRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
 
-	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
+	if (usLLDist == MAVI_BAD_SENSOR_READING || usLRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
 
 	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
-	if (usLDist > MAVI_MIN_DIST_USLL && usLDist <= MAVI_MAX_DIST_USLL) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (usRDist > MAVI_MIN_DIST_USLR && usRDist <= MAVI_MAX_DIST_USLR) scanResult |= MAVI_MIDRANGE_RIGHT;
+	if (usLLDist > MAVI_MIN_DIST_USLL && usLLDist <= MAVI_MAX_DIST_USLL) scanResult |= MAVI_MIDRANGE_LEFT;
+	if (usLRDist > MAVI_MIN_DIST_USLR && usLRDist <= MAVI_MAX_DIST_USLR) scanResult |= MAVI_MIDRANGE_RIGHT;
 
 	return scanResult;
 }
 
 MaviLowHangKind maviLowHangScan(void)
 {
-	usLDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
-	usRDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
+	usULDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
+	usURDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
 
-	if (usLDist == MAVI_BAD_SENSOR_READING || usRDist == MAVI_BAD_SENSOR_READING)
+	if (usULDist == MAVI_BAD_SENSOR_READING || usURDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_LOWHANG_ERROR;
 
 	MaviMidRangeKind scanResult = MAVI_LOWHANG_NOTHING;
 
-	if (usLDist > MAVI_MIN_DIST_USUL && usLDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
-	if (usRDist > MAVI_MIN_DIST_USUR && usRDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
+	if (usULDist > MAVI_MIN_DIST_USUL && usULDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
+	if (usURDist > MAVI_MIN_DIST_USUR && usURDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
 
 	return scanResult;
 }
