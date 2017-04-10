@@ -14,6 +14,10 @@ const unsigned int MAVI_VERBAL_OUTPUT_PERIOD    = 2000; // ms
 const unsigned int MAVI_VIBRATION_OUTPUT_PERIOD = 2000; // ms
 const unsigned int MAVI_VIBRATION_DURATION      = 1000; // ms
 
+const double
+	MAVI_V_THRESH_HI = 100,
+	MAVI_V_THRESH_MD = 150;
+
 const int
 	MAVI_VCOUNT_SY = 1,
 	MAVI_VCOUNT_HI = 1,
