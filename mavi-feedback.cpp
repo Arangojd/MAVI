@@ -41,19 +41,27 @@ void maviOutputDebugData(MaviFeedbackID id)
 	case MAVI_FEEDBACK_STEP_SINGLEUP:
 	case MAVI_FEEDBACK_STAIRS_ASC:
 	case MAVI_FEEDBACK_STAIRS_DESC:
-		cout << ((irSDist   == 	irSDist_old) 	? 	"IRS: 	OLD DATA" : ("IRS: 	 " << irSDist))  << endl;
-		cout << ((irMDist   == 	irMDist_old) 	? 	"IRM: 	OLD DATA" : ("IRM: 	 " << irMDist))  << endl;
-		cout << ((irLDist   == 	irLDist_old) 	? 	"IRL: 	OLD DATA" : ("IRL: 	 " << irLDist))  << endl;
-		cout << ((srDist 	== 	srDist_old) 	? 	"SNR: 	OLD DATA" : ("SNR: 	 " << srDist))   << endl;
-		cout << ((usLLDist  == 	usLList_old) 	? 	"USLL: 	OLD DATA" : ("USLL:  " << usLList))  << endl;
-		cout << ((usLRDist  == 	usLRDist_old) 	? 	"USLR: 	OLD DATA" : ("USLR:  " << usLRDist)) << endl;
-		cout << ((slope 	==	slope_old) 		? 	"Slope: OLD DATA" : ("Slope: " << slope))    << endl;
+		if (irSDist   == 	irSDist_old)  { cout << "IRS: 	OLD DATA"; } else { cout << "IRS: 	 " 	<< irSDist;  } cout << endl;
+		if (irMDist   == 	irMDist_old)  { cout << "IRM: 	OLD DATA"; } else { cout << "IRM: 	 " 	<< irMDist;  } cout << endl;
+		if (irLDist   == 	irLDist_old)  { cout << "IRL: 	OLD DATA"; } else { cout << "IRL: 	 " 	<< irLDist;  } cout << endl;
+		if (srDist    == 	srDist_old)   { cout << "SNR: 	OLD DATA"; } else { cout << "SNR: 	 " 	<< srDist;	 } cout << endl;
+		if (usLLDist  == 	usLLDist_old) { cout << "USLL: 	OLD DATA"; } else { cout << "USLL:  "	<< usLLDist; } cout << endl;
+		if (usLRDist  == 	usLRDist_old) { cout << "USLR: 	OLD DATA"; } else { cout << "USLR:  " 	<< usLRDist; } cout << endl;
+		if (slope     ==	slope_old)    { cout << "Slope: OLD DATA"; } else { cout << "Slope: "  	<< slope; 	 } cout << endl;
 		cout << endl;
 		break;
 
 	default:
 		break;
 	}
+
+	irSDist_old  = irSDist;
+	irMDist_old  = irMDist;
+	irLDist_old	 = irLDist;
+	srDist_old 	 = srDist;
+	usLLDist_old = usLLDist;
+	usLRDist_old = usLRDist;
+	slope_old 	 = slope;
 }
 
 void maviOutputVibrationFeedback(MaviFeedbackID id)
@@ -62,13 +70,22 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 	switch (id)
 	{
 	case MAVI_FEEDBACK_VIBRATE_CENTER:
-		cout << "Vibrate Center" << endl;
+		cout << "Vibrate Center ";
 		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_HI)
+		{
 			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_HI);
-		else if (irMDist <= MAVI_V_THRESH_MD || srDist <= MAVI_V_THRESH_MD)
+			cout << "1" << endl;
+		}
+		else if (srDist <= MAVI_V_THRESH_MD)
+		{
 			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_MD);
+			cout << "2" << endl;
+		}
 		else
+		{
 			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_LO);
+			cout << "3" << endl;
+		}
 		break;
 
 	case MAVI_FEEDBACK_VIBRATE_LEFT:
@@ -105,7 +122,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		cout << "Vibrate Left & Center" << endl;
 		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_HI);
-		else if (irMDist <= MAVI_V_THRESH_MD || srDist <= MAVI_V_THRESH_MD)
+		else if (srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_MD);
 		else
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L, MAVI_VCOUNT_LO);
@@ -115,7 +132,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		cout << "Vibrate Right & Center" << endl;
 		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_HI);
-		else if (irMDist <= MAVI_V_THRESH_MD || srDist <= MAVI_V_THRESH_MD)
+		else if (srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_R, MAVI_VCOUNT_LO);
@@ -125,7 +142,7 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 		cout << "Vibrate All" << endl;
 		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_HI);
-		else if (irMDist <= MAVI_V_THRESH_MD || srDist <= MAVI_V_THRESH_MD)
+		else if (srDist <= MAVI_V_THRESH_MD)
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_MD);
 		else
 			maviVibrate(MAVI_VIB_C | MAVI_VIB_L | MAVI_VIB_R, MAVI_VCOUNT_LO);
@@ -188,6 +205,11 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 		maviAudioPlay(MAVI_AUDIO_IM_HAZARD, MAVI_APRI_HI);
 		break;
 
+	case MAVI_FEEDBACK_LOW_HAZARD:
+		cout << "Low Hanging Hazard" << endl;
+		maviAudioPlay(MAVI_AUDIO_LOW_HAZARD, MAVI_APRI_HI);
+		break;
+
 	case MAVI_FEEDBACK_STEP_FINAL:
 		cout << "Final Step" << endl;
 		maviAudioPlay(MAVI_AUDIO_STEP_FINAL, MAVI_APRI_MD);
@@ -235,6 +257,11 @@ void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 		{
 			resetTimer = false;
 		}
+		break;
+
+	case MAVI_FEEDBACK_WARNING_SENSORFAILURE:
+		cout << "MAVI Sensor Failed" << endl;
+		maviAudioPlay(MAVI_AUDIO_WARNING_SENSORFAILURE);
 		break;
 
 	default:

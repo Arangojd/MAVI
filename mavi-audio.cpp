@@ -25,6 +25,7 @@ const MaviAudioID
 	MAVI_AUDIO_CALIB_STARTED = "audio/mavi-calibration-started.wav",
 	MAVI_AUDIO_CALIB_SUCCESS = "audio/mavi-calibration-successful.wav",
 	MAVI_AUDIO_IM_HAZARD = "audio/mavi-immediate-hazard.wav",
+	MAVI_AUDIO_LOW_HAZARD = "audio/mavi-low-hanging-hazard.wav",
 	MAVI_AUDIO_STAIRS_ASC = "audio/mavi-stairs-ascending.wav",
 	MAVI_AUDIO_STAIRS_DESC = "audio/mavi-stairs-descending.wav",
 	MAVI_AUDIO_STEP_FINAL = "audio/mavi-step-final.wav",

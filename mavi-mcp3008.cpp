@@ -36,7 +36,7 @@ int maviMCP3008ReadRaw(MaviAnalogPin apin)
 	unsigned char buffer[3] =
 	{
 		0x01,
-		0x80 | (apin << 4);
+		0x80 | (apin << 4),
 		0x00
 	};
 

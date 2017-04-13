@@ -28,13 +28,13 @@ void *vibrateFunc(void *v)
 	for (i = 0; i < (v_counts[vi] - 1); i++)
 	{
 		digitalWrite(pins[vi], 1);
-		delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]);
+		delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]));
 		digitalWrite(pins[vi], 0);
 		delay(MAVI_V_DELAY);
 	}
 
 	digitalWrite(pins[vi], 1);
-	delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]);
+	delay((unsigned int)((MAVI_VIBRATION_DURATION - MAVI_V_DELAY * (v_counts[vi] - 1)) / v_counts[vi]));
 	digitalWrite(pins[vi], 0);
 
 	pthread_cleanup_pop(0);

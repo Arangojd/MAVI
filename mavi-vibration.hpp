@@ -16,7 +16,7 @@ const MaviVibratorID
 	MAVI_VIB_C = 0b010,
 	MAVI_VIB_R = 0b001;
 
-const unsigned int MAVI_V_DELAY = 100;
+const unsigned int MAVI_V_DELAY = 200;
 
 void maviVibrate(MaviVibratorID vibrators, int v_count);
 
