@@ -11,8 +11,6 @@
 #include <cfloat>
 #include <pthread.h>
 
-//~ #define MAVI_SIMULTANEOUS_US
-
 #define MAVI_INVALID_SENSOR_ID  DBL_MIN
 #define MAVI_BAD_SENSOR_READING DBL_MAX
 
@@ -33,7 +31,7 @@ const unsigned int MAVI_SR_FILTER_PERIOD =  30000;
 const unsigned int MAVI_US_FILTER_PERIOD = 200000;
 const int MAVI_IR_FILTER_BUFSIZE = 10;
 const int MAVI_SR_FILTER_BUFSIZE = 10;
-const int MAVI_US_FILTER_BUFSIZE = 2;
+const int MAVI_US_FILTER_BUFSIZE =  2;
 
 const unsigned int MAVI_US_TRIG_TIMEOUT =   5000; // us
 const unsigned int MAVI_US_ECHO_TIMEOUT = 200000; // us

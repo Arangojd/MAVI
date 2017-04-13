@@ -80,7 +80,7 @@ MaviAnalogPin maviSRSensorPinMapping(MaviSensorID sensor)
 	switch (sensor)
 	{
 		case MAVI_SENSOR_SR: return MAVI_APIN_SR;
-		default:              return MAVI_APIN_INVALID;
+		default:             return MAVI_APIN_INVALID;
 	}
 }
 
@@ -140,7 +140,9 @@ double maviPollSensorSR(MaviSensorID sensor)
 
 double maviPollSensorUS(MaviSensorID sensor)
 {
-	static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+	static pthread_mutex_t
+		mut_upper = PTHREAD_MUTEX_INITIALIZER,
+		mut_lower = PTHREAD_MUTEX_INITIALIZER;
 
 	MaviDigitalPin
 		trigPin = maviUSTrigPinMapping(sensor),
@@ -152,9 +154,21 @@ double maviPollSensorUS(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
+	pthread_mutex_t *mut;
 	unsigned int st, et;
 
-	pthread_mutex_lock(&mut);
+	switch (sensor)
+	{
+	case MAVI_SENSOR_USLL:
+	case MAVI_SENSOR_USLR:
+		mut = &mut_lower;
+		break;
+	default:
+		mut = &mut_upper;
+		break;
+	}
+
+	pthread_mutex_lock(mut);
 
 	// Send trigger pulse
 	digitalWrite(trigPin, 1);
@@ -168,14 +182,14 @@ double maviPollSensorUS(MaviSensorID sensor)
 
 	if (st - et >= MAVI_US_TRIG_TIMEOUT)
 	{
-		pthread_mutex_unlock(&mut);
+		pthread_mutex_unlock(mut);
 		return MAVI_BAD_SENSOR_READING;
 	}
 
 	// Wait for sensor to receive echo
 	while (digitalRead(echoPin) && micros() - st < MAVI_US_ECHO_TIMEOUT);
 	et = micros();
-	pthread_mutex_unlock(&mut);
+	pthread_mutex_unlock(mut);
 
 	if (et - st >= MAVI_US_ECHO_TIMEOUT)
 		return MAVI_BAD_SENSOR_READING;
