@@ -26,15 +26,28 @@ enum MaviSensorID
 	MAVI_SENSOR_USUR
 };
 
-const unsigned int MAVI_IR_FILTER_PERIOD =  35000;
-const unsigned int MAVI_SR_FILTER_PERIOD =  30000;
-const unsigned int MAVI_US_FILTER_PERIOD = 200000;
-const int MAVI_IR_FILTER_BUFSIZE = 10;
-const int MAVI_SR_FILTER_BUFSIZE = 10;
-const int MAVI_US_FILTER_BUFSIZE =  2;
+const double // BRODY: Fill these out (values in cm)
+	MAVI_IRS_MIN_SANE,
+	MAVI_IRS_MAX_SANE,
+	MAVI_IRL_MIN_SANE,
+	MAVI_IRL_MAX_SANE,
+	MAVI_SR_MIN_SANE,
+	MAVI_SR_MAX_SANE,
+	MAVI_US_MIN_SANE,
+	MAVI_US_MAX_SANE;
 
-const unsigned int MAVI_US_TRIG_TIMEOUT =   5000; // us
-const unsigned int MAVI_US_ECHO_TIMEOUT = 200000; // us
+const unsigned int
+	MAVI_IR_FILTER_PERIOD =  35000,
+	MAVI_SR_FILTER_PERIOD =  30000,
+	MAVI_US_FILTER_PERIOD = 200000;
+const int
+	MAVI_IR_FILTER_BUFSIZE = 10,
+	MAVI_SR_FILTER_BUFSIZE = 10,
+	MAVI_US_FILTER_BUFSIZE =  2;
+
+const unsigned int
+	MAVI_US_TRIG_TIMEOUT =   5000, // us
+	MAVI_US_ECHO_TIMEOUT = 200000; // us
 
 void maviSetSensorPinModes(void);
 double maviPollSensor(MaviSensorID sensor);
@@ -49,12 +62,11 @@ struct MaviSensorFilter
 	int bufferSize;
 	double **buffers;
 	double *sampleSums;
-	bool running;
-	bool bufferFull;
+	bool running, bufferFull;
 	pthread_t thread;
 	pthread_rwlock_t lock;
 
-	MaviSensorFilter(unsigned int period, int bsize, int n, ...);
+	MaviSensorFilter(unsigned int samplePeriod, int bufferSize, int n, ...);
 	~MaviSensorFilter(void);
 
 	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }

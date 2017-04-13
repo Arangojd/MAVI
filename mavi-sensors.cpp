@@ -365,16 +365,47 @@ void MaviSensorFilter::restartFiltering(void)
 double MaviSensorFilter::poll(MaviSensorID sid)
 {
 	int sind;
-	double v;
+	double sum, avg, minSane, maxSane;
 
 	for (sind = 0; sind < this->numSensors; sind++)
 		if (this->sensors[sind] == sid) break;
 
 	if (sind == this->numSensors) return MAVI_INVALID_SENSOR_ID;
 
-	pthread_rwlock_rdlock(&this->lock);
-	v = this->sampleSums[sind];
-	pthread_rwlock_unlock(&this->lock);
+	switch (sid)
+	{
+	case MAVI_SENSOR_IRS:
+		minSane = MAVI_IRS_MIN_SANE;
+		maxSane = MAVI_IRS_MAX_SANE;
+		break;
 
-	return v / this->bufferSize;
+	case MAVI_SENSOR_IRM:
+	case MAVI_SENSOR_IRL:
+		minSane = MAVI_IRL_MIN_SANE;
+		maxSane = MAVI_IRL_MAX_SANE;
+		break;
+
+	case MAVI_SENSOR_SR:
+		minSane = MAVI_SR_MIN_SANE;
+		maxSane = MAVI_SR_MAX_SANE;
+		break;
+
+	case MAVI_SENSOR_USLL:
+	case MAVI_SENSOR_USLR:
+	case MAVI_SENSOR_USUL:
+	case MAVI_SENSOR_USUR:
+		minSane = MAVI_US_MIN_SANE;
+		maxSane = MAVI_US_MAX_SANE;
+		break;
+	}
+
+	pthread_rwlock_rdlock(&this->lock);
+	sum = this->sampleSums[sind];
+	pthread_rwlock_unlock(&this->lock);
+	avg = sum / this->bufferSize;
+
+	if (avg < minSane || avg > maxSane)
+		return MAVI_BAD_SENSOR_READING;
+	else
+		return avg;
 }
