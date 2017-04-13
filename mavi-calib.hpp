@@ -22,8 +22,8 @@ const double
 	MAVI_MIN_DIST_SR      =  30.0,  // cm
 	MAVI_MIN_DIST_USLL    =  30.0,  // cm
 	MAVI_MIN_DIST_USLR    =  30.0,  // cm
-	MAVI_MIN_DIST_USUL    =  30.0,  // cm
-	MAVI_MIN_DIST_USUR    =  30.0,  // cm
+	MAVI_MIN_DIST_USUL    =  40.0,  // cm
+	MAVI_MIN_DIST_USUR    =  40.0,  // cm
 	MAVI_MIN_DIST_SLOPE   =  75.0,  // cm
 
 	MAVI_MAX_DIST_SR      =  200.0, // cm

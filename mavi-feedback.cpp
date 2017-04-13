@@ -24,36 +24,46 @@ double irSDist_old = -1.0, irMDist_old = -1.0, irLDist_old = -1.0, srDist_old = 
 
 void maviOutputDebugData(MaviFeedbackID id)
 {
-	switch(id)
-	{
-	case MAVI_FEEDBACK_VIBRATE_CENTER:
-	case MAVI_FEEDBACK_VIBRATE_LEFT:
-	case MAVI_FEEDBACK_VIBRATE_RIGHT:
-	case MAVI_FEEDBACK_VIBRATE_LR:
-	case MAVI_FEEDBACK_VIBRATE_CL:
-	case MAVI_FEEDBACK_VIBRATE_CR:
-	case MAVI_FEEDBACK_VIBRATE_ALL:
-	case MAVI_FEEDBACK_IM_HAZARD:
-	case MAVI_FEEDBACK_STEP_FINAL:
-	case MAVI_FEEDBACK_STEP_FIRSTDOWN:
-	case MAVI_FEEDBACK_STEP_FIRSTUP:
-	case MAVI_FEEDBACK_STEP_SINGLEDOWN:
-	case MAVI_FEEDBACK_STEP_SINGLEUP:
-	case MAVI_FEEDBACK_STAIRS_ASC:
-	case MAVI_FEEDBACK_STAIRS_DESC:
-		if (irSDist   == 	irSDist_old)  { cout << "IRS: 	OLD DATA"; } else { cout << "IRS: 	 " 	<< irSDist;  } cout << endl;
-		if (irMDist   == 	irMDist_old)  { cout << "IRM: 	OLD DATA"; } else { cout << "IRM: 	 " 	<< irMDist;  } cout << endl;
-		if (irLDist   == 	irLDist_old)  { cout << "IRL: 	OLD DATA"; } else { cout << "IRL: 	 " 	<< irLDist;  } cout << endl;
-		if (srDist    == 	srDist_old)   { cout << "SNR: 	OLD DATA"; } else { cout << "SNR: 	 " 	<< srDist;	 } cout << endl;
-		if (usLLDist  == 	usLLDist_old) { cout << "USLL: 	OLD DATA"; } else { cout << "USLL:  "	<< usLLDist; } cout << endl;
-		if (usLRDist  == 	usLRDist_old) { cout << "USLR: 	OLD DATA"; } else { cout << "USLR:  " 	<< usLRDist; } cout << endl;
-		if (slope     ==	slope_old)    { cout << "Slope: OLD DATA"; } else { cout << "Slope: "  	<< slope; 	 } cout << endl;
-		cout << endl;
-		break;
+	//~ switch(id)
+	//~ {
+	//~ case MAVI_FEEDBACK_VIBRATE_CENTER:
+	//~ case MAVI_FEEDBACK_VIBRATE_LEFT:
+	//~ case MAVI_FEEDBACK_VIBRATE_RIGHT:
+	//~ case MAVI_FEEDBACK_VIBRATE_LR:
+	//~ case MAVI_FEEDBACK_VIBRATE_CL:
+	//~ case MAVI_FEEDBACK_VIBRATE_CR:
+	//~ case MAVI_FEEDBACK_VIBRATE_ALL:
+	//~ case MAVI_FEEDBACK_IM_HAZARD:
+	//~ case MAVI_FEEDBACK_LOW_HAZARD:
+	//~ case MAVI_FEEDBACK_STEP_FINAL:
+	//~ case MAVI_FEEDBACK_STEP_FIRSTDOWN:
+	//~ case MAVI_FEEDBACK_STEP_FIRSTUP:
+	//~ case MAVI_FEEDBACK_STEP_SINGLEDOWN:
+	//~ case MAVI_FEEDBACK_STEP_SINGLEUP:
+	//~ case MAVI_FEEDBACK_STAIRS_ASC:
+	//~ case MAVI_FEEDBACK_STAIRS_DESC:
+		//~ if (irSDist   == 	irSDist_old)  { cout << "IRS: 	OLD DATA"; } else { cout << "IRS: 	 " 	<< irSDist;  } cout << endl;
+		//~ if (irMDist   == 	irMDist_old)  { cout << "IRM: 	OLD DATA"; } else { cout << "IRM: 	 " 	<< irMDist;  } cout << endl;
+		//~ if (irLDist   == 	irLDist_old)  { cout << "IRL: 	OLD DATA"; } else { cout << "IRL: 	 " 	<< irLDist;  } cout << endl;
+		//~ if (srDist    == 	srDist_old)   { cout << "SNR: 	OLD DATA"; } else { cout << "SNR: 	 " 	<< srDist;	 } cout << endl;
+		//~ if (usLLDist  == 	usLLDist_old) { cout << "USLL: 	OLD DATA"; } else { cout << "USLL:  "	<< usLLDist; } cout << endl;
+		//~ if (usLRDist  == 	usLRDist_old) { cout << "USLR: 	OLD DATA"; } else { cout << "USLR:  " 	<< usLRDist; } cout << endl;
+		//~ if (slope     ==	slope_old)    { cout << "Slope: OLD DATA"; } else { cout << "Slope: "  	<< slope; 	 } cout << endl;
+		//~ cout << endl;
+		//~ break;
+//~
+	//~ default:
+		//~ break;
+	//~ }
 
-	default:
-		break;
-	}
+	if (irSDist   == 	irSDist_old)  { cout << "IRS: 	OLD DATA"; } else { cout << "IRS: 	 " 	<< irSDist;  } cout << endl;
+	if (irMDist   == 	irMDist_old)  { cout << "IRM: 	OLD DATA"; } else { cout << "IRM: 	 " 	<< irMDist;  } cout << endl;
+	if (irLDist   == 	irLDist_old)  { cout << "IRL: 	OLD DATA"; } else { cout << "IRL: 	 " 	<< irLDist;  } cout << endl;
+	if (srDist    == 	srDist_old)   { cout << "SNR: 	OLD DATA"; } else { cout << "SNR: 	 " 	<< srDist;	 } cout << endl;
+	if (usLLDist  == 	usLLDist_old) { cout << "USLL: 	OLD DATA"; } else { cout << "USLL:  "	<< usLLDist; } cout << endl;
+	if (usLRDist  == 	usLRDist_old) { cout << "USLR: 	OLD DATA"; } else { cout << "USLR:  " 	<< usLRDist; } cout << endl;
+	if (slope     ==	slope_old)    { cout << "Slope: OLD DATA"; } else { cout << "Slope: "  	<< slope; 	 } cout << endl;
+	cout << endl;
 
 	irSDist_old  = irSDist;
 	irMDist_old  = irMDist;
@@ -197,7 +207,6 @@ void maviOutputSystemFeedback(MaviFeedbackID id)
 
 void maviOutputVerbalFeedback(MaviFeedbackID id, bool interrupt)
 {
-	// normal notifications (only output periodically and reset timer)
 	switch (id)
 	{
 	case MAVI_FEEDBACK_IM_HAZARD:
