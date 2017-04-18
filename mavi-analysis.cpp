@@ -94,8 +94,8 @@ MaviLongRangeKind maviLongRangeScan(void)
 
 	if (srDist >= MAVI_MIN_DIST_SR && srDist <= MAVI_MAX_DIST_SR)
 		return MAVI_LONGRANGE_OBSTACLE;
-	else
-		return MAVI_LONGRANGE_NOTHING;
+
+	return MAVI_LONGRANGE_NOTHING;
 }
 
 MaviMidRangeKind maviMidRangeScan(void)
@@ -122,7 +122,7 @@ MaviLowHangKind maviLowHangScan(void)
 	if (usULDist == MAVI_BAD_SENSOR_READING || usURDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_LOWHANG_ERROR;
 
-	MaviMidRangeKind scanResult = MAVI_LOWHANG_NOTHING;
+	MaviLowHangKind scanResult = MAVI_LOWHANG_NOTHING;
 
 	if (usULDist > MAVI_MIN_DIST_USUL && usULDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
 	if (usURDist > MAVI_MIN_DIST_USUR && usURDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
