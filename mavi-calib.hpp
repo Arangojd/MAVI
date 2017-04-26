@@ -37,7 +37,7 @@ const double
 	MAVI_STAIR_HEIGHT_MIN =  20.0,  // cm
 	MAVI_STAIR_HEIGHT_MAX =  60.0,  // cm
 
-	MAVI_ERROR_PERC  = 0.20, // %
+	MAVI_ERROR_PERC  = 0.25, // %
 	MAVI_ERROR_SLOPE = 0.20; // rad
 
 
