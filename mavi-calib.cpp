@@ -40,9 +40,9 @@ int maviCalibration(void)
 
 	for (int i = 0; i < MAVI_CALIB_SAMPLE_COUNT; i++)
 	{
-		irSDist += maviIRFilter.poll(MAVI_SENSOR_IRS);
-		irMDist += maviIRFilter.poll(MAVI_SENSOR_IRM);
-		irLDist += maviIRFilter.poll(MAVI_SENSOR_IRL);
+		irSDist += maviIRSFilter.poll();
+		irMDist += maviIRMFilter.poll();
+		irLDist += maviIRLFilter.poll();
 
 		delay(MAVI_ANALYSIS_SAMPLE_PERIOD);
 	}

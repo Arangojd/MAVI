@@ -36,7 +36,7 @@ const double // (values in cm)
 	MAVI_US_MIN_SANE = 5,
 	MAVI_US_MAX_SANE = 5000;
 
-const unsigned int
+const unsigned int // (values in us)
 	MAVI_IR_FILTER_PERIOD =  35000,
 	MAVI_SR_FILTER_PERIOD =  30000,
 	MAVI_US_FILTER_PERIOD = 200000;
@@ -45,9 +45,10 @@ const int
 	MAVI_SR_FILTER_BUFSIZE = 10,
 	MAVI_US_FILTER_BUFSIZE =  2;
 
-const unsigned int
-	MAVI_US_TRIG_TIMEOUT =   5000, // us
-	MAVI_US_ECHO_TIMEOUT = 200000; // us
+const unsigned int // (values in us)
+	MAVI_US_TRIG_TIMEOUT =   5000,
+	MAVI_US_ECHO_TIMEOUT = 200000,
+	MAVI_US_TIME_BUFFER  =     10;
 
 void maviSetSensorPinModes(void);
 double maviPollSensor(MaviSensorID sensor);
@@ -56,17 +57,16 @@ void maviStopAllFilters(void);
 
 struct MaviSensorFilter
 {
-	int numSensors;
-	MaviSensorID *sensors;
+	MaviSensorID sensorID;
 	unsigned int samplePeriod; // us
 	int bufferSize;
-	double **buffers;
-	double *sampleSums;
+	double *buffer;
+	double sampleSums;
 	bool running, bufferFull;
 	pthread_t thread;
 	pthread_rwlock_t lock;
 
-	MaviSensorFilter(unsigned int samplePeriod, int bufferSize, int n, ...);
+	MaviSensorFilter(MaviSensorID sid, unsigned int speriod, int bsize);
 	~MaviSensorFilter(void);
 
 	inline unsigned int getSamplePeriod(void) { return this->samplePeriod; }
@@ -75,13 +75,17 @@ struct MaviSensorFilter
 	void startFiltering(void);
 	void stopFiltering(void);
 	void restartFiltering(void);
-	double poll(MaviSensorID sid);
+	double poll(void);
 };
 
 extern MaviSensorFilter
-	maviIRFilter,
+	maviIRSFilter,
+	maviIRMFilter,
+	maviIRLFilter,
 	maviSRFilter,
-	maviUSLFilter,
-	maviUSUFilter;
+	maviUSLLFilter,
+	maviUSLRFilter,
+	maviUSULFilter,
+	maviUSURFilter;
 
 #endif

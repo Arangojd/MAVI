@@ -27,7 +27,7 @@ MaviNextStepKind maviNextStepScan(void)
 {
 	double relativeDif_IRS;
 
-	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
+	irSDist = maviIRSFilter.poll();
 
 	if (irSDist == MAVI_BAD_SENSOR_READING)
 	{
@@ -51,8 +51,8 @@ MaviSlopeKind maviSlopeScan(void)
 {
 	double relativeDif_IRM, relativeDif_IRL;
 
-	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
-	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
+	irMDist = maviIRMFilter.poll();
+	irLDist = maviIRLFilter.poll();
 	slope = maviGetSlope(irMDist, irLDist);
 
 	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
@@ -87,7 +87,7 @@ MaviSlopeKind maviSlopeScan(void)
 
 MaviLongRangeKind maviLongRangeScan(void)
 {
-	srDist = maviSRFilter.poll(MAVI_SENSOR_SR);
+	srDist = maviSRFilter.poll();
 
 	if (srDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_LONGRANGE_ERROR;
@@ -100,8 +100,8 @@ MaviLongRangeKind maviLongRangeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	usLLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
-	usLRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
+	usLLDist = maviUSLLFilter.poll();
+	usLRDist = maviUSLRFilter.poll();
 
 	if (usLLDist == MAVI_BAD_SENSOR_READING || usLRDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_MIDRANGE_ERROR;
@@ -116,8 +116,8 @@ MaviMidRangeKind maviMidRangeScan(void)
 
 MaviLowHangKind maviLowHangScan(void)
 {
-	usULDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
-	usURDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
+	usULDist = maviUSULFilter.poll();
+	usURDist = maviUSURFilter.poll();
 
 	if (usULDist == MAVI_BAD_SENSOR_READING || usURDist == MAVI_BAD_SENSOR_READING)
 		return MAVI_LOWHANG_ERROR;
