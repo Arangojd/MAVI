@@ -34,7 +34,7 @@ const double // (values in cm)
 	MAVI_SR_MIN_SANE = 15,
 	MAVI_SR_MAX_SANE = 1000,
 	MAVI_US_MIN_SANE = 5,
-	MAVI_US_MAX_SANE = DBL_MAX;
+	MAVI_US_MAX_SANE = 5000;
 
 const unsigned int
 	MAVI_IR_FILTER_PERIOD =  35000,
