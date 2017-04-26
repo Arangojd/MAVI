@@ -55,8 +55,16 @@ MaviSlopeKind maviSlopeScan(void)
 	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
 	slope = maviGetSlope(irMDist, irLDist);
 
-	if (irMDist == MAVI_BAD_SENSOR_READING || irLDist == MAVI_BAD_SENSOR_READING)
+	if (irMDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "IRM: Bad sensor reading" << endl;
 		return MAVI_SLOPE_ERROR;
+	}
+	else if  (irLDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "IRL: Bad sensor reading" << endl;
+		return MAVI_SLOPE_ERROR;
+	}
 
 	relativeDif_IRM = MAVI_REF_DIST_IRM - irMDist;
 	relativeDif_IRL = MAVI_REF_DIST_IRL - irLDist;
@@ -90,7 +98,10 @@ MaviLongRangeKind maviLongRangeScan(void)
 	srDist = maviSRFilter.poll(MAVI_SENSOR_SR);
 
 	if (srDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "SNR: Bad sensor reading" << endl;
 		return MAVI_LONGRANGE_ERROR;
+	}
 
 	if (srDist >= MAVI_MIN_DIST_SR && srDist <= MAVI_MAX_DIST_SR)
 		return MAVI_LONGRANGE_OBSTACLE;
@@ -103,8 +114,16 @@ MaviMidRangeKind maviMidRangeScan(void)
 	usLLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
 	usLRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
 
-	if (usLLDist == MAVI_BAD_SENSOR_READING || usLRDist == MAVI_BAD_SENSOR_READING)
+	if (usLLDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "USLL: Bad sensor reading" << endl;
 		return MAVI_MIDRANGE_ERROR;
+	}
+	else if (usLRDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "USLR: Bad sensor reading" << endl;
+		return MAVI_MIDRANGE_ERROR;
+	}
 
 	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
 
@@ -119,8 +138,16 @@ MaviLowHangKind maviLowHangScan(void)
 	usULDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
 	usURDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
 
-	if (usULDist == MAVI_BAD_SENSOR_READING || usURDist == MAVI_BAD_SENSOR_READING)
+	if (usULDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "USUR: Bad sensor reading" << endl;
 		return MAVI_LOWHANG_ERROR;
+	}
+	else if (usURDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "USUR: Bad sensor reading" << endl;
+		return MAVI_LOWHANG_ERROR;
+	}
 
 	MaviLowHangKind scanResult = MAVI_LOWHANG_NOTHING;
 
