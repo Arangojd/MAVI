@@ -173,10 +173,29 @@ void maviStairAssistance(MaviSlopeKind stair_slope)
 		switch (maviNextStepScan())
 		{
 		case MAVI_NEXTSTEP_NOTHING:
-			maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
-			cout << endl << "ENDING STAIR ASSISTANCE (301)" << endl << endl;
-			delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
-			return;
+			switch (maviSlopeScan())
+			{
+			case MAVI_SLOPE_ASCENDING:
+			case MAVI_SLOPE_DESCENDING:
+			case MAVI_SLOPE_OTHER:
+				// do nothing
+				break;
+
+			case MAVI_SLOPE_FLAT:
+				maviSendFeedback(MAVI_FEEDBACK_STEP_FINAL);
+				cout << endl << "ENDING STAIR ASSISTANCE (301)" << endl << endl;
+				delay(2 * MAVI_ANALYSIS_SAMPLE_PERIOD);
+				return;
+
+			case MAVI_SLOPE_ERROR:
+				maviSendFeedback(MAVI_FEEDBACK_WARNING_SENSORFAILURE);
+				break;
+
+			default:
+				cout << "Sensing and Analysis Error (121): Received invalid slope scan data.";
+				break;
+			}
+			break;
 
 		case MAVI_NEXTSTEP_STEP_UP:
 			switch (maviSlopeScan())
