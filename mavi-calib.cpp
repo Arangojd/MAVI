@@ -53,9 +53,9 @@ int maviCalibration(void)
 	irMDist /= MAVI_CALIB_SAMPLE_COUNT;
 	irLDist /= MAVI_CALIB_SAMPLE_COUNT;
 
-	if (abs(MAVI_REF_DIST_IRS - irSDist) > MAVI_ERROR_IRS ||
-	    abs(MAVI_REF_DIST_IRM - irMDist) > MAVI_ERROR_IRM ||
-	    abs(MAVI_REF_DIST_IRL - irLDist) > MAVI_ERROR_IRL)
+	if (abs(MAVI_DEFAULT_REF_DIST_IRS - irSDist) > 1.5 * MAVI_ERROR_IRS ||
+	    abs(MAVI_DEFAULT_REF_DIST_IRM - irMDist) > 1.5 * MAVI_ERROR_IRM ||
+	    abs(MAVI_DEFAULT_REF_DIST_IRL - irLDist) > 1.5 * MAVI_ERROR_IRL)
 	{
 		maviSendFeedback(MAVI_FEEDBACK_CALIB_FAILED);
 
