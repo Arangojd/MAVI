@@ -29,24 +29,23 @@ MaviNextStepKind maviNextStepScan(void)
 
 	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
 
-//	if (irSDist == MAVI_BAD_SENSOR_READING)
-//	{
-//		cout << "IRS: Bad sensor reading" << endl;
-//		return MAVI_NEXTSTEP_ERROR;
-//	}
-//
-//	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
-//
-//	if (abs(relativeDif_IRS) < MAVI_ERROR_IRS)
-//		return MAVI_NEXTSTEP_NOTHING;
-//	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
-//		return MAVI_NEXTSTEP_STEP_UP;
-//	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN) // && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
-//		return MAVI_NEXTSTEP_STEP_DOWN;
-//	else
-//		return MAVI_NEXTSTEP_OBSTACLE;
+	if (irSDist == MAVI_BAD_SENSOR_READING)
+	{
+		cout << "IRS: Bad sensor reading" << endl;
+		return MAVI_NEXTSTEP_ERROR;
+	}
 
-	return MAVI_NEXTSTEP_NOTHING;
+	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
+
+	if (abs(relativeDif_IRS) < MAVI_ERROR_IRS)
+		return MAVI_NEXTSTEP_NOTHING;
+	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
+		return MAVI_NEXTSTEP_STEP_UP;
+	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN) // && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
+		return MAVI_NEXTSTEP_STEP_DOWN;
+	else
+		return MAVI_NEXTSTEP_OBSTACLE;
+
 }
 
 MaviSlopeKind maviSlopeScan(void)
