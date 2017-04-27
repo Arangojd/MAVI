@@ -56,11 +56,11 @@ int maviCalibration(void)
 //	if (abs(MAVI_DEFAULT_REF_DIST_IRS - irSDist) > 1.5 * MAVI_ERROR_IRS ||
 //	    abs(MAVI_DEFAULT_REF_DIST_IRM - irMDist) > 1.5 * MAVI_ERROR_IRM ||
 //	    abs(MAVI_DEFAULT_REF_DIST_IRL - irLDist) > 1.5 * MAVI_ERROR_IRL)
+	delay(MAVI_ANALYSIS_SAMPLE_PERIOD * 10);
+
 	if (maviSRFilter.poll(MAVI_SENSOR_SR) < 100)
 	{
 		maviSendFeedback(MAVI_FEEDBACK_CALIB_FAILED);
-		delay(MAVI_ANALYSIS_SAMPLE_PERIOD * 10);
-
 	}
 	else
 	{

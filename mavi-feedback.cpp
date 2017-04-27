@@ -81,7 +81,8 @@ void maviOutputVibrationFeedback(MaviFeedbackID id)
 	{
 	case MAVI_FEEDBACK_VIBRATE_CENTER:
 		cout << "Vibrate Center ";
-		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_HI)
+//		if (irMDist <= MAVI_V_THRESH_HI || srDist <= MAVI_V_THRESH_HI)
+		if (srDist <= MAVI_V_THRESH_HI)
 		{
 			maviVibrate(MAVI_VIB_C, MAVI_VCOUNT_HI);
 			cout << "1" << endl;
