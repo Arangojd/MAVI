@@ -118,10 +118,10 @@ double maviPollSensorIR(MaviSensorID sensor)
 		return MAVI_INVALID_SENSOR_ID;
 	}
 
-	if (sensor == MAVI_SENSOR_IRS)
-		return 9489.6 * 2.54 * pow(maviMCP3008ReadRaw(pin), -1.115);
-	else
-		return 495542705.42 * 2.54 * pow(maviMCP3008ReadRaw(pin), -2.620);
+//	if (sensor == MAVI_SENSOR_IRS)
+//		return 9489.6 * 2.54 * pow(maviMCP3008ReadRaw(pin), -1.115);
+
+	return 495542705.42 * 2.54 * pow(maviMCP3008ReadRaw(pin), -2.620);
 
 }
 
