@@ -25,73 +25,77 @@ double irSDist = -1.0, irMDist = -1.0, irLDist = -1.0, srDist = -1.0, usLLDist =
 
 MaviNextStepKind maviNextStepScan(void)
 {
-	double relativeDif_IRS;
+//	double relativeDif_IRS;
+//
+//	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
+//
+//	if (irSDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "IRS: Bad sensor reading" << endl;
+//		return MAVI_NEXTSTEP_ERROR;
+//	}
+//
+//	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
+//
+//	if (abs(relativeDif_IRS) < MAVI_ERROR_IRS)
+//		return MAVI_NEXTSTEP_NOTHING;
+//	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
+//		return MAVI_NEXTSTEP_STEP_UP;
+//	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN) // && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
+//		return MAVI_NEXTSTEP_STEP_DOWN;
+//	else
+//		return MAVI_NEXTSTEP_OBSTACLE;
 
-	irSDist = maviIRFilter.poll(MAVI_SENSOR_IRS);
-
-	if (irSDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "IRS: Bad sensor reading" << endl;
-		return MAVI_NEXTSTEP_ERROR;
-	}
-
-	relativeDif_IRS = MAVI_REF_DIST_IRS - irSDist;
-
-	if (abs(relativeDif_IRS) < MAVI_ERROR_IRS)
-		return MAVI_NEXTSTEP_NOTHING;
-	else if (relativeDif_IRS >= MAVI_STAIR_HEIGHT_MIN && relativeDif_IRS <= MAVI_STAIR_HEIGHT_MAX)
-		return MAVI_NEXTSTEP_STEP_UP;
-	else if (relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MIN) // && relativeDif_IRS <= -MAVI_STAIR_HEIGHT_MAX)
-		return MAVI_NEXTSTEP_STEP_DOWN;
-	else
-		return MAVI_NEXTSTEP_OBSTACLE;
+	return MAVI_NEXTSTEP_NOTHING;
 
 }
 
 MaviSlopeKind maviSlopeScan(void)
 {
-	double relativeDif_IRM, relativeDif_IRL;
+//	double relativeDif_IRM, relativeDif_IRL;
+//
+//	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
+//	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
+//	slope = maviGetSlope(irMDist, irLDist);
+//
+//	if (irMDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "IRM: Bad sensor reading" << endl;
+//		return MAVI_SLOPE_ERROR;
+//	}
+//	else if  (irLDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "IRL: Bad sensor reading" << endl;
+//		return MAVI_SLOPE_ERROR;
+//	}
+//
+//	relativeDif_IRM = MAVI_REF_DIST_IRM - irMDist;
+//	relativeDif_IRL = MAVI_REF_DIST_IRL - irLDist;
+//
+//	if (abs(slope) < MAVI_ERROR_SLOPE)
+//	{
+//		if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 1.2 * MAVI_STAIR_HEIGHT_MAX)
+//			return MAVI_SLOPE_FLAT_STEP;
+//		else if (relativeDif_IRM <= MAVI_ERROR_IRM && relativeDif_IRL <= MAVI_ERROR_IRL)
+//			return MAVI_SLOPE_FLAT;
+//
+//		return MAVI_SLOPE_OTHER;
+//	}
+//	else if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL >= 1.2 * MAVI_STAIR_HEIGHT_MIN
+//			&& abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
+//	{
+//		return slope > 0 ? MAVI_SLOPE_ASCENDING : MAVI_SLOPE_DESCENDING;
+//	}
+//	else if (relativeDif_IRL < -MAVI_ERROR_IRL)
+//	{
+//		return MAVI_SLOPE_DESCENDING;
+//	}
+//	else
+//	{
+//		return MAVI_SLOPE_OTHER;
+//	}
 
-	irMDist = maviIRFilter.poll(MAVI_SENSOR_IRM);
-	irLDist = maviIRFilter.poll(MAVI_SENSOR_IRL);
-	slope = maviGetSlope(irMDist, irLDist);
-
-	if (irMDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "IRM: Bad sensor reading" << endl;
-		return MAVI_SLOPE_ERROR;
-	}
-	else if  (irLDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "IRL: Bad sensor reading" << endl;
-		return MAVI_SLOPE_ERROR;
-	}
-
-	relativeDif_IRM = MAVI_REF_DIST_IRM - irMDist;
-	relativeDif_IRL = MAVI_REF_DIST_IRL - irLDist;
-
-	if (abs(slope) < MAVI_ERROR_SLOPE)
-	{
-		if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRM <= 1.2 * MAVI_STAIR_HEIGHT_MAX)
-			return MAVI_SLOPE_FLAT_STEP;
-		else if (relativeDif_IRM <= MAVI_ERROR_IRM && relativeDif_IRL <= MAVI_ERROR_IRL)
-			return MAVI_SLOPE_FLAT;
-
-		return MAVI_SLOPE_OTHER;
-	}
-	else if (relativeDif_IRM >= 1.2 * MAVI_STAIR_HEIGHT_MIN && relativeDif_IRL >= 1.2 * MAVI_STAIR_HEIGHT_MIN
-			&& abs(slope) >= MAVI_STAIR_SLOPE_MIN && abs(slope) <= MAVI_STAIR_SLOPE_MAX)
-	{
-		return slope > 0 ? MAVI_SLOPE_ASCENDING : MAVI_SLOPE_DESCENDING;
-	}
-	else if (relativeDif_IRL < -MAVI_ERROR_IRL)
-	{
-		return MAVI_SLOPE_DESCENDING;
-	}
-	else
-	{
-		return MAVI_SLOPE_OTHER;
-	}
+	return MAVI_SLOPE_FLAT;
 }
 
 MaviLongRangeKind maviLongRangeScan(void)
@@ -112,50 +116,54 @@ MaviLongRangeKind maviLongRangeScan(void)
 
 MaviMidRangeKind maviMidRangeScan(void)
 {
-	usLLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
-	usLRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
+//	usLLDist = maviUSLFilter.poll(MAVI_SENSOR_USLL);
+//	usLRDist = maviUSLFilter.poll(MAVI_SENSOR_USLR);
+//
+//	if (usLLDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "USLL: Bad sensor reading" << endl;
+//		return MAVI_MIDRANGE_ERROR;
+//	}
+//	else if (usLRDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "USLR: Bad sensor reading" << endl;
+//		return MAVI_MIDRANGE_ERROR;
+//	}
+//
+//	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
+//
+//	if (usLLDist > MAVI_MIN_DIST_USLL && usLLDist <= MAVI_MAX_DIST_USLL) scanResult |= MAVI_MIDRANGE_LEFT;
+//	if (usLRDist > MAVI_MIN_DIST_USLR && usLRDist <= MAVI_MAX_DIST_USLR) scanResult |= MAVI_MIDRANGE_RIGHT;
+//
+//	return scanResult;
 
-	if (usLLDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "USLL: Bad sensor reading" << endl;
-		return MAVI_MIDRANGE_ERROR;
-	}
-	else if (usLRDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "USLR: Bad sensor reading" << endl;
-		return MAVI_MIDRANGE_ERROR;
-	}
-
-	MaviMidRangeKind scanResult = MAVI_MIDRANGE_NOTHING;
-
-	if (usLLDist > MAVI_MIN_DIST_USLL && usLLDist <= MAVI_MAX_DIST_USLL) scanResult |= MAVI_MIDRANGE_LEFT;
-	if (usLRDist > MAVI_MIN_DIST_USLR && usLRDist <= MAVI_MAX_DIST_USLR) scanResult |= MAVI_MIDRANGE_RIGHT;
-
-	return scanResult;
+	return MAVI_MIDRANGE_NOTHING;
 }
 
 MaviLowHangKind maviLowHangScan(void)
 {
-	usULDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
-	usURDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
+//	usULDist = maviUSUFilter.poll(MAVI_SENSOR_USUL);
+//	usURDist = maviUSUFilter.poll(MAVI_SENSOR_USUR);
+//
+//	if (usULDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "USUR: Bad sensor reading" << endl;
+//		return MAVI_LOWHANG_ERROR;
+//	}
+//	else if (usURDist == MAVI_BAD_SENSOR_READING)
+//	{
+//		cout << "USUR: Bad sensor reading" << endl;
+//		return MAVI_LOWHANG_ERROR;
+//	}
+//
+//	MaviLowHangKind scanResult = MAVI_LOWHANG_NOTHING;
+//
+//	if (usULDist > MAVI_MIN_DIST_USUL && usULDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
+//	if (usURDist > MAVI_MIN_DIST_USUR && usURDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
+//
+//	return scanResult;
 
-	if (usULDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "USUR: Bad sensor reading" << endl;
-		return MAVI_LOWHANG_ERROR;
-	}
-	else if (usURDist == MAVI_BAD_SENSOR_READING)
-	{
-		cout << "USUR: Bad sensor reading" << endl;
-		return MAVI_LOWHANG_ERROR;
-	}
-
-	MaviLowHangKind scanResult = MAVI_LOWHANG_NOTHING;
-
-	if (usULDist > MAVI_MIN_DIST_USUL && usULDist <= MAVI_MAX_DIST_USUL) scanResult |= MAVI_LOWHANG_LEFT;
-	if (usURDist > MAVI_MIN_DIST_USUR && usURDist <= MAVI_MAX_DIST_USUR) scanResult |= MAVI_LOWHANG_RIGHT;
-
-	return scanResult;
+	return MAVI_LOWHANG_NOTHING;
 }
 
 void maviStairAssistance(MaviSlopeKind stair_slope)
